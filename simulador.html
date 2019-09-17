@@ -19,29 +19,29 @@
           padding: 2rem 2rem;
         }
         .tab-content {
-          border-bottom: solid 1px #dee2e6;
-          border-left: solid 1px #dee2e6;
-          border-right: solid 1px #dee2e6;
           border-bottom-left-radius: .25rem;
           border-bottom-right-radius: .25rem;
           margin-bottom: 1rem;
         }
         .new-partition {
-          border: solid 1px #dee2e6;
+          box-shadow: #00000024 0px 1px 10px 0px;
           margin: 1rem 0;
           padding: 3rem 1rem 1rem 1rem;
-          border-radius: .25rem;
+          border-radius: 10px;
           position: relative;
         }
         .new-partition .header {
           position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          text-align: center;
-          padding: 0.5rem;
-          background-color: #e9ecef;
-          color: black;
+			    top: 0;
+			    left: 0;
+			    width: 100%;
+			    text-align: center;
+			    padding: 0.5rem;
+			    background-color: #3f51b5cf;
+			    color: white;
+			    font-weight: bold;
+			    border-top-right-radius: 10px;
+			    border-top-left-radius: 10px;
         }
         #add-part-btn {
           margin-top: 1rem;
@@ -50,7 +50,6 @@
           height: 2.5rem;
         }
         .progress-bar {
-          border-left: solid 2px white;
           border-right: solid 2px white;
         }
         .progress-bar:first-child {
@@ -59,6 +58,48 @@
         .progress-bar:last-child {
           border-right: none;
         }
+        #new-proccess-container {
+        	position: relative;
+        }
+        #add-proccess-btn {
+        	position: absolute;
+        	right: 0;
+        }
+        #new-proccess-container input{
+        	text-align: center;
+        }
+        #new-proccess-container tr{
+        	background-color: #28a7452e;
+    			border: solid 2px #c5dcca;
+        }
+        #new-proccess-container th{
+        	font-size: .7rem;
+        }
+        .nav-tabs {
+        	background-color: #dee2e6;
+    			border-top-left-radius: 10px;
+    			border-top-right-radius: 10px;
+        }
+        nav div, nav a{
+        	border:none!important;
+        }
+        .nav-link:hover {
+        	border-color: #e5e8ea!important;
+        	background-color: #e5e8ea;
+        }
+        #section {
+        	box-shadow: #00000024 0px 1px 10px 0px;
+    			border-radius: 10px;
+        }
+        .nav-tabs .nav-link {
+			    border-top-left-radius: 10px;
+			    border-top-right-radius: 10px;
+			    color: #3f51b5;
+    			font-weight: bold;
+			  }
+			  .nav-tabs .nav-link.active {
+			  	color: black;
+			  }
       </style>
   </head>
   <body>
@@ -210,7 +251,42 @@
           <div class="tab-pane fade" id="nav-work" role="tabpanel"
           aria-labelledby="nav-contact-tab"
           >
-            ...
+            <form>
+            	<table id="proccess-table" class="table table-striped mb-0">
+							  <thead>
+							    <tr>
+							      <th class="text-center" scope="col">#</th>
+							      <th class="text-center" scope="col">TA</th>
+							      <th class="text-center" scope="col">TI</th>
+							      <th class="text-left" colspan="2" scope="col">Tamaño (KB)</th>
+							    </tr>
+							  </thead>
+							  <tbody id="list-proccesses">
+							  </tbody>
+							  <tbody id="new-proccess-container">
+							    <tr style="background-color: #28a7452e;">
+							      <th class="text-center" scope="row">Nuevo Processo</th>
+							      <td class="text-center">
+							      	<input class="form-control" id="proccess-ta" type="number" name="new-proccess">
+							      </td>
+							      <td class="text-center">
+							      	<input class="form-control" id="proccess-ti" type="number" name="new-proccess">
+							      </td>
+							      <td class="text-center">
+							      	<input class="form-control" id="proccess-size" type="number" name="new-proccess">
+							    	</td>
+							      <td class="text-center">
+							      	<button class="btn btn-success btn-sm" id="new-proccess-btn"><strong>+</strong></button>
+							    	</td>
+							    </tr>
+							  </tbody>
+							</table>
+							<div class="text-right">
+								<div class="badge badge-secondary">
+									<span>Cantidad de procesos: </span> <span id="proccess-qty"></span>
+								</div>
+							</div>
+            </form>
           </div>
         </div>
         <!-- <button type="submit" class="btn btn-primary">Iniciar simulación</button> -->
@@ -226,92 +302,173 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
   integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
   crossorigin="anonymous"></script>
-  <script type="text/javascript">
-    jQuery(document).ready(function(){
-      const
-        section = $('#section'),
-        partitionContainer = $('#nav-partitions'),
-        newPartitionBtn = partitionContainer.find('#add-part-btn'),
-        memoryDisplay = $('#memory-size-span')
-      ;
-      let partitionsCount = 0;
-      section
-      .on('click', '#nav-partitions-tab', function(){
-        let
-          memoryTotalSize = $('#memoria-size').val(),
-          memorySoSize = $('#so-size').val()/100,
-          availableMemory = memoryTotalSize - memoryTotalSize*memorySoSize
-        ;
-        memoryDisplay
-        .html(availableMemory)
-        .css('font-weight','bold')
-        .attr('total', availableMemory)
-        ;
-        $('#nav-config-tab').prop('aria-disabled', true).addClass('disabled');
-        $('#add-part-btn').prop("disabled", true);
-        $('#cant-part-span').html(partitionsCount);
-      })
-      .on('click', '#btn-config', function(){
-        let
-          memoryTotalSize = $('#memoria-size').val(),
-          memorySoSize = $('#so-size').val()/100,
-          availableMemory = memoryTotalSize - memoryTotalSize*memorySoSize
-        ;
-        $('#nav-partitions-tab').tab('show');
-        memoryDisplay
-        .html(availableMemory)
-        .css('font-weight','bold')
-        .attr('total', availableMemory)
-        ;
-        $('#nav-config-tab').prop('aria-disabled', true).addClass('disabled');
-        $('#add-part-btn').prop("disabled", true);
-        $('#cant-part-span').html(partitionsCount);
-      })
-      .on('change keyup paste', '#new-part', function(){
-        if ($(this).val()) {
-          $('#add-part-btn').prop("disabled", false);
-        } else {
-          $('#add-part-btn').prop("disabled", true);
-        }
-      })
-      .on('click', '#add-part-btn', function(e){
-        let
-          partitionInput = $('#new-part'),
-          partitionSize = $('#new-part').val(),
-          partitionContainer = $('#partitions-container'),
-          availableSize = $('#memory-size-span').attr('total'),
-          partitionPercent = partitionSize * 100 / availableSize,
-          partitionDisplay = $("<div class='progress-bar'></div>"),
-          random_colour =  'rgb('+ (Math.floor(Math.random() * 256)) + ','+ (Math.floor(Math.random() * 256)) + ','+ (Math.floor(Math.random() * 256)) + ')';
-        ;
-        e.preventDefault();
-        if (partitionSize > memoryDisplay.html()){
-          alert('No hay suficiente espacio');
-          partitionInput.val(null);
-          $(this).prop('disabled', true);
-        } else {
-          partitionsCount = partitionsCount + 1;
-          partitionDisplay
-          .css({'width':partitionPercent+'%', 'background-color':random_colour})
-          .html('<span>P'+partitionsCount+'</span><span>'+partitionSize+' KB</span>')
-          ;
-          partitionContainer.append(partitionDisplay);
-          memoryDisplayValue = memoryDisplay.html() - partitionSize;
-          partitionInput.val(null);
-          $(this).prop('disabled', true);
-          memoryDisplay.html(memoryDisplayValue);
-        }
-        $('#cant-part-span').html(partitionsCount);
-        if (memoryDisplay.html() == 0) {
-          partitionInput.prop({'disabled':true, 'placeholder':'No hay mas espacio'});
-          $(this).prop('disabled', true);
-        }
-      })
-      .on('click', '#btn-partitions', function(){
-        $('#nav-work-tab').tab('show');
-      })
-      ;
 
-    });
-  </script>
+	<script type="text/javascript">
+
+	    jQuery(document).ready(function(){
+
+				function adaptColor(selector) {
+				  var rgb = $(selector).css("background-color");
+
+				  if (rgb.match(/^rgb/)) {
+				    var a = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/),
+				      r = a[1],
+				      g = a[2],
+				      b = a[3];
+				  }
+				  var hsp = Math.sqrt(
+				    0.299 * (r * r) +
+				    0.587 * (g * g) +
+				    0.114 * (b * b)
+				  );
+				  if (hsp > 127.5) {
+				    $(selector).css('color', 'black');
+				  } else {
+				    $(selector).css('color', 'white');
+				  }
+				};
+
+				const
+				section = $('#section'),
+				proccessTable = $('#proccess-table'),
+				partitionContainer = $('#nav-partitions'),
+				newPartitionBtn = partitionContainer.find('#add-part-btn'),
+				memoryDisplay = $('#memory-size-span')
+				;
+				let partitionsCount = 0;
+
+				section
+				.on('click', '#nav-partitions-tab', function(){
+				let
+				  memoryTotalSize = $('#memoria-size').val(),
+				  memorySoSize = $('#so-size').val()/100,
+				  availableMemory = memoryTotalSize - memoryTotalSize*memorySoSize
+				;
+				memoryDisplay
+				.html(availableMemory)
+				.css('font-weight','bold')
+				.attr('total', availableMemory)
+				;
+				//$('#nav-config-tab').prop('aria-disabled', true).addClass('disabled');
+				$('#add-part-btn').prop("disabled", true);
+				$('#cant-part-span').html(partitionsCount);
+				})
+
+				.on('click', '#btn-config', function(){
+				let
+				  memoryTotalSize = $('#memoria-size').val(),
+				  memorySoSize = $('#so-size').val()/100,
+				  availableMemory = memoryTotalSize - memoryTotalSize*memorySoSize
+				;
+				$('#nav-partitions-tab').tab('show');
+				memoryDisplay
+				.html(availableMemory)
+				.css('font-weight','bold')
+				.attr('total', availableMemory)
+				;
+				//$('#nav-config-tab').prop('aria-disabled', true).addClass('disabled');
+				$('#add-part-btn').prop("disabled", true);
+				$('#cant-part-span').html(partitionsCount);
+				})
+
+				.on('change keyup paste', '#new-part', function(){
+
+				if ($(this).val()) {
+				  $('#add-part-btn').prop("disabled", false);
+				} else {
+				  $('#add-part-btn').prop("disabled", true);
+				}
+				})
+				.on('keyup', '#new-part',function(e){
+					if (e.keyCode === 13) {
+						$('#add-part-btn').trigger('click');
+					}
+				})
+				.on('click', '#add-part-btn', function(e){
+				let
+				  partitionInput = $('#new-part'),
+				  partitionContainer = $('#partitions-container'),
+				  partitionDisplay = $("<div class='progress-bar'></div>"),
+				  random_colour =  'rgb('+ (Math.floor(Math.random() * 256)) + ','+ (Math.floor(Math.random() * 256)) + ','+ (Math.floor(Math.random() * 256)) + ')',
+				  availableSize = parseInt($('#memory-size-span').attr('total')),
+				  partitionSize = parseInt($('#new-part').val()),
+				  partitionPercent = parseFloat(partitionSize * 100 / availableSize),
+				  memorySize = parseInt($('#memory-size-span').html())
+				;
+				e.preventDefault();
+				console.log($(this).html());
+				if (partitionSize > memorySize){
+				  alert('No hay suficiente espacio');
+				  partitionInput.val(null);
+				  $(this).prop('disabled', true);
+
+				} else {
+
+				  partitionsCount = partitionsCount + 1;
+				  partitionDisplay
+				  .css({'width':partitionPercent+'%', 'background-color':random_colour})
+				  .html('<span>P'+partitionsCount+'</span><span>'+partitionSize+' KB</span>')
+				  ;
+				  adaptColor(partitionDisplay);
+				  partitionContainer.append(partitionDisplay);
+				  memoryDisplayValue = memoryDisplay.html() - partitionSize;
+				  partitionInput.val(null);
+				  $(this).prop('disabled', true);
+				  memoryDisplay.html(memoryDisplayValue);
+				}
+
+				$('#cant-part-span').html(partitionsCount);
+				if (memoryDisplay.html() == 0) {
+				  partitionInput.prop({'disabled':true, 'placeholder':'No hay mas espacio'});
+				  $(this).prop('disabled', true);
+				}
+				})
+
+				.on('click', '#btn-partitions', function(){
+
+				$('#nav-work-tab').tab('show');
+				});
+				let proccessesCount = 0,
+						proccessQty = $('#proccess-qty')
+				;
+				proccessQty.html(proccessesCount);
+				proccessTable
+				.on('click', '#new-proccess-btn', function(e){
+					e.preventDefault();
+					const 
+						ta = $('#proccess-ta').val(),
+						ti = $('#proccess-ti').val(),
+						size = $('#proccess-size').val(),
+						container = $('#list-proccesses'),
+						tr = $('<tr></tr>'),
+						idTh = $('<th class="text-center" scope="row"></th>'),
+						taTd = $('<td class="text-center"></td>'),
+						tiTd = $('<td class="text-center"></td>'),
+						sizeTd = $('<td colspan="2" class="text-center"></td>')
+					;
+					console.log(ta);
+					if (!ti || ti === 0) {
+						alert('El tiempo de irrupcion del proceso no puede ser nulo o igual a cero')
+					} else if (!ta) {
+						alert('El tiempo de arribo del proceso no puede ser nulo')
+					} else if (!size || size === 0) {
+						alert('El tamaño del proceso no puede ser nulo o igual a cero')
+					} else {
+						proccessesCount = proccessesCount +1;
+						idTh.html(proccessesCount);
+						taTd.html(ta);
+						tiTd.html(ti);
+						sizeTd.html(size);
+
+						tr.append(idTh,taTd,tiTd,sizeTd);
+						container.append(tr);
+						$('#proccess-ta').val(null);
+						$('#proccess-ti').val(null);
+						$('#proccess-size').val(null);
+						proccessQty.html(proccessesCount);
+					}
+					
+				});
+	    });
+	</script>
 </html>
