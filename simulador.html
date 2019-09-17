@@ -193,8 +193,13 @@
               <div class="">
                 <span>Memoria disponible: </span><span id="memory-size-span"></span>
               </div>
-              <div class="">
-                <span>Particiones: </span>
+              <div class="d-flex justify-content-between">
+                <div class="">
+                  <span>Particiones: </span>
+                </div>
+                <div class="">
+                  <span>Cantidad de particiones: </span><span id="cant-part-span"></span>
+                </div>
               </div>
               <div id="partitions-container" class="progress"></div>
             </div>
@@ -243,6 +248,8 @@
         .attr('total', availableMemory)
         ;
         $('#nav-config-tab').prop('aria-disabled', true).addClass('disabled');
+        $('#add-part-btn').prop("disabled", true);
+        $('#cant-part-span').html(partitionsCount);
       })
       .on('click', '#btn-config', function(){
         let
@@ -257,6 +264,15 @@
         .attr('total', availableMemory)
         ;
         $('#nav-config-tab').prop('aria-disabled', true).addClass('disabled');
+        $('#add-part-btn').prop("disabled", true);
+        $('#cant-part-span').html(partitionsCount);
+      })
+      .on('change keyup paste', '#new-part', function(){
+        if ($(this).val()) {
+          $('#add-part-btn').prop("disabled", false);
+        } else {
+          $('#add-part-btn').prop("disabled", true);
+        }
       })
       .on('click', '#add-part-btn', function(e){
         let
@@ -271,6 +287,8 @@
         e.preventDefault();
         if (partitionSize > memoryDisplay.html()){
           alert('No hay suficiente espacio');
+          partitionInput.val(null);
+          $(this).prop('disabled', true);
         } else {
           partitionsCount = partitionsCount + 1;
           partitionDisplay
@@ -280,9 +298,10 @@
           partitionContainer.append(partitionDisplay);
           memoryDisplayValue = memoryDisplay.html() - partitionSize;
           partitionInput.val(null);
+          $(this).prop('disabled', true);
           memoryDisplay.html(memoryDisplayValue);
         }
-
+        $('#cant-part-span').html(partitionsCount);
         if (memoryDisplay.html() == 0) {
           partitionInput.prop({'disabled':true, 'placeholder':'No hay mas espacio'});
           $(this).prop('disabled', true);
