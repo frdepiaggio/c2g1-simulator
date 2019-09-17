@@ -7,31 +7,103 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous">
+      <style media="screen">
+        .navbar {
+          background-color: #3F51B5!important;
+        }
+        .section {
+          width: 70%;
+          margin: 2rem auto;
+        }
+        form, .list, .particion-list {
+          padding: 2rem 2rem;
+        }
+        .tab-content {
+          border-bottom: solid 1px #dee2e6;
+          border-left: solid 1px #dee2e6;
+          border-right: solid 1px #dee2e6;
+          border-bottom-left-radius: .25rem;
+          border-bottom-right-radius: .25rem;
+          margin-bottom: 1rem;
+        }
+        .new-partition {
+          border: solid 1px #dee2e6;
+          margin: 1rem 0;
+          padding: 3rem 1rem 1rem 1rem;
+          border-radius: .25rem;
+          position: relative;
+        }
+        .new-partition .header {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          text-align: center;
+          padding: 0.5rem;
+          background-color: #e9ecef;
+          color: black;
+        }
+        #add-part-btn {
+          margin-top: 1rem;
+        }
+        #partitions-container {
+          height: 2.5rem;
+        }
+        .progress-bar {
+          border-left: solid 2px white;
+          border-right: solid 2px white;
+        }
+        .progress-bar:first-child {
+          border-left: none;
+        }
+        .progress-bar:last-child {
+          border-right: none;
+        }
+      </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
-        <a class="navbar-brand" href="#">Navbar</a>
+        <a class="navbar-brand" href="#">Simulador C2G1</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown" style="justify-content: flex-end;">
+          <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Integrantes
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="#">Alfonso Belén</a>
+                <a class="dropdown-item" href="#">Aguilar Santiago</a>
+                <a class="dropdown-item" href="#">Depiaggio Franco</a>
+                <a class="dropdown-item" href="#">Fernández Pinto Gabriela</a>
+                <a class="dropdown-item" href="#">Vázquez Martín Nahuel</a>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
     <div class="container">
-      <div class="section">
+      <div id="section" class="section">
         <nav>
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-home-tab"
-            data-toggle="tab" href="#nav-home" role="tab"
+            <a class="nav-item nav-link active" id="nav-config-tab"
+            data-toggle="tab" href="#nav-config" role="tab"
             aria-controls="nav-home" aria-selected="true"
             >
               Configuración del simulador
             </a>
-            <a class="nav-item nav-link" id="nav-profile-tab"
-            data-toggle="tab" href="#nav-profile" role="tab"
+            <a class="nav-item nav-link" id="nav-partitions-tab"
+            data-toggle="tab" href="#nav-partitions" role="tab"
             aria-controls="nav-profile" aria-selected="false"
             >
               Particiones
             </a>
-            <a class="nav-item nav-link" id="nav-contact-tab"
-            data-toggle="tab" href="#nav-contact" role="tab"
+            <a class="nav-item nav-link" id="nav-work-tab"
+            data-toggle="tab" href="#nav-work" role="tab"
             aria-controls="nav-contact" aria-selected="false"
             >
               Carga de trabajo
@@ -39,42 +111,104 @@
           </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-          <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
+          <div class="tab-pane fade show active" id="nav-config" role="tabpanel"
           aria-labelledby="nav-home-tab"
           >
-          <form>
-            <div class="form-group">
-              <label for="algoritmo-planificacion">Algoritmo de planificación</label>
-              <select id="algoritmo-planificacion" class="form-control">
-                <option selected>FCFS</option>
-                <option>RR</option>
-                <option>3</option>
-                <option>4</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="memoria-size">Tamaño de memoria (KB)</label>
-              <input type="number" class="form-control"
-              id="exampleInputPassword1" placeholder="Tamaño de memoria">
-            </div>
-            <div class="form-group form-check">
-              <input type="checkbox" class="form-check-input" id="exampleCheck1">
-              <label class="form-check-label" for="exampleCheck1">Check me out</label>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
+            <form>
+              <div class="form-group">
+                <label for="algoritmo-planificacion">Algoritmo de planificación</label>
+                <select id="algoritmo-planificacion" class="form-control">
+                  <option selected>FCFS</option>
+                  <option>RR</option>
+                  <option>3</option>
+                  <option>4</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="memoria-size">Tamaño de memoria (KB)</label>
+                <input type="number" class="form-control"
+                id="memoria-size" placeholder="Tamaño de memoria">
+              </div>
+              <div class="form-group">
+                <label for="so-size">Porcetaje de uso de memoria del S.O. (%)</label>
+                <input type="number" class="form-control"
+                id="so-size" placeholder="Tamaño de memoria">
+              </div>
+              <button id="btn-config" class="btn btn-primary" type="button" name="button">Siguiente</button>
+            </form>
           </div>
-          <div class="tab-pane fade" id="nav-profile" role="tabpanel"
+          <div class="tab-pane fade" id="nav-partitions" role="tabpanel"
           aria-labelledby="nav-profile-tab"
           >
-            ...
+            <div class="d-flex">
+              <div class="form-particiones w-50">
+                <form>
+                  <div class="form-group">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio"
+                      name="tipo-particiones" id="part-fijas"
+                      value="fijas" checked>
+                      <label class="form-check-label" for="part-fijas">
+                        Particiones fijas
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio"
+                      name="tipo-particiones" id="part-variables"
+                      value="variables" disabled>
+                      <label class="form-check-label" for="part-variables">
+                        Particiones variables
+                      </label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="algoritmo-planificacion">Algoritmo de intercambio</label>
+                    <select id="algoritmo-planificacion" class="form-control">
+                      <option selected>First-fit</option>
+                      <option>Best-fit</option>
+                      <option>Worst-fit</option>
+                    </select>
+                  </div>
+                </form>
+              </div>
+              <div class="items-particiones w-50">
+                <div class="list">
+                  <div class="new-partition">
+                    <div class="header">
+                      Nueva Partición
+                    </div>
+                    <label for="new-part">Tamaño de la partición</label>
+                    <input id="new-part" class="form-control" type="number"
+                    name="new-part" value="">
+                    <button class="btn btn-secondary btn-sm" id="add-part-btn"
+                    type="button" name="button"
+                    >
+                      Agregar partición
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="particion-list">
+              <div class="">
+                <span>Memoria disponible: </span><span id="memory-size-span"></span>
+              </div>
+              <div class="">
+                <span>Particiones: </span>
+              </div>
+              <div id="partitions-container" class="progress"></div>
+            </div>
+            <div class="particion-list">
+              <button id="btn-partitions" class="btn btn-primary" type="button" name="button">Siguiente</button>
+            </div>
           </div>
-          <div class="tab-pane fade" id="nav-contact" role="tabpanel"
+          <div class="tab-pane fade" id="nav-work" role="tabpanel"
           aria-labelledby="nav-contact-tab"
           >
             ...
           </div>
         </div>
+        <!-- <button type="submit" class="btn btn-primary">Iniciar simulación</button> -->
       </div>
     </div>
   </body>
@@ -87,4 +221,78 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
   integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
   crossorigin="anonymous"></script>
+  <script type="text/javascript">
+    jQuery(document).ready(function(){
+      const
+        section = $('#section'),
+        partitionContainer = $('#nav-partitions'),
+        newPartitionBtn = partitionContainer.find('#add-part-btn'),
+        memoryDisplay = $('#memory-size-span')
+      ;
+      let partitionsCount = 0;
+      section
+      .on('click', '#nav-partitions-tab', function(){
+        let
+          memoryTotalSize = $('#memoria-size').val(),
+          memorySoSize = $('#so-size').val()/100,
+          availableMemory = memoryTotalSize - memoryTotalSize*memorySoSize
+        ;
+        memoryDisplay
+        .html(availableMemory)
+        .css('font-weight','bold')
+        .attr('total', availableMemory)
+        ;
+        $('#nav-config-tab').prop('aria-disabled', true).addClass('disabled');
+      })
+      .on('click', '#btn-config', function(){
+        let
+          memoryTotalSize = $('#memoria-size').val(),
+          memorySoSize = $('#so-size').val()/100,
+          availableMemory = memoryTotalSize - memoryTotalSize*memorySoSize
+        ;
+        $('#nav-partitions-tab').tab('show');
+        memoryDisplay
+        .html(availableMemory)
+        .css('font-weight','bold')
+        .attr('total', availableMemory)
+        ;
+        $('#nav-config-tab').prop('aria-disabled', true).addClass('disabled');
+      })
+      .on('click', '#add-part-btn', function(e){
+        let
+          partitionInput = $('#new-part'),
+          partitionSize = $('#new-part').val(),
+          partitionContainer = $('#partitions-container'),
+          availableSize = $('#memory-size-span').attr('total'),
+          partitionPercent = partitionSize * 100 / availableSize,
+          partitionDisplay = $("<div class='progress-bar'></div>"),
+          random_colour =  'rgb('+ (Math.floor(Math.random() * 256)) + ','+ (Math.floor(Math.random() * 256)) + ','+ (Math.floor(Math.random() * 256)) + ')';
+        ;
+        e.preventDefault();
+        if (partitionSize > memoryDisplay.html()){
+          alert('No hay suficiente espacio');
+        } else {
+          partitionsCount = partitionsCount + 1;
+          partitionDisplay
+          .css({'width':partitionPercent+'%', 'background-color':random_colour})
+          .html('<span>P'+partitionsCount+'</span><span>'+partitionSize+' KB</span>')
+          ;
+          partitionContainer.append(partitionDisplay);
+          memoryDisplayValue = memoryDisplay.html() - partitionSize;
+          partitionInput.val(null);
+          memoryDisplay.html(memoryDisplayValue);
+        }
+
+        if (memoryDisplay.html() == 0) {
+          partitionInput.prop({'disabled':true, 'placeholder':'No hay mas espacio'});
+          $(this).prop('disabled', true);
+        }
+      })
+      .on('click', '#btn-partitions', function(){
+        $('#nav-work-tab').tab('show');
+      })
+      ;
+
+    });
+  </script>
 </html>
