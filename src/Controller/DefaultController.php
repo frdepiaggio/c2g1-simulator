@@ -32,22 +32,22 @@ class DefaultController extends AbstractController
         $memoria->addParticione($particion3);
 
         $proceso1 = new Proceso();
-        $proceso1->setTa(0)->setSize(30)->setTi(2)->setStatus('creado');
+        $proceso1->setTa(0)->setSize(5)->setTi(6)->setStatus('creado');
 
         $proceso2 = new Proceso();
-        $proceso2->setTa(0)->setSize(12)->setTi(1)->setStatus('creado');
+        $proceso2->setTa(0)->setSize(64)->setTi(2)->setStatus('creado');
 
         $proceso3 = new Proceso();
-        $proceso3->setTa(0)->setSize(58)->setTi(3)->setStatus('creado');
+        $proceso3->setTa(0)->setSize(58)->setTi(1)->setStatus('creado');
 
         $proceso4 = new Proceso();
         $proceso4->setTa(1)->setSize(5)->setTi(5)->setStatus('creado');
 
         $proceso5 = new Proceso();
-        $proceso5->setTa(1)->setSize(16)->setTi(1)->setStatus('creado');
+        $proceso5->setTa(1)->setSize(16)->setTi(3)->setStatus('creado');
 
         $proceso6 = new Proceso();
-        $proceso6->setTa(2)->setSize(32)->setTi(2)->setStatus('creado');
+        $proceso6->setTa(9)->setSize(32)->setTi(2)->setStatus('creado');
 
         $procesos = [$proceso1, $proceso2, $proceso3, $proceso4, $proceso5, $proceso6];
 

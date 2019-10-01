@@ -20,25 +20,34 @@
             margin: 0px auto;
         }
         .gantt {
-            padding: 0px 30px 50px 30px;
+            padding: 0px 65px 50px 30px;
             margin: 10px auto;
             border: solid 1px #9e9e9e;
             width: fit-content;
         }
-        .proceso-sale {
+        .proceso-name {
             position: absolute;
             right: -1px;
             bottom: 0;
             padding: 20px 10px 3px 14px;
-            border-right: solid 2px;
+            font-weight: bold;
+        }
+        .proceso-sale {
+            position: absolute;
+            right: -26px;
+            bottom: 0;
+            padding: 20px 10px 3px 14px;
+            border-right: none;
+            border-left: solid 2px;
             border-top: solid 2px;
-            border-top-right-radius: 40px;
-            background: rgba(3, 169, 244, 0.1);
+            border-top-right-radius: 0;
+            border-top-left-radius: 40px;
+            height: 20px;
         }
         .flecha {
             position: absolute;
-            left: 10px;
-            top: -46px;
+            left: 75px;
+            top: -49px;
             font-weight: bold;
         }
         .gantt-ejex {
@@ -104,8 +113,9 @@
             {% for t, rafaga in rafagas %}
                 <div class="gantt-line">
                     {% if rafaga['finalizo'] %}
-                        <div class="proceso-sale">{{ rafaga['finalizo']['id'] }}</div>
-                        <div class="flecha">◄</div>
+                        <div class="proceso-name">{{ rafaga['finalizo']['id'] }}</div>
+                        <div class="proceso-sale"></div>
+                        <div class="flecha">▶</div>
                     {% endif %}
                 </div>
                 <div style="position: relative;">
@@ -115,18 +125,6 @@
         </div>
     </div>
 
-    <div>
-        {% for t, rafaga in rafagas %}
-            <ul>
-                <li><strong>t= {{ t +1 }}</strong></li>
-                {% if rafaga['ejecutandose'] %}
-                    <li>se ejecuta= Proceso {{ rafaga['ejecutandose']['id'] }}</li>
-                {% endif %}
-                {% if rafaga['finalizo'] %}
-                    <li>finalizo= Proceso {{ rafaga['finalizo']['id'] }}</li>
-                {% endif %}
-            </ul>
-        {% endfor %}
-    </div>
+    {{ dump(rafagas) }}
 
 {% endblock %}

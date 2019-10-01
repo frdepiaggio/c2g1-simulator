@@ -36,7 +36,7 @@ class SimuladorService
                 foreach ($cola_nuevos as $procesoKey => $proceso) {
                     //Asigno si el proceso cabe en la particion y si tiene de status nuevo
                     if ($particiones[$particionKey]['proceso_asignado'] == null and
-                        $proceso['size'] <= $particion and
+                        $proceso['size'] <= $particion['size'] and
                         $proceso['status'] == 'nuevo'
                     )
                     {
@@ -81,6 +81,7 @@ class SimuladorService
 
                 ++$listoKey;
             }
+            
             //Libero la memoria si finalizó algun proceso en la ráfaga actual
             if ($rafagaActual['finalizo']) {
                 foreach ($particiones as $key => $particion) {
