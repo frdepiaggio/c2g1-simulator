@@ -24,7 +24,7 @@ class Proceso
     /**
      * @ORM\Column(type="integer")
      */
-    private $ti;
+    private $ti1;
 
     /**
      * @ORM\Column(type="integer")
@@ -35,6 +35,16 @@ class Proceso
      * @ORM\Column(type="string", length=255)
      */
     private $status;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $bloqueo;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $ti2;
 
     public function getId(): ?int
     {
@@ -53,14 +63,14 @@ class Proceso
         return $this;
     }
 
-    public function getTi(): ?int
+    public function getTi1(): ?int
     {
-        return $this->ti;
+        return $this->ti1;
     }
 
-    public function setTi(int $ti): self
+    public function setTi1(int $ti1): self
     {
-        $this->ti = $ti;
+        $this->ti1 = $ti1;
 
         return $this;
     }
@@ -85,6 +95,30 @@ class Proceso
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getBloqueo(): ?int
+    {
+        return $this->bloqueo;
+    }
+
+    public function setBloqueo(int $bloqueo): self
+    {
+        $this->bloqueo = $bloqueo;
+
+        return $this;
+    }
+
+    public function getTi2(): ?int
+    {
+        return $this->ti2;
+    }
+
+    public function setTi2(int $ti2): self
+    {
+        $this->ti2 = $ti2;
 
         return $this;
     }
