@@ -32,7 +32,7 @@ class DefaultController extends AbstractController
         $memoria->addParticione($particion3);
 
         $proceso1 = new Proceso();
-        $proceso1->setTa(0)->setSize(5)->setTi1(6)->setBloqueo(2)->setTi2(1)->setStatus('creado');
+        $proceso1->setTa(0)->setSize(5)->setTi1(3)->setBloqueo(2)->setTi2(1)->setStatus('creado');
 
         $proceso2 = new Proceso();
         $proceso2->setTa(0)->setSize(64)->setTi1(2)->setBloqueo(1)->setTi2(4)->setStatus('creado');

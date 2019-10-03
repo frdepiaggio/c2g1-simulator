@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2e41b878-4343-4552-a0ab-2a52f82330c9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/c2g1-simulator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/c2g1-simulator.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/DefaultController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/DefaultController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Proceso.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Proceso.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Service/SimuladorService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/SimuladorService.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -25,7 +21,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feature/BASE-01" />
+        <entry key="$PROJECT_DIR$" value="feature/BASE-02" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -172,8 +168,17 @@
       <updated>1569881476648</updated>
       <workItem from="1569881488652" duration="20370000" />
       <workItem from="1570018384904" duration="770000" />
-      <workItem from="1570019620083" duration="13518000" />
+      <workItem from="1570019620083" duration="13738000" />
+      <workItem from="1570103408349" duration="11762000" />
     </task>
+    <task id="LOCAL-00001" summary="Se agrego logica para manejar bloqueos de e/s">
+      <created>1570035351275</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1570035351275</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -191,5 +196,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Se agrego logica para manejar bloqueos de e/s" />
+    <option name="LAST_COMMIT_MESSAGE" value="Se agrego logica para manejar bloqueos de e/s" />
   </component>
 </project>
