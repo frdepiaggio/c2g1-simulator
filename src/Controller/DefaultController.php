@@ -40,18 +40,19 @@ class DefaultController extends AbstractController
         $proceso3 = new Proceso();
         $proceso3->setTa(0)->setSize(58)->setTi1(1)->setBloqueo(4)->setTi2(1)->setStatus('creado');
 
-        $proceso4 = new Proceso();
-        $proceso4->setTa(1)->setSize(5)->setTi1(5)->setBloqueo(2)->setTi2(2)->setStatus('creado');
+//        $proceso4 = new Proceso();
+//        $proceso4->setTa(1)->setSize(5)->setTi1(5)->setBloqueo(2)->setTi2(2)->setStatus('creado');
+//
+//        $proceso5 = new Proceso();
+//        $proceso5->setTa(1)->setSize(16)->setTi1(3)->setBloqueo(6)->setTi2(1)->setStatus('creado');
+//
+//        $proceso6 = new Proceso();
+//        $proceso6->setTa(9)->setSize(32)->setTi1(2)->setBloqueo(1)->setTi2(5)->setStatus('creado');
 
-        $proceso5 = new Proceso();
-        $proceso5->setTa(1)->setSize(16)->setTi1(3)->setBloqueo(6)->setTi2(1)->setStatus('creado');
-
-        $proceso6 = new Proceso();
-        $proceso6->setTa(9)->setSize(32)->setTi1(2)->setBloqueo(1)->setTi2(5)->setStatus('creado');
-
-        $procesos = [$proceso1, $proceso2, $proceso3, $proceso4, $proceso5, $proceso6];
+        $procesos = [$proceso1, $proceso2, $proceso3];
 
         $rafagas = $simuladorService->simular($memoria, $procesos);
+//        dd($rafagas);
 
         return $this->render('default/index.html.twig', [
             'controller_name' => 'DefaultController',

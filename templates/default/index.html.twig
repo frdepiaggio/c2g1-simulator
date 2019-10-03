@@ -46,9 +46,27 @@
             border-top-left-radius: 40px;
             height: 20px;
         }
+        .proceso-bloquea {
+            position: absolute;
+            left: 26px;
+            bottom: 0;
+            padding: 20px 10px 3px 14px;
+            border-left: none;
+            border-right: solid 2px;
+            border-top: solid 2px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 40px;
+            height: 20px;
+        }
         .flecha {
             position: absolute;
-            left: 75px;
+            left: 73px;
+            top: -49px;
+            font-weight: bold;
+        }
+        .flecha-bloquea {
+            position: absolute;
+            right: 20px;
             top: -49px;
             font-weight: bold;
         }
@@ -74,16 +92,23 @@
             <h2>Procesos cargados</h2>
             <table style="text-align: center;">
                 <tr>
-                    <th>ID Proceso</th>
-                    <th>TA</th>
-                    <th>TI</th>
-                    <th>Tamaño</th>
+                    <th rowspan="2">ID</th>
+                    <th rowspan="2">TA</th>
+                    <th colspan="3">Ciclo</th>
+                    <th rowspan="2">Tamaño</th>
+                </tr>
+                <tr>
+                    <th>Irrupción</th>
+                    <th>Bloqueo</th>
+                    <th>Irrupción</th>
                 </tr>
                 {% for key,proceso in procesos %}
                     <tr>
                         <td>{{ key }}</td>
                         <td>{{ proceso.ta }}</td>
-                        <td>{{ proceso.ti }}</td>
+                        <td>{{ proceso.ti1 }}</td>
+                        <td>{{ proceso.bloqueo }}</td>
+                        <td>{{ proceso.ti2 }}</td>
                         <td>{{ proceso.size }}</td>
                     </tr>
                 {% endfor %}
@@ -117,7 +142,12 @@
                     {% if rafaga['finalizo'] %}
                         <div class="proceso-name">{{ rafaga['finalizo']['id'] }}</div>
                         <div class="proceso-sale"></div>
-                        <div class="flecha">▶</div>
+                        <div class="flecha">►</div>
+                    {% endif %}
+                    {% if rafaga['bloqueo'] %}
+                        <div class="proceso-name">{{ rafaga['bloqueo']['id'] }}</div>
+                        <div class="proceso-bloquea"></div>
+                        <div class="flecha-bloquea">◄</div>
                     {% endif %}
                 </div>
                 <div style="position: relative;">
@@ -127,6 +157,51 @@
         </div>
     </div>
 
-    {{ dump(rafagas) }}
+    <ul>
+        {% for t,rafaga in rafagas %}
+            <li>
+                <div>
+                    <h3>t= {{ t + 1 }}</h3>
+                    <div>
+                        <span>En ejecucion: </span>
+                        {% if rafaga['ejecuto'] %}
+                            <span>{{ rafaga['ejecuto']['id'] }}</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <span>Se bloqueó: </span>
+                        {% if rafaga['bloqueo'] %}
+                            <span>{{ rafaga['bloqueo']['id'] }}</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <span>Finalizó: </span>
+                        {% if rafaga['finalizo'] %}
+                            <span>{{ rafaga['finalizo']['id'] }}</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <span>Cola de nuevos</span>
+                        {% for procesoNuevo in rafaga['cola_nuevos'] %}
+                            <span>{{ procesoNuevo['id'] }}</span> -
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <span>Cola de listos</span>
+                        {% for procesoNuevo in rafaga['cola_listos'] %}
+                            <span>{{ procesoNuevo['id'] }}</span> -
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <span>Cola de bloqueados</span>
+                        {% for procesoNuevo in rafaga['cola_bloqueados'] %}
+                            <span>{{ procesoNuevo['id'] }}</span> -
+                        {% endfor %}
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
 
 {% endblock %}
