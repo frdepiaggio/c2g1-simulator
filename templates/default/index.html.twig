@@ -198,6 +198,26 @@
                             <span>{{ procesoNuevo['id'] }}</span> -
                         {% endfor %}
                     </div>
+                    <div>
+                        <span>Memoria</span>
+                        <div>
+                            <ul>
+                                {% for particion in rafaga['particiones'] %}
+                                    <li>
+                                        <div>
+                                            Paticion {{ particion['id'] }}:
+                                            {% if particion['proceso_asignado'] %}
+                                                {{ particion['proceso_asignado']['id'] }}
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% for procesoNuevo in rafaga['cola_bloqueados'] %}
+                            <span>{{ procesoNuevo['id'] }}</span> -
+                        {% endfor %}
+                    </div>
                 </div>
             </li>
         {% endfor %}

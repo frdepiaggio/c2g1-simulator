@@ -12,9 +12,21 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefaultController extends AbstractController
 {
     /**
-     * @Route("/", name="default")
+     * @Route("/", name="home")
      */
-    public function index(SimuladorService $simuladorService)
+    public function index()
+    {
+        return $this->render('home/index.html.twig', [
+
+        ]);
+    }
+
+    /**
+     * @Route("/simular", name="simular")
+     * @param SimuladorService $simuladorService
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function simular(SimuladorService $simuladorService)
     {
         $memoria = new Memoria();
         $memoria->setSize(128)->setSoSize(16);
@@ -32,13 +44,13 @@ class DefaultController extends AbstractController
         $memoria->addParticione($particion3);
 
         $proceso1 = new Proceso();
-        $proceso1->setTa(0)->setSize(5)->setTi1(3)->setBloqueo(2)->setTi2(1)->setStatus('creado');
+        $proceso1->setTa(0)->setSize(5)->setTi1(5)->setBloqueo(6)->setTi2(1)->setStatus('creado');
 
         $proceso2 = new Proceso();
-        $proceso2->setTa(0)->setSize(64)->setTi1(2)->setBloqueo(1)->setTi2(4)->setStatus('creado');
+        $proceso2->setTa(0)->setSize(5)->setTi1(2)->setBloqueo(1)->setTi2(4)->setStatus('creado');
 
         $proceso3 = new Proceso();
-        $proceso3->setTa(0)->setSize(58)->setTi1(1)->setBloqueo(4)->setTi2(1)->setStatus('creado');
+        $proceso3->setTa(1)->setSize(12)->setTi1(1)->setBloqueo(4)->setTi2(1)->setStatus('creado');
 
 //        $proceso4 = new Proceso();
 //        $proceso4->setTa(1)->setSize(5)->setTi1(5)->setBloqueo(2)->setTi2(2)->setStatus('creado');
