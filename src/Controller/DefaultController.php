@@ -20,6 +20,15 @@ class DefaultController extends AbstractController
 
         ]);
     }
+    /**
+     * @Route("/nuevo", name="new")
+     */
+    public function new()
+    {
+        return $this->render('home/new.html.twig', [
+
+        ]);
+    }
 
     /**
      * @Route("/simular", name="simular")
@@ -66,7 +75,7 @@ class DefaultController extends AbstractController
         $rafagas = $simuladorService->simular($memoria, $procesos);
 //        dd($rafagas);
 
-        return $this->render('default/index.html.twig', [
+        return $this->render('simulador/output.html.twig', [
             'controller_name' => 'DefaultController',
             'rafagas' => $rafagas,
             'memoria' => $memoria,
