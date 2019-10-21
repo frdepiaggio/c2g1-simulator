@@ -7,6 +7,7 @@ use App\Entity\Particion;
 use App\Entity\Proceso;
 use App\Service\SimuladorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends AbstractController
@@ -25,7 +26,7 @@ class DefaultController extends AbstractController
      */
     public function new()
     {
-        return $this->render('home/new.html.twig', [
+        return $this->render('simulador/new.html.twig', [
 
         ]);
     }
@@ -33,7 +34,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/simular", name="simular")
      * @param SimuladorService $simuladorService
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function simular(SimuladorService $simuladorService)
     {
