@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} - Home{% endblock %}
+
+{% block stylesheets %}
+
+{% endblock %}
+
+{% block body %}
+    <div class="section">
+        <h1>Bienvenido al simulador de planificación de procesos</h1>
+        <div class="welcome">
+            <p>
+                Este sistema simula el funcionamiento de un planificador de procesos de un sistema operativo,
+                permite seleccionas diferentes opciones para realizar la simulación y poder
+                "construir" los diferentes elementos a simular.
+            </p>
+            <p>
+                Para iniciar una simulación haga click en el siguiente botón:
+            </p>
+            <a class="btn btn-success" href="{{ path('new') }}">Comenzar simulación</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('home') }}
+{% endblock %}

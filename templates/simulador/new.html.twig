@@ -1,0 +1,187 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} - Home{% endblock %}
+
+{% block stylesheets %}
+
+{% endblock %}
+
+{% block body %}
+    <div id="section" class="section">
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+{#                <a class="nav-item nav-link active" id="nav-config-tab"#}
+{#                   data-toggle="tab" href="#nav-config" role="tab"#}
+{#                   aria-controls="nav-home" aria-selected="true"#}
+{#                >#}
+{#                    Configuración del simulador#}
+{#                </a>#}
+                <a class="nav-item nav-link active" id="nav-partitions-tab"
+                   data-toggle="tab" href="#nav-partitions" role="tab"
+                   aria-controls="nav-profile" aria-selected="true"
+                >
+                    Configuración de la memoria
+                </a>
+                <a class="nav-item nav-link" id="nav-work-tab"
+                   data-toggle="tab" href="#nav-work" role="tab"
+                   aria-controls="nav-contact" aria-selected="false"
+                >
+                    Carga de trabajo
+                </a>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+{#            <div class="tab-pane fade show active" id="nav-config" role="tabpanel"#}
+{#                 aria-labelledby="nav-home-tab"#}
+{#            >#}
+{#                <form>#}
+{#                    <div class="form-group">#}
+{#                        <label for="algoritmo-planificacion">Algoritmo de planificación</label>#}
+{#                        <select id="algoritmo-planificacion" class="form-control">#}
+{#                            <option selected>FCFS</option>#}
+{#                            <option>RR</option>#}
+{#                            <option>3</option>#}
+{#                            <option>4</option>#}
+{#                        </select>#}
+{#                    </div>#}
+{#                    <div class="form-group">#}
+{#                        <label for="memoria-size">Tamaño de memoria (KB)</label>#}
+{#                        <input type="number" class="form-control"#}
+{#                               id="memoria-size" placeholder="Tamaño de memoria">#}
+{#                    </div>#}
+{#                    <div class="form-group">#}
+{#                        <label for="so-size">Porcetaje de uso de memoria del S.O. (%)</label>#}
+{#                        <input type="number" class="form-control"#}
+{#                               id="so-size" placeholder="Tamaño de memoria">#}
+{#                    </div>#}
+{#                    <button id="btn-config" class="btn btn-primary" type="button" name="button">Siguiente</button>#}
+{#                </form>#}
+{#            </div>#}
+            <div class="tab-pane fade show active" id="nav-partitions" role="tabpanel"
+                 aria-labelledby="nav-profile-tab"
+            >
+                <div class="d-flex">
+                    <div class="form-particiones w-50">
+                        <form>
+                            <div class="form-group">
+                                <label for="memoria-size">Tamaño de memoria (KB)</label>
+                                <input type="number" class="form-control"
+                                       id="memoria-size" placeholder="Tamaño de memoria">
+                            </div>
+                            <div class="form-group">
+                                <label for="so-size">Porcetaje de uso de memoria del S.O. (%)</label>
+                                <input type="number" class="form-control"
+                                       id="so-size" placeholder="Tamaño de memoria">
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="tipo-particiones" id="part-fijas"
+                                           value="fijas" checked>
+                                    <label class="form-check-label" for="part-fijas">
+                                        Particiones fijas
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="tipo-particiones" id="part-variables"
+                                           value="variables" disabled>
+                                    <label class="form-check-label" for="part-variables">
+                                        Particiones variables
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="algoritmo-planificacion">Algoritmo de intercambio</label>
+                                <select id="algoritmo-planificacion" class="form-control">
+                                    <option selected>First-fit</option>
+                                    <option>Best-fit</option>
+                                    <option>Worst-fit</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="items-particiones w-50">
+                        <div class="list">
+                            <div class="new-partition">
+                                <div class="header">
+                                    Nueva Partición
+                                </div>
+                                <label for="new-part">Tamaño de la partición</label>
+                                <input id="new-part" class="form-control" type="number"
+                                       name="new-part" value="">
+                                <button class="btn btn-secondary btn-sm" id="add-part-btn"
+                                        type="button" name="button"
+                                >
+                                    Agregar partición
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="particion-list">
+                    <div class="">
+                        <span>Memoria disponible: </span><span id="memory-size-span"></span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div class="">
+                            <span>Particiones: </span>
+                        </div>
+                        <div class="">
+                            <span>Cantidad de particiones: </span><span id="cant-part-span"></span>
+                        </div>
+                    </div>
+                    <div id="partitions-container" class="progress"></div>
+                </div>
+                <div class="particion-list">
+                    <button id="btn-partitions" class="btn btn-primary" type="button" name="button">Siguiente</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nav-work" role="tabpanel"
+                 aria-labelledby="nav-contact-tab"
+            >
+                <form>
+                    <table id="proccess-table" class="table table-striped mb-0">
+                        <thead>
+                        <tr>
+                            <th class="text-center" scope="col">#</th>
+                            <th class="text-center" scope="col">TA</th>
+                            <th class="text-center" scope="col">TI</th>
+                            <th class="text-left" colspan="2" scope="col">Tamaño (KB)</th>
+                        </tr>
+                        </thead>
+                        <tbody id="list-proccesses">
+                        </tbody>
+                        <tbody id="new-proccess-container">
+                        <tr style="background-color: #28a7452e;">
+                            <th class="text-center" scope="row">Nuevo Processo</th>
+                            <td class="text-center">
+                                <input class="form-control" id="proccess-ta" type="number" name="new-proccess">
+                            </td>
+                            <td class="text-center">
+                                <input class="form-control" id="proccess-ti" type="number" name="new-proccess">
+                            </td>
+                            <td class="text-center">
+                                <input class="form-control" id="proccess-size" type="number" name="new-proccess">
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-success btn-sm" id="new-proccess-btn"><strong>+</strong></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-right">
+                        <div class="badge badge-secondary">
+                            <span>Cantidad de procesos: </span> <span id="proccess-qty"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- <button type="submit" class="btn btn-primary">Iniciar simulación</button> -->
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('simulador') }}
+{% endblock %}

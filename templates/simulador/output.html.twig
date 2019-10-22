@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello DefaultController!{% endblock %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block body %}
+    <div class="flex">
+        <div>
+            <h2>Procesos cargados</h2>
+            <table style="text-align: center;">
+                <tr>
+                    <th rowspan="2">ID</th>
+                    <th rowspan="2">TA</th>
+                    <th colspan="3">Ciclo</th>
+                    <th rowspan="2">Tamaño</th>
+                </tr>
+                <tr>
+                    <th>Irrupción</th>
+                    <th>Bloqueo</th>
+                    <th>Irrupción</th>
+                </tr>
+                {% for key,proceso in procesos %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td>{{ proceso.ta }}</td>
+                        <td>{{ proceso.ti1 }}</td>
+                        <td>{{ proceso.bloqueo }}</td>
+                        <td>{{ proceso.ti2 }}</td>
+                        <td>{{ proceso.size }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div>
+            <h2>Particiones cargadas</h2>
+            <table style="text-align: center;">
+                <tr>
+                    <th>ID Partición</th>
+                    <th>Tamaño</th>
+                </tr>
+                {% for key,particion in memoria.particiones %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td>{{ particion.size }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <div class="gantt">
+        <h2>Diagrama de Gantt</h2>
+        <div style="display: inline-flex;">
+            <div style="position: relative;">
+                <div class="gantt-ejex">0</div>
+            </div>
+            {% for t, rafaga in rafagas %}
+                <div class="gantt-line">
+                    {% if rafaga['finalizo'] %}
+                        <div class="proceso-name">{{ rafaga['finalizo']['id'] }}</div>
+                        <div class="proceso-sale"></div>
+                        <div class="flecha">►</div>
+                    {% endif %}
+                    {% if rafaga['bloqueo'] %}
+                        <div class="proceso-name">{{ rafaga['bloqueo']['id'] }}</div>
+                        <div class="proceso-bloquea"></div>
+                        <div class="flecha-bloquea">◄</div>
+                    {% endif %}
+                </div>
+                <div style="position: relative;">
+                    <div class="gantt-ejex">{{ t + 1 }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <ul>
+        {% for t,rafaga in rafagas %}
+            <li>
+                <div>
+                    <h3>t= {{ t + 1 }}</h3>
+                    <div>
+                        <span>En ejecucion: </span>
+                        {% if rafaga['ejecuto'] %}
+                            <span>{{ rafaga['ejecuto']['id'] }}</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <span>Se bloqueó: </span>
+                        {% if rafaga['bloqueo'] %}
+                            <span>{{ rafaga['bloqueo']['id'] }}</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <span>Finalizó: </span>
+                        {% if rafaga['finalizo'] %}
+                            <span>{{ rafaga['finalizo']['id'] }}</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <span>Cola de nuevos</span>
+                        {% for procesoNuevo in rafaga['cola_nuevos'] %}
+                            <span>{{ procesoNuevo['id'] }}</span> -
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <span>Cola de listos</span>
+                        {% for procesoNuevo in rafaga['cola_listos'] %}
+                            <span>{{ procesoNuevo['id'] }}</span> -
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <span>Cola de bloqueados</span>
+                        {% for procesoNuevo in rafaga['cola_bloqueados'] %}
+                            <span>{{ procesoNuevo['id'] }}</span> -
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <span>Memoria</span>
+                        <div>
+                            <ul>
+                                {% for particion in rafaga['particiones'] %}
+                                    <li>
+                                        <div>
+                                            Paticion {{ particion['id'] }}:
+                                            {% if particion['proceso_asignado'] %}
+                                                {{ particion['proceso_asignado']['id'] }}
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% for procesoNuevo in rafaga['cola_bloqueados'] %}
+                            <span>{{ procesoNuevo['id'] }}</span> -
+                        {% endfor %}
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+
+{% endblock %}
