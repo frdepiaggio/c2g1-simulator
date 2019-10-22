@@ -22,6 +22,8 @@ jQuery(document).ready(function(){
     }
 
     const section = $('#section');
+    const newPartitionSection = $('.items-particiones');
+    const partitionFormSection = $('.form-particiones');
     const partitionContainer = $('#nav-partitions');
     const newPartitionBtn = partitionContainer.find('#add-part-btn');
     const memoryDisplay = $('#memory-size-span');
@@ -57,6 +59,32 @@ jQuery(document).ready(function(){
             //$('#nav-config-tab').prop('aria-disabled', true).addClass('disabled');
             $('#add-part-btn').prop("disabled", true);
             $('#cant-part-span').html(partitionsCount);
+        })
+
+        .on('change', '#part-variables', function () {
+            const $this = $(this);
+            const partitionContainer = $('#partitions-container');
+            const memoryTotalSize = $('#memory-size-span').html();
+            let partitionDisplay = $("<div class='progress-bar'></div>");
+            if($this.is(':checked')) {
+                partitionDisplay
+                    .css({'width':'100%', 'background-color':'rgba(63, 81, 181, 0.9)'})
+                    .html('<span>P1</span><span>'+memoryTotalSize+' KB</span>')
+                ;
+                partitionContainer.html(partitionDisplay);
+                $('#part-fijas').prop('disabled', true);
+                newPartitionSection.hide();
+                partitionFormSection.css('width', '100%');
+            }
+        })
+
+        .on('change', '#part-fijas', function () {
+            const $this = $(this);
+            if($this.is(':checked')) {
+                $('#part-variables').prop('disabled', true);
+                newPartitionSection.show();
+                partitionFormSection.css('width', '50%');
+            }
         })
 
         .on('change keyup paste', '#new-part', function(){

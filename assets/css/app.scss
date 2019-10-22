@@ -1,2 +1,10 @@
 @import "../../templates/home/home.scss";
 @import "../../templates/simulador/simulador.scss";
+@import "../../templates/simulador/new.scss";
+
+input, button {
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(99, 113, 195, 0.6) !important;
+    border-color: #6371c3 !important;
+  }
+}

@@ -86,10 +86,12 @@ form, .list, .particion-list {
 nav div, nav a{
     border:none!important;
 }
-.nav-link:hover {
-    border-color: #e5e8ea!important;
-    background-color: #e5e8ea;
+.navbar {
+    .dropdown-item:hover {
+        background-color: rgba(99, 113, 195, 0.4);
+    }
 }
+
 .section {
     box-shadow: #00000024 0px 1px 10px 0px;
     border-radius: 10px;

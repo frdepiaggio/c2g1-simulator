@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} - Home{% endblock %}
+{% block title %} - Nuevo{% endblock %}
 
 {% block stylesheets %}
 
@@ -10,12 +10,6 @@
     <div id="section" class="section">
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-{#                <a class="nav-item nav-link active" id="nav-config-tab"#}
-{#                   data-toggle="tab" href="#nav-config" role="tab"#}
-{#                   aria-controls="nav-home" aria-selected="true"#}
-{#                >#}
-{#                    Configuración del simulador#}
-{#                </a>#}
                 <a class="nav-item nav-link active" id="nav-partitions-tab"
                    data-toggle="tab" href="#nav-partitions" role="tab"
                    aria-controls="nav-profile" aria-selected="true"
@@ -31,37 +25,11 @@
             </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-{#            <div class="tab-pane fade show active" id="nav-config" role="tabpanel"#}
-{#                 aria-labelledby="nav-home-tab"#}
-{#            >#}
-{#                <form>#}
-{#                    <div class="form-group">#}
-{#                        <label for="algoritmo-planificacion">Algoritmo de planificación</label>#}
-{#                        <select id="algoritmo-planificacion" class="form-control">#}
-{#                            <option selected>FCFS</option>#}
-{#                            <option>RR</option>#}
-{#                            <option>3</option>#}
-{#                            <option>4</option>#}
-{#                        </select>#}
-{#                    </div>#}
-{#                    <div class="form-group">#}
-{#                        <label for="memoria-size">Tamaño de memoria (KB)</label>#}
-{#                        <input type="number" class="form-control"#}
-{#                               id="memoria-size" placeholder="Tamaño de memoria">#}
-{#                    </div>#}
-{#                    <div class="form-group">#}
-{#                        <label for="so-size">Porcetaje de uso de memoria del S.O. (%)</label>#}
-{#                        <input type="number" class="form-control"#}
-{#                               id="so-size" placeholder="Tamaño de memoria">#}
-{#                    </div>#}
-{#                    <button id="btn-config" class="btn btn-primary" type="button" name="button">Siguiente</button>#}
-{#                </form>#}
-{#            </div>#}
             <div class="tab-pane fade show active" id="nav-partitions" role="tabpanel"
                  aria-labelledby="nav-profile-tab"
             >
                 <div class="d-flex">
-                    <div class="form-particiones w-50">
+                    <div class="form-particiones">
                         <form>
                             <div class="form-group">
                                 <label for="memoria-size">Tamaño de memoria (KB)</label>
@@ -77,7 +45,7 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio"
                                            name="tipo-particiones" id="part-fijas"
-                                           value="fijas" checked>
+                                           value="fijas">
                                     <label class="form-check-label" for="part-fijas">
                                         Particiones fijas
                                     </label>
@@ -85,7 +53,7 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio"
                                            name="tipo-particiones" id="part-variables"
-                                           value="variables" disabled>
+                                           value="variables">
                                     <label class="form-check-label" for="part-variables">
                                         Particiones variables
                                     </label>
