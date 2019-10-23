@@ -1,0 +1,20 @@
+.items-particiones {
+  display: none;
+}
+.form-particiones {
+  width: 100%;
+}
+#memoria-size-error, #so-size-error, #tipo-error, #new-part-error {
+  color: #dc3545;
+  font-size: .8rem;
+}
+.form-particiones {
+  label {
+    position: relative;
+    i {
+      color: #00000099;
+      font-size: .5rem;
+      position: absolute;
+    }
+  }
+}

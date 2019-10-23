@@ -1,2 +1,23 @@
 @import "../../templates/home/home.scss";
 @import "../../templates/simulador/simulador.scss";
+@import "../../templates/simulador/new.scss";
+
+input, button {
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(99, 113, 195, 0.6) !important;
+    border-color: #6371c3 !important;
+  }
+}
+.navbar-brand i {
+  background: #222;
+  padding: .3rem;
+  border-radius: 5px;
+}
+.btn-primary {
+  background-color: #3f51b5;
+  border-color: #3f51b5;
+  &:hover {
+    background-color: darken(#3f51b5, 10%);
+    border-color: darken(#3f51b5,10%);
+  }
+}
