@@ -199,55 +199,27 @@ jQuery(document).ready(function ($) {
                 success: function(res){
                     console.log(res);
                     if (res.code === 400) {
-                        const errorInput = res.mensaje;
-                        if (errorInput === 'totalSize') {
+                        const errorInput = res.error;
+                        if (errorInput.includes('totalSize')) {
                             memoryQtyError.html('Este campo no puede estar vacío ni ser negativo');
                             memoryQtyInput.css('border', 'solid 2px #dc3545');
-                        } else if (errorInput === 'soSize') {
+                        }
+                        if (errorInput.includes('soSize')) {
                             soQtyError.html('Este campo no puede estar vacío ni ser negativo');
                             soQtyInput.css('border', 'solid 2px #dc3545');
-                        } else if (errorInput === 'tipo') {
+                        }
+                        if (errorInput.includes('tipo')) {
                             tipoError.html('Debe elegir el tipo de particiones que tendrá la memoria');
-                        } else if (errorInput === 'particiones_null') {
+                        }
+                        if (errorInput.includes('particiones_null')) {
                             partitionError.html('Debe ingresar por lo menos una particion');
                             partitionInput.css('border', 'solid 2px #dc3545');
-                        } else if (errorInput === 'particiones_size') {
+                        }
+                        if (errorInput.includes('particiones_size')) {
                             partitionError.html('Debe completar el total de la memoria disponible');
                             partitionInput.css('border', 'solid 2px #dc3545');
                         }
                     }
-                    // const $responseCode = res.code;
-                    // if ($responseCode === 200) {
-                    //     const $li = $('<li class="lado-right"></li>');
-                    //     const $container = $('<div class="mensaje-container">');
-                    //     const $emisor = $('<div>Usted dice:</div>');
-                    //     const $bloque = $('<div class="bloque-mensaje">');
-                    //     const $fecha = $('<div class="fecha">justo ahora</div>');
-                    //     const $mensajeResponse = res.respuesta.mensaje;
-                    //     const $mensaje = $('<div class="mensaje"></div>').html($mensajeResponse);
-                    //     const $lineaMensaje =
-                    //         $li
-                    //             .html($container
-                    //                 .append($bloque
-                    //                     .append($emisor)
-                    //                     .append($mensaje)
-                    //                     .append($fecha)
-                    //                 )
-                    //             );
-                    //     if ($respuestaBlock.css('display') === 'none') {
-                    //         $respuestaBlock.show();
-                    //     }
-                    //     $respuestaList.append($lineaMensaje);
-                    //     $textarea.val('');
-                    //     $textarea.removeClass('withError');
-                    //     $respuestaError.html('');
-                    // } else if ($responseCode === 404) {
-                    //     $respuestaError.html('*Ingrese un mensaje');
-                    //     $textarea.addClass('withError');
-                    // } else if ($responseCode === 500) {
-                    //     $respuestaError.html('*Ha ocurrido un error, intente nuevamente');
-                    //     $textarea.addClass('withError');
-                    // }
                 }
             });
             // $('#nav-work-tab').tab('show');
