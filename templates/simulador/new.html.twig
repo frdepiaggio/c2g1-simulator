@@ -62,9 +62,9 @@
                             <div class="form-group">
                                 <label for="algoritmo-planificacion">Algoritmo de intercambio</label>
                                 <select id="algoritmo-planificacion" class="form-control">
-                                    <option selected>First-fit</option>
-                                    <option>Best-fit</option>
-                                    <option>Worst-fit</option>
+                                    <option value="ff">First-fit</option>
+                                    <option value="bf">Best-fit</option>
+                                    <option value="wf">Worst-fit</option>
                                 </select>
                             </div>
                         </form>
@@ -102,7 +102,7 @@
                     <div id="partitions-container" class="progress"></div>
                 </div>
                 <div class="particion-list">
-                    <button id="btn-partitions" class="btn btn-primary" type="button" name="button">Siguiente</button>
+                    <button id="btn-partitions" class="btn btn-primary" type="button" name="button">Guardar y continuar</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="nav-work" role="tabpanel"

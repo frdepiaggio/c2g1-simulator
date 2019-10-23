@@ -28,6 +28,8 @@ jQuery(document).ready(function(){
     const newPartitionBtn = partitionContainer.find('#add-part-btn');
     const memoryDisplay = $('#memory-size-span');
     let partitionsCount = 0;
+    let tipoMemoria = null;
+    let particionesArray = [];
 
     section
         .on('change', '#memoria-size', function(){
@@ -75,6 +77,7 @@ jQuery(document).ready(function(){
                 $('#part-fijas').prop('disabled', true);
                 newPartitionSection.hide();
                 partitionFormSection.css('width', '100%');
+                tipoMemoria = 'variables';
             }
         })
 
@@ -84,6 +87,7 @@ jQuery(document).ready(function(){
                 $('#part-variables').prop('disabled', true);
                 newPartitionSection.show();
                 partitionFormSection.css('width', '50%');
+                tipoMemoria = 'fijas';
             }
         })
 
@@ -119,6 +123,7 @@ jQuery(document).ready(function(){
 
             } else {
 
+                // Como se muestra
                 partitionsCount = partitionsCount + 1;
                 if (partitionsCount > 0) {
                     const memoryQtyInput = section.find('#memoria-size');
@@ -137,6 +142,9 @@ jQuery(document).ready(function(){
                 partitionInput.val(null);
                 $(this).prop('disabled', true);
                 memoryDisplay.html(memoryDisplayValue);
+
+                // Guardar particion en el array de particiones
+                particionesArray.push(partitionSize);
             }
 
             $('#cant-part-span').html(partitionsCount);
@@ -147,7 +155,64 @@ jQuery(document).ready(function(){
         })
 
         .on('click', '#btn-partitions', function(){
+            const memorySize = parseInt($('#memoria-size').val());
+            const soSize = (parseInt($('#so-size').val()) * memorySize)/100;
+            const algIntercambio = $('#algoritmo-planificacion').val();
+            const url = '{{ path() }}'
+            const data = {
+                'memoria': {
+                    'totalSize': memorySize,
+                    'soSize': soSize,
+                    'tipo': tipoMemoria,
+                    'particiones': particionesArray
+                },
+                'simulador': {
+                    'algoritmo_intercambio': algIntercambio
+                }
+            };
 
-            $('#nav-work-tab').tab('show');
+            $.ajax({
+                url: $url,
+                type: 'POST',
+                data: $formData,
+                success: function(res){
+                    // const $responseCode = res.code;
+                    // if ($responseCode === 200) {
+                    //     const $li = $('<li class="lado-right"></li>');
+                    //     const $container = $('<div class="mensaje-container">');
+                    //     const $emisor = $('<div>Usted dice:</div>');
+                    //     const $bloque = $('<div class="bloque-mensaje">');
+                    //     const $fecha = $('<div class="fecha">justo ahora</div>');
+                    //     const $mensajeResponse = res.respuesta.mensaje;
+                    //     const $mensaje = $('<div class="mensaje"></div>').html($mensajeResponse);
+                    //     const $lineaMensaje =
+                    //         $li
+                    //             .html($container
+                    //                 .append($bloque
+                    //                     .append($emisor)
+                    //                     .append($mensaje)
+                    //                     .append($fecha)
+                    //                 )
+                    //             );
+                    //     if ($respuestaBlock.css('display') === 'none') {
+                    //         $respuestaBlock.show();
+                    //     }
+                    //     $respuestaList.append($lineaMensaje);
+                    //     $textarea.val('');
+                    //     $textarea.removeClass('withError');
+                    //     $respuestaError.html('');
+                    // } else if ($responseCode === 404) {
+                    //     $respuestaError.html('*Ingrese un mensaje');
+                    //     $textarea.addClass('withError');
+                    // } else if ($responseCode === 500) {
+                    //     $respuestaError.html('*Ha ocurrido un error, intente nuevamente');
+                    //     $textarea.addClass('withError');
+                    // }
+                }
+            });
+
+
+            console.log(data);
+            // $('#nav-work-tab').tab('show');
         });
 });
