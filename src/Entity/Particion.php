@@ -23,7 +23,7 @@ class Particion
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Memoria", inversedBy="particiones")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="memoria_id", nullable=false)
      */
     private $memoria;
 

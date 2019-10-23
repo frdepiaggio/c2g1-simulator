@@ -14,7 +14,7 @@
                    data-toggle="tab" href="#nav-partitions" role="tab"
                    aria-controls="nav-profile" aria-selected="true"
                 >
-                    Configuración de la memoria
+                    <i class="fas fa-memory"></i> Configuración de la memoria
                 </a>
                 <a class="nav-item nav-link" id="nav-work-tab"
                    data-toggle="tab" href="#nav-work" role="tab"
@@ -32,16 +32,25 @@
                     <div class="form-particiones">
                         <form>
                             <div class="form-group">
-                                <label for="memoria-size">Tamaño de memoria (KB)</label>
+                                <label for="memoria-size">
+                                    Tamaño de memoria (KB)
+                                    <i class="fas fa-asterisk"></i>
+                                </label>
+                                <div id="memoria-size-error"></div>
                                 <input type="number" class="form-control"
                                        id="memoria-size" placeholder="Tamaño de memoria">
                             </div>
                             <div class="form-group">
-                                <label for="so-size">Porcetaje de uso de memoria del S.O. (%)</label>
+                                <label for="so-size">
+                                    Cantidad de memoria usada por el S.O.
+                                    <i class="fas fa-asterisk"></i>
+                                </label>
+                                <div id="so-size-error"></div>
                                 <input type="number" class="form-control"
                                        id="so-size" placeholder="Tamaño de memoria">
                             </div>
                             <div class="form-group">
+                                <div id="tipo-error"></div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio"
                                            name="tipo-particiones" id="part-fijas"
@@ -60,7 +69,9 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="algoritmo-planificacion">Algoritmo de intercambio</label>
+                                <label for="algoritmo-planificacion">
+                                    Algoritmo de intercambio
+                                </label>
                                 <select id="algoritmo-planificacion" class="form-control">
                                     <option value="ff">First-fit</option>
                                     <option value="bf">Best-fit</option>
@@ -76,6 +87,7 @@
                                     Nueva Partición
                                 </div>
                                 <label for="new-part">Tamaño de la partición</label>
+                                <div id="new-part-error"></div>
                                 <input id="new-part" class="form-control" type="number"
                                        name="new-part" value="">
                                 <button class="btn btn-secondary btn-sm" id="add-part-btn"
@@ -89,11 +101,11 @@
                 </div>
                 <div class="particion-list">
                     <div class="">
-                        <span>Memoria disponible: </span><span id="memory-size-span"></span>
+                        <span><i class="fas fa-memory"></i> Memoria disponible: </span><span id="memory-size-span"></span>
                     </div>
                     <div class="d-flex justify-content-between">
                         <div class="">
-                            <span>Particiones: </span>
+                            <span><i class="fas fa-stream"></i> Particiones: </span>
                         </div>
                         <div class="">
                             <span>Cantidad de particiones: </span><span id="cant-part-span"></span>
@@ -102,7 +114,12 @@
                     <div id="partitions-container" class="progress"></div>
                 </div>
                 <div class="particion-list">
-                    <button id="btn-partitions" class="btn btn-primary" type="button" name="button">Guardar y continuar</button>
+                    <button id="btn-partitions" class="btn btn-primary"
+                            type="button" name="button"
+                            url="{{ path('simulador.new-memoria') }}"
+                    >
+                        <i class="fas fa-save"></i> Guardar y continuar
+                    </button>
                 </div>
             </div>
             <div class="tab-pane fade" id="nav-work" role="tabpanel"
