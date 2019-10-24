@@ -33,6 +33,11 @@ class Memoria
      */
     private $particiones;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Simulador", mappedBy="memoria", cascade={"persist", "remove"})
+     */
+    private $simulador;
+
     public function __construct()
     {
         $this->particiones = new ArrayCollection();
@@ -93,6 +98,23 @@ class Memoria
             if ($particione->getMemoria() === $this) {
                 $particione->setMemoria(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function getSimulador(): ?Simulador
+    {
+        return $this->simulador;
+    }
+
+    public function setSimulador(Simulador $simulador): self
+    {
+        $this->simulador = $simulador;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $simulador->getMemoria()) {
+            $simulador->setMemoria($this);
         }
 
         return $this;

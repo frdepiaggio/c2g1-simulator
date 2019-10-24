@@ -46,6 +46,11 @@ class Proceso
      */
     private $ti2;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Simulador", inversedBy="procesos")
+     */
+    private $simulador;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -119,6 +124,18 @@ class Proceso
     public function setTi2(int $ti2): self
     {
         $this->ti2 = $ti2;
+
+        return $this;
+    }
+
+    public function getSimulador(): ?Simulador
+    {
+        return $this->simulador;
+    }
+
+    public function setSimulador(?Simulador $simulador): self
+    {
+        $this->simulador = $simulador;
 
         return $this;
     }
