@@ -1,39 +1,60 @@
 <div class="tab-pane fade" id="nav-work" role="tabpanel"
      aria-labelledby="nav-contact-tab"
 >
-  <form>
-    <table id="proccess-table" class="table table-striped mb-0">
-      <thead>
-      <tr>
-        <th class="text-center" scope="col">#</th>
-        <th class="text-center" scope="col">TA</th>
-        <th class="text-center" scope="col">TI</th>
-        <th class="text-left" colspan="2" scope="col">Tamaño (KB)</th>
-      </tr>
-      </thead>
-      <tbody id="list-proccesses">
-      </tbody>
-      <tbody id="new-proccess-container">
-      <tr style="background-color: #28a7452e;">
-        <th class="text-center" scope="row">Nuevo Processo</th>
-        <td class="text-center">
-          <input class="form-control" id="proccess-ta" type="number" name="new-proccess">
-        </td>
-        <td class="text-center">
-          <input class="form-control" id="proccess-ti" type="number" name="new-proccess">
-        </td>
-        <td class="text-center">
-          <input class="form-control" id="proccess-size" type="number" name="new-proccess">
-        </td>
-        <td class="text-center">
-          <button class="btn btn-success btn-sm" id="new-proccess-btn"><strong>+</strong></button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-    <div class="text-right">
-      <div class="badge badge-secondary">
-        <span>Cantidad de procesos: </span> <span id="proccess-qty"></span>
+  <form class="form-procesos">
+    <div class="d-flex">
+      <div class="form-group alg-planificacion">
+        <label for="algoritmo-planificacion">
+          Algoritmo de planificación
+        </label>
+        <select id="algoritmo-planificacion" class="form-control">
+          <option value="fcfs">FCFS</option>
+          <option value="rr">Round-Robin</option>
+          <option value="prioridades">Prioridades</option>
+          <option value="multinivel">Colas multinivel</option>
+        </select>
+      </div>
+      <div class="form-group ml-3 quantum">
+        <label for="quantum-input">
+          Quantum
+        </label>
+        <div id="quantum-error"></div>
+        <input type="number" class="form-control"
+               id="quantum-input" placeholder="Ingrese el quantum">
+      </div>
+    </div>
+    <div class="agregar-proceso">
+      <h2>Agregar proceso</h2>
+      <div class="agregar-proceso-body p-4">
+        <div id="ciclo-proceso">
+          <h3>Ciclo del proceso</h3>
+          <div class="d-flex">
+            <div class="form-group mr-2 irrupcion">
+              <label for="irrupcion1-input">
+                Irrupción CPU
+              </label>
+              <div id="quantum-error"></div>
+              <input type="number" class="form-control"
+                     id="irrupcion1-input" placeholder="Ingrese primer irrupción a la CPU">
+            </div>
+            <div class="form-group mx-2 irrupcion">
+              <label for="entradas-salidas-input">
+                Irrupción E/S
+              </label>
+              <div id="entradas-salidas-error"></div>
+              <input type="number" class="form-control"
+                     id="entradas-salidas-input" placeholder="Ingrese irrupción de E/S">
+            </div>
+            <div class="form-group ml-2 irrupcion">
+              <label for="irrupcion2-input">
+                Irrupción CPU
+              </label>
+              <div id="irrupcion2-error"></div>
+              <input type="number" class="form-control"
+                     id="irrupcion2-input" placeholder="Ingrese segunda irrupción a la CPU">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </form>

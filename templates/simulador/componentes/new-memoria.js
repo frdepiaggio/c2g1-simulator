@@ -190,7 +190,7 @@ jQuery(document).ready(function ($) {
             const $this = $(this);
             const memorySize = parseInt($('#memoria-size').val());
             const soSize = parseInt($('#so-size').val());
-            const algIntercambio = $('#algoritmo-planificacion').val();
+            const algIntercambio = $('#algoritmo-intercambio').val();
             const url = $this.attr('url');
             const data = {
                 'memoria': {

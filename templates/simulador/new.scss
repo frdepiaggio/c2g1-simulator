@@ -148,3 +148,19 @@ form, .list, .particion-list {
 .nav-tabs .nav-link.active {
   color: black;
 }
+.form-procesos {
+  .alg-planificacion {
+    width: 100%;
+  }
+  .quantum {
+    display: none;
+  }
+  .agregar-proceso {
+    box-shadow: #00000024 0px 1px 10px 0px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    label {
+      margin-bottom: 0;
+    }
+  }
+}
