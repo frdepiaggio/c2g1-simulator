@@ -8,7 +8,8 @@ class NewSimuladorService
         $response = [
             'code' => 200,
             'mensaje' => 'ok',
-            'memoria' => null,
+            'newMemoriaId' => null,
+            'newSimuladorId' => null,
             'error' => []
         ];
         if ($array['totalSize'] == 'NaN' || $array['totalSize'] < 0) {
