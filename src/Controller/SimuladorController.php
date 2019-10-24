@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Memoria;
 use App\Entity\Particion;
 use App\Entity\Proceso;
+use App\Entity\Simulador;
 use App\Service\SimuladorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -48,11 +49,18 @@ class SimuladorController extends AbstractController
                     $em->persist($particion);
                     ++$partQty;
                 }
+
+                $simulador = new Simulador();
+                $simulador->setMemoria($memoria);
+                $simulador->setAlgoritmoIntercambio($simuladorJson['algoritmo_intercambio']);
+
+                $em->persist($simulador);
                 $em->flush();
                 $em->refresh($memoria);
 
                 $response['mensaje'] = 'Se cargo la memoria ' . $memoria->getId() .' con '.$partQty .' particiones';
                 $response['newMemoriaId'] = $memoria->getId();
+                $response['newSimuladorId'] = $simulador->getId();
             } catch (\Exception $e) {
                 $response['code'] = 500;
                 $response['mensaje'] = 'Error: '. $e->getMessage();

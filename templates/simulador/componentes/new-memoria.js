@@ -238,6 +238,13 @@ jQuery(document).ready(function ($) {
                     } else {
                         memoryCheck.show();
                         memoryDataTitle.css('background-color', '#4CAF50');
+                        if (algIntercambio === 'ff') {
+                            algoritmoIntercambioShow.html('First-fit');
+                        } else if (algIntercambio === 'bf') {
+                            algoritmoIntercambioShow.html('Best-fit');
+                        } else if (algIntercambio === 'wf') {
+                            algoritmoIntercambioShow.html('Worst-fit');
+                        }
                     }
                 }
             });
