@@ -58,7 +58,6 @@ class SimuladorController extends AbstractController
                 $response['mensaje'] = 'Error: '. $e->getMessage();
             }
         }
-
         return new JsonResponse($response);
     }
 

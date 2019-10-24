@@ -8,104 +8,184 @@
 
 {% block body %}
     <div id="section" class="section">
-        <nav>
-            <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <a class="nav-item nav-link active" id="nav-partitions-tab"
-                   data-toggle="tab" href="#nav-partitions" role="tab"
-                   aria-controls="nav-profile" aria-selected="true"
+        <div class="bloque mr-2 w-50">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-partitions-tab"
+                       data-toggle="tab" href="#nav-partitions" role="tab"
+                       aria-controls="nav-profile" aria-selected="true"
+                    >
+                        <i class="fas fa-memory"></i> Configuración de la memoria
+                    </a>
+                    <a class="nav-item nav-link" id="nav-work-tab"
+                       data-toggle="tab" href="#nav-work" role="tab"
+                       aria-controls="nav-contact" aria-selected="false"
+                    >
+                        Carga de trabajo
+                    </a>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-partitions" role="tabpanel"
+                     aria-labelledby="nav-profile-tab"
                 >
-                    <i class="fas fa-memory"></i> Configuración de la memoria
-                </a>
-                <a class="nav-item nav-link" id="nav-work-tab"
-                   data-toggle="tab" href="#nav-work" role="tab"
-                   aria-controls="nav-contact" aria-selected="false"
-                >
-                    Carga de trabajo
-                </a>
-            </div>
-        </nav>
-        <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-partitions" role="tabpanel"
-                 aria-labelledby="nav-profile-tab"
-            >
-                <div class="d-flex">
-                    <div class="form-particiones">
-                        <form>
-                            <div class="form-group">
-                                <label for="memoria-size">
-                                    Tamaño de memoria (KB)
-                                    <i class="fas fa-asterisk"></i>
-                                </label>
-                                <div id="memoria-size-error"></div>
-                                <input type="number" class="form-control"
-                                       id="memoria-size" placeholder="Tamaño de memoria">
-                            </div>
-                            <div class="form-group">
-                                <label for="so-size">
-                                    Cantidad de memoria usada por el S.O.
-                                    <i class="fas fa-asterisk"></i>
-                                </label>
-                                <div id="so-size-error"></div>
-                                <input type="number" class="form-control"
-                                       id="so-size" placeholder="Tamaño de memoria">
-                            </div>
-                            <div class="form-group">
-                                <div id="tipo-error"></div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio"
-                                           name="tipo-particiones" id="part-fijas"
-                                           value="fijas">
-                                    <label class="form-check-label" for="part-fijas">
-                                        Particiones fijas
+                    <div class="d-flex">
+                        <div class="form-particiones">
+                            <div id="memoria-500-error"></div>
+                            <form>
+                                <div class="form-group">
+                                    <label for="memoria-size">
+                                        Tamaño de memoria (KB)
+                                        <i class="fas fa-asterisk"></i>
                                     </label>
+                                    <div id="memoria-size-error"></div>
+                                    <input type="number" class="form-control"
+                                           id="memoria-size" placeholder="Tamaño de memoria">
                                 </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio"
-                                           name="tipo-particiones" id="part-variables"
-                                           value="variables">
-                                    <label class="form-check-label" for="part-variables">
-                                        Particiones variables
+                                <div class="form-group">
+                                    <label for="so-size">
+                                        Cantidad de memoria usada por el S.O.
+                                        <i class="fas fa-asterisk"></i>
                                     </label>
+                                    <div id="so-size-error"></div>
+                                    <input type="number" class="form-control"
+                                           id="so-size" placeholder="Tamaño de memoria">
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="algoritmo-planificacion">
-                                    Algoritmo de intercambio
-                                </label>
-                                <select id="algoritmo-planificacion" class="form-control">
-                                    <option value="ff">First-fit</option>
-                                    <option value="bf">Best-fit</option>
-                                    <option value="wf">Worst-fit</option>
-                                </select>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="items-particiones w-50">
-                        <div class="list">
-                            <div class="new-partition">
-                                <div class="header">
-                                    Nueva Partición
+                                <div class="form-group">
+                                    <div id="tipo-error"></div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="tipo-particiones" id="part-fijas"
+                                               value="fijas">
+                                        <label class="form-check-label" for="part-fijas">
+                                            Particiones fijas
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="tipo-particiones" id="part-variables"
+                                               value="variables">
+                                        <label class="form-check-label" for="part-variables">
+                                            Particiones variables
+                                        </label>
+                                    </div>
                                 </div>
-                                <label for="new-part">Tamaño de la partición</label>
-                                <div id="new-part-error"></div>
-                                <input id="new-part" class="form-control" type="number"
-                                       name="new-part" value="">
-                                <button class="btn btn-secondary btn-sm" id="add-part-btn"
-                                        type="button" name="button"
-                                >
-                                    Agregar partición
-                                </button>
+                                <div class="form-group">
+                                    <label for="algoritmo-planificacion">
+                                        Algoritmo de intercambio
+                                    </label>
+                                    <select id="algoritmo-planificacion" class="form-control">
+                                        <option value="ff">First-fit</option>
+                                        <option value="bf">Best-fit</option>
+                                        <option value="wf">Worst-fit</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="items-particiones w-50">
+                            <div class="list">
+                                <div class="new-partition">
+                                    <div class="header">
+                                        Nueva Partición
+                                    </div>
+                                    <label for="new-part">Tamaño de la partición</label>
+                                    <div id="new-part-error"></div>
+                                    <input id="new-part" class="form-control" type="number"
+                                           name="new-part" value="">
+                                    <button class="btn btn-secondary btn-sm" id="add-part-btn"
+                                            type="button" name="button"
+                                    >
+                                        Agregar partición
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="particion-list">
+                        <button id="btn-partitions" class="btn btn-primary"
+                                type="button" name="button"
+                                url="{{ path('simulador.new-memoria') }}"
+                        >
+                            <i class="fas fa-save"></i> Guardar y continuar
+                        </button>
+                    </div>
                 </div>
+                <div class="tab-pane fade" id="nav-work" role="tabpanel"
+                     aria-labelledby="nav-contact-tab"
+                >
+                    <form>
+                        <table id="proccess-table" class="table table-striped mb-0">
+                            <thead>
+                            <tr>
+                                <th class="text-center" scope="col">#</th>
+                                <th class="text-center" scope="col">TA</th>
+                                <th class="text-center" scope="col">TI</th>
+                                <th class="text-left" colspan="2" scope="col">Tamaño (KB)</th>
+                            </tr>
+                            </thead>
+                            <tbody id="list-proccesses">
+                            </tbody>
+                            <tbody id="new-proccess-container">
+                            <tr style="background-color: #28a7452e;">
+                                <th class="text-center" scope="row">Nuevo Processo</th>
+                                <td class="text-center">
+                                    <input class="form-control" id="proccess-ta" type="number" name="new-proccess">
+                                </td>
+                                <td class="text-center">
+                                    <input class="form-control" id="proccess-ti" type="number" name="new-proccess">
+                                </td>
+                                <td class="text-center">
+                                    <input class="form-control" id="proccess-size" type="number" name="new-proccess">
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-success btn-sm" id="new-proccess-btn"><strong>+</strong></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="text-right">
+                            <div class="badge badge-secondary">
+                                <span>Cantidad de procesos: </span> <span id="proccess-qty"></span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="contenedor-bloque ml-2 w-50">
+            <div class="bloque">
+                <h2>Datos del Simulador</h2>
                 <div class="particion-list">
+                    <div>
+                        <span>Algoritmo de intercambio:
+                            <span id="algoritmo-intercambio-show"></span>
+                        </span>
+                    </div>
+                    <div>
+                        <span>Algoritmo de planificación:
+                            <span id="algoritmo-planificacion-show"></span>
+                        </span>
+                    </div>
+                    <div>
+                        <span>Quantum:
+                            <span id="quantum-show"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="bloque">
+                <h2 id="datos-memoria-titulo">Datos de la Memoria Principal</h2>
+                <div class="particion-list bloque-body">
+                    <i id="memoria-check" class="fas fa-check-circle"></i>
                     <div class="">
                         <span><i class="fas fa-memory"></i> Memoria disponible: </span><span id="memory-size-span"></span>
                     </div>
                     <div class="d-flex justify-content-between">
                         <div class="">
-                            <span><i class="fas fa-stream"></i> Particiones: </span>
+                            <span><i class="fas fa-stream"></i> Particiones:
+                                <span id="tipo-particiones-show"></span>
+                            </span>
                         </div>
                         <div class="">
                             <span>Cantidad de particiones: </span><span id="cant-part-span"></span>
@@ -113,54 +193,12 @@
                     </div>
                     <div id="partitions-container" class="progress"></div>
                 </div>
-                <div class="particion-list">
-                    <button id="btn-partitions" class="btn btn-primary"
-                            type="button" name="button"
-                            url="{{ path('simulador.new-memoria') }}"
-                    >
-                        <i class="fas fa-save"></i> Guardar y continuar
-                    </button>
-                </div>
             </div>
-            <div class="tab-pane fade" id="nav-work" role="tabpanel"
-                 aria-labelledby="nav-contact-tab"
-            >
-                <form>
-                    <table id="proccess-table" class="table table-striped mb-0">
-                        <thead>
-                        <tr>
-                            <th class="text-center" scope="col">#</th>
-                            <th class="text-center" scope="col">TA</th>
-                            <th class="text-center" scope="col">TI</th>
-                            <th class="text-left" colspan="2" scope="col">Tamaño (KB)</th>
-                        </tr>
-                        </thead>
-                        <tbody id="list-proccesses">
-                        </tbody>
-                        <tbody id="new-proccess-container">
-                        <tr style="background-color: #28a7452e;">
-                            <th class="text-center" scope="row">Nuevo Processo</th>
-                            <td class="text-center">
-                                <input class="form-control" id="proccess-ta" type="number" name="new-proccess">
-                            </td>
-                            <td class="text-center">
-                                <input class="form-control" id="proccess-ti" type="number" name="new-proccess">
-                            </td>
-                            <td class="text-center">
-                                <input class="form-control" id="proccess-size" type="number" name="new-proccess">
-                            </td>
-                            <td class="text-center">
-                                <button class="btn btn-success btn-sm" id="new-proccess-btn"><strong>+</strong></button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <div class="text-right">
-                        <div class="badge badge-secondary">
-                            <span>Cantidad de procesos: </span> <span id="proccess-qty"></span>
-                        </div>
-                    </div>
-                </form>
+            <div class="bloque">
+                <h2>Datos del Simulador</h2>
+                <div class="particion-list">
+
+                </div>
             </div>
         </div>
         <!-- <button type="submit" class="btn btn-primary">Iniciar simulación</button> -->

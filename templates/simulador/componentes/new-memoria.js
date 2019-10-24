@@ -22,11 +22,16 @@ jQuery(document).ready(function ($) {
     }
 
     const section = $('#section');
+    const algoritmoIntercambioShow = $('#algoritmo-intercambio-show');
+    const memoryError = $('#memoria-500-error');
+    const memoryCheck = $('#memoria-check');
+    const memoryDataTitle = $('#datos-memoria-titulo');
     const memoryQtyInput = section.find('#memoria-size');
     const memoryQtyError = section.find('#memoria-size-error');
     const soQtyInput = section.find('#so-size');
     const soQtyError = section.find('#so-size-error');
     const tipoError = section.find('#tipo-error');
+    const tipoShow = $('#tipo-particiones-show');
     const partitionInput = $('#new-part');
     const partitionError = $('#new-part-error');
     const newPartitionSection = $('.items-particiones');
@@ -38,7 +43,10 @@ jQuery(document).ready(function ($) {
     let tipoMemoria = null;
     let particionesArray = [];
 
+    memoryDisplay.html(0);
+
     section
+        //Cuando se ingresa el tamaño de memoria
         .on('change', '#memoria-size', function(){
             let memoryTotalSize = $('#memoria-size').val();
             let memorySoSize = $('#so-size').val();
@@ -56,7 +64,7 @@ jQuery(document).ready(function ($) {
             memoryQtyInput.css('border', '1px solid #ced4da');
             memoryQtyError.html('');
         })
-
+        //Cuando se ingresa el tamaño del SO
         .on('change', '#so-size', function(){
             let memoryTotalSize = $('#memoria-size').val();
             let memorySoSize = $('#so-size').val();
@@ -75,7 +83,7 @@ jQuery(document).ready(function ($) {
             soQtyInput.css('border', '1px solid #ced4da');
             soQtyError.html('');
         })
-
+        //Cuando se elige el tipo de particiones en VARIABLES
         .on('change', '#part-variables', function () {
             const $this = $(this);
             const partitionContainer = $('#partitions-container');
@@ -95,9 +103,10 @@ jQuery(document).ready(function ($) {
                 memoryQtyInput.prop('disabled', true);
                 soQtyInput.prop('disabled', true);
                 tipoError.html('');
+                tipoShow.html('Variables');
             }
         })
-
+        //Cuando se elige el tipo de particiones en FIJAS
         .on('change', '#part-fijas', function () {
             const $this = $(this);
             if($this.is(':checked')) {
@@ -106,9 +115,10 @@ jQuery(document).ready(function ($) {
                 partitionFormSection.css('width', '50%');
                 tipoMemoria = 'fijas';
                 tipoError.html('');
+                tipoShow.html('Fijas');
             }
         })
-
+        //Cuando no hay nada en el input de nueva partición
         .on('change keyup paste', '#new-part', function(){
 
             if ($(this).val()) {
@@ -117,11 +127,13 @@ jQuery(document).ready(function ($) {
                 $('#add-part-btn').prop("disabled", true);
             }
         })
+        //Cuando se hace enter en el input de nueva partición
         .on('keyup', '#new-part',function(e){
             if (e.keyCode === 13) {
                 $('#add-part-btn').trigger('click');
             }
         })
+        //Cuando se hace click en el botón de agregar partición
         .on('click', '#add-part-btn', function(e){
             let partitionContainer = $('#partitions-container');
             let partitionDisplay = $("<div class='progress-bar'></div>");
@@ -129,7 +141,7 @@ jQuery(document).ready(function ($) {
             let availableSize = parseInt($('#memory-size-span').attr('total'));
             let partitionSize = parseInt($('#new-part').val());
             let partitionPercent = parseFloat(partitionSize * 100 / availableSize);
-            let memorySize = parseInt($('#memory-size-span').html());
+            let memorySize = parseInt(memoryDisplay.html());
 
             e.preventDefault();
             console.log($(this).html());
@@ -171,7 +183,7 @@ jQuery(document).ready(function ($) {
                 $(this).prop('disabled', true);
             }
         })
-
+        //Cuando se hace click en el botón para Guardar
         .on('click', '#btn-partitions', function(e){
             const $this = $(this);
             const memorySize = parseInt($('#memoria-size').val());
@@ -219,6 +231,13 @@ jQuery(document).ready(function ($) {
                             partitionError.html('Debe completar el total de la memoria disponible');
                             partitionInput.css('border', 'solid 2px #dc3545');
                         }
+                    } else if(res.code === 500) {
+                        memoryError.show();
+                        memoryError.html('Hubieron errores inesperados al guardar, ' +
+                            'por favor recargue la página e intentelo nuevamente');
+                    } else {
+                        memoryCheck.show();
+                        memoryDataTitle.css('background-color', '#4CAF50');
                     }
                 }
             });

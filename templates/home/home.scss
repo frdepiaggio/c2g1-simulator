@@ -1,89 +1,6 @@
 .navbar {
     background-color: #3F51B5!important;
 }
-.section {
-    width: 70%;
-    margin: 2rem auto;
-    h1 {
-        font-size: 1.5rem;
-        text-align: center;
-        background: rgba(63, 81, 181, 0.6);
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        font-weight: bold;
-        color: white;
-        padding: 1rem;
-    }
-    .welcome {
-        padding: 1rem;
-    }
-}
-form, .list, .particion-list {
-    padding: 2rem 2rem;
-}
-.tab-content {
-    border-bottom-left-radius: .25rem;
-    border-bottom-right-radius: .25rem;
-    margin-bottom: 1rem;
-}
-.new-partition {
-    box-shadow: #00000024 0px 1px 10px 0px;
-    margin: 1rem 0;
-    padding: 3rem 1rem 1rem 1rem;
-    border-radius: 10px;
-    position: relative;
-}
-.new-partition .header {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    padding: 0.5rem;
-    background-color: #3f51b5cf;
-    color: white;
-    font-weight: bold;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
-}
-#add-part-btn {
-    margin-top: 1rem;
-}
-#partitions-container {
-    height: 2.5rem;
-    border-radius: 0;
-}
-.progress-bar {
-    border-right: solid 2px white;
-}
-.progress-bar:first-child {
-    border-left: none;
-}
-.progress-bar:last-child {
-    border-right: none;
-}
-#new-proccess-container {
-    position: relative;
-}
-#add-proccess-btn {
-    position: absolute;
-    right: 0;
-}
-#new-proccess-container input{
-    text-align: center;
-}
-#new-proccess-container tr{
-    background-color: #28a7452e;
-    border: solid 2px #c5dcca;
-}
-#new-proccess-container th{
-    font-size: .7rem;
-}
-.nav-tabs {
-    background-color: #dee2e6;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-}
 nav div, nav a{
     border:none!important;
 }
@@ -91,18 +8,4 @@ nav div, nav a{
     .dropdown-item:hover {
         background-color: rgba(99, 113, 195, 0.4);
     }
-}
-
-.section {
-    box-shadow: #00000024 0px 1px 10px 0px;
-    border-radius: 10px;
-}
-.nav-tabs .nav-link {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    color: #3f51b5;
-    font-weight: bold;
-}
-.nav-tabs .nav-link.active {
-    color: black;
 }
