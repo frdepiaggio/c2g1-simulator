@@ -1,0 +1,40 @@
+<div class="tab-pane fade" id="nav-work" role="tabpanel"
+     aria-labelledby="nav-contact-tab"
+>
+  <form>
+    <table id="proccess-table" class="table table-striped mb-0">
+      <thead>
+      <tr>
+        <th class="text-center" scope="col">#</th>
+        <th class="text-center" scope="col">TA</th>
+        <th class="text-center" scope="col">TI</th>
+        <th class="text-left" colspan="2" scope="col">Tamaño (KB)</th>
+      </tr>
+      </thead>
+      <tbody id="list-proccesses">
+      </tbody>
+      <tbody id="new-proccess-container">
+      <tr style="background-color: #28a7452e;">
+        <th class="text-center" scope="row">Nuevo Processo</th>
+        <td class="text-center">
+          <input class="form-control" id="proccess-ta" type="number" name="new-proccess">
+        </td>
+        <td class="text-center">
+          <input class="form-control" id="proccess-ti" type="number" name="new-proccess">
+        </td>
+        <td class="text-center">
+          <input class="form-control" id="proccess-size" type="number" name="new-proccess">
+        </td>
+        <td class="text-center">
+          <button class="btn btn-success btn-sm" id="new-proccess-btn"><strong>+</strong></button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div class="text-right">
+      <div class="badge badge-secondary">
+        <span>Cantidad de procesos: </span> <span id="proccess-qty"></span>
+      </div>
+    </div>
+  </form>
+</div>
