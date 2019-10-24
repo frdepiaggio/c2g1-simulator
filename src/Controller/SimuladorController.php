@@ -58,7 +58,8 @@ class SimuladorController extends AbstractController
                 $em->flush();
                 $em->refresh($memoria);
 
-                $response['mensaje'] = 'Se cargo la memoria ' . $memoria->getId() .' con '.$partQty .' particiones';
+                $response['mensaje'] = 'Se cargo el simulador '.$simulador->getId().
+                  'la memoria ' .$memoria->getId().' con '.$partQty .' particiones';
                 $response['newMemoriaId'] = $memoria->getId();
                 $response['newSimuladorId'] = $simulador->getId();
             } catch (\Exception $e) {

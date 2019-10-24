@@ -21,6 +21,8 @@ jQuery(document).ready(function ($) {
         }
     }
 
+    const memoriaId = $('#memory-id-span');
+    const simuladorId = $('#simulador-id-span');
     const section = $('#section');
     const algoritmoIntercambioShow = $('#algoritmo-intercambio-show');
     const memoryError = $('#memoria-500-error');
@@ -210,7 +212,7 @@ jQuery(document).ready(function ($) {
                 data: data,
                 success: function(res){
                     console.log(res);
-                    if (res.code === 400) {
+                    if (res.code === 400) { //Si hubo algun error de validación por parte del usuario
                         const errorInput = res.error;
                         if (errorInput.includes('totalSize')) {
                             memoryQtyError.html('Este campo no puede estar vacío ni ser negativo');
@@ -231,13 +233,14 @@ jQuery(document).ready(function ($) {
                             partitionError.html('Debe completar el total de la memoria disponible');
                             partitionInput.css('border', 'solid 2px #dc3545');
                         }
-                    } else if(res.code === 500) {
+                    } else if(res.code === 500) { //Si hubo algún error en el server
                         memoryError.show();
                         memoryError.html('Hubieron errores inesperados al guardar, ' +
                             'por favor recargue la página e intentelo nuevamente');
-                    } else {
-                        memoryCheck.show();
-                        memoryDataTitle.css('background-color', '#4CAF50');
+                    } else { // Si salió bien la response
+                        memoriaId.html(res.newMemoriaId); //Se muestra el ID de la memoria creada
+                        simuladorId.html(res.newSimuladorId); //Se muestra el ID del simulador creado
+                        //Se muestra el algoritmo de intercambio
                         if (algIntercambio === 'ff') {
                             algoritmoIntercambioShow.html('First-fit');
                         } else if (algIntercambio === 'bf') {
@@ -245,9 +248,12 @@ jQuery(document).ready(function ($) {
                         } else if (algIntercambio === 'wf') {
                             algoritmoIntercambioShow.html('Worst-fit');
                         }
+                        $this.hide(); // Se oculta el botón
+                        memoryCheck.show(); //Se muestra un check en el bloque de datos de memoria
+                        memoryDataTitle.css('background-color', '#4CAF50'); //Fondo bloque datos memoria en verde
+                        $('#nav-work-tab').tab('show'); //Se muestra la pestaña para la carga de procesos
                     }
                 }
             });
-            // $('#nav-work-tab').tab('show');
         });
 });
