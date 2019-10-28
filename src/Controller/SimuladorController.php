@@ -42,11 +42,15 @@ class SimuladorController extends AbstractController
                 $em->flush();
 
                 $partQty = 0;
+                $maxParticion = 0;
                 foreach ($memoriaJson['particiones'] as $particionSize) {
                     $particion = new Particion();
                     $particion->setSize($particionSize);
                     $particion->setMemoria($memoria);
                     $em->persist($particion);
+                    if ($particion->getSize() > $maxParticion) {
+                        $maxParticion = $particion->getSize();
+                    }
                     ++$partQty;
                 }
 
@@ -62,6 +66,45 @@ class SimuladorController extends AbstractController
                   'la memoria ' .$memoria->getId().' con '.$partQty .' particiones';
                 $response['newMemoriaId'] = $memoria->getId();
                 $response['newSimuladorId'] = $simulador->getId();
+                $response['maximaParticionSize'] = $maxParticion;
+            } catch (\Exception $e) {
+                $response['code'] = 500;
+                $response['mensaje'] = 'Error: '. $e->getMessage();
+            }
+        }
+        return new JsonResponse($response);
+    }
+
+    /**
+     * @Route("/new-proceso", name="simulador.new-proceso", methods={"GET","POST"})
+     * @param Request $request
+     * @param NewSimuladorService $newSimuladorService
+     * @return JsonResponse
+     */
+    public function newProceso(Request $request, NewSimuladorService $newSimuladorService) :Response
+    {
+        $em = $this->getDoctrine()->getManager();
+        $procesoJson = $request->get('proceso');
+        $response = $newSimuladorService->validarFormProceso($procesoJson);
+
+        $qb = $em->getRepository('App:Simulador');
+        $simulador = $qb->findOneBy(array('id'=>$procesoJson['id_simulador']));
+
+        if ($response['code'] == 200) {
+            try {
+                $proceso = new Proceso();
+                $proceso->setSize(intval($procesoJson['size']));
+                $proceso->setTa(intval($procesoJson['ta']));
+                $proceso->setTi1(intval($procesoJson['ti1']));
+                $proceso->setTi2(intval($procesoJson['ti2']));
+                $proceso->setBloqueo(intval($procesoJson['es']));
+                $proceso->setStatus('creado');
+                $proceso->setSimulador($simulador);
+                $em->persist($proceso);
+                $em->flush();
+
+                $response['mensaje'] = 'Se cargo el proceso '.$proceso->getId();
+                $response['newProcesoId'] = $proceso->getId();
             } catch (\Exception $e) {
                 $response['code'] = 500;
                 $response['mensaje'] = 'Error: '. $e->getMessage();

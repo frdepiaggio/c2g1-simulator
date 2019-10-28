@@ -4,11 +4,15 @@
 .form-particiones {
   width: 100%;
 }
-#memoria-size-error, #so-size-error, #tipo-error, #new-part-error {
+#memoria-size-error, #so-size-error,
+#tipo-error, #new-part-error,
+#ta-error, #irrupcion1-error,
+#irrupcion2-error, #entradas-salidas-error,
+#tamanio-error{
   color: #dc3545;
   font-size: .8rem;
 }
-#memoria-500-error {
+#memoria-500-error, #procesos-500-error {
   display: none;
   padding: 0.2rem 1rem;
   margin: 0.5rem 1rem;
@@ -68,8 +72,22 @@
         right: 10px;
         top: 10px;
         font-size: 1.5rem;
-        color: #4CAF50;
+        color: #20c997;
       }
+    }
+  }
+  input {
+    &::-webkit-input-placeholder {
+      font-size: 0.8rem;
+    }
+    &::-moz-placeholder {
+      font-size: 0.8rem;
+    }
+    &:-ms-input-placeholder {
+      font-size: 0.8rem;
+    }
+    &::placeholder {
+      font-size: 0.8rem;
     }
   }
 }
@@ -152,15 +170,58 @@ form, .list, .particion-list {
   .alg-planificacion {
     width: 100%;
   }
-  .quantum {
+  .quantum-container {
     display: none;
   }
   .agregar-proceso {
     box-shadow: #00000024 0px 1px 10px 0px;
     border-radius: 10px;
     font-size: 0.8rem;
+    .prioridad {
+      display: none;
+    }
+    .prioridad, .tamanio, .ta {
+      & > label {
+        font-weight: bold;
+      }
+    }
     label {
       margin-bottom: 0;
+    }
+    #ciclo-proceso {
+      h3 {
+        font-size: .8rem;
+        font-weight: bold;
+      }
+    }
+    button {
+      font-size: .9rem;
+    }
+  }
+}
+.procesos-data {
+  table {
+    text-align: center;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: #00000024 0px 1px 10px 0px;
+    border: none;
+    .header {
+      th {
+        background: #dee2e6;
+        min-width: 3rem;
+        border: none;
+        padding: 0.2rem 0.5rem;
+      }
+    }
+    #procesos-table-body {
+      #procesos-table-null {
+        font-style: italic;
+      }
+      td {
+        padding: 0.5rem 0.5rem;
+      }
     }
   }
 }

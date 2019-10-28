@@ -41,6 +41,7 @@ jQuery(document).ready(function ($) {
     const partitionContainer = $('#nav-partitions');
     const newPartitionBtn = partitionContainer.find('#add-part-btn');
     const memoryDisplay = $('#memory-size-span');
+    const maximoSizeMemoria = $('#maxima-particion-size');
     let partitionsCount = 0;
     let tipoMemoria = null;
     let particionesArray = [];
@@ -146,7 +147,6 @@ jQuery(document).ready(function ($) {
             let memorySize = parseInt(memoryDisplay.html());
 
             e.preventDefault();
-            console.log($(this).html());
             if (partitionSize > memorySize){
                 alert('No hay suficiente espacio');
                 partitionInput.val(null);
@@ -248,9 +248,10 @@ jQuery(document).ready(function ($) {
                         } else if (algIntercambio === 'wf') {
                             algoritmoIntercambioShow.html('Worst-fit');
                         }
+                        maximoSizeMemoria.html(res.maximaParticionSize);
                         $this.hide(); // Se oculta el botón
                         memoryCheck.show(); //Se muestra un check en el bloque de datos de memoria
-                        memoryDataTitle.css('background-color', '#4CAF50'); //Fondo bloque datos memoria en verde
+                        memoryDataTitle.css('background-color', '#20c997'); //Fondo bloque datos memoria en verde
                         $('#nav-work-tab').tab('show'); //Se muestra la pestaña para la carga de procesos
                     }
                 }
