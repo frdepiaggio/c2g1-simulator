@@ -22,10 +22,14 @@ jQuery(document).ready(function ($) {
     }
 
     const section = $('#section');
+    const bloquePrincipal = $('#bloque-principal');
+    const algoritmoPlanificacionShow = $('#algoritmo-planificacion-show');
     const algoritmoPlanificacionSelect = $('#algoritmo-planificacion');
+    const algoritmoPlanificacionError = $('#algoritmo-planificacion-error');
     const quantumContainer = $('.quantum-container');
     const quantumInput = $('#quantum-input');
     const quantumError = $('#quantum-error');
+    const quantumShow = $('#quantum-show');
     const taInput = $('#ta-input');
     const taError = $('#ta-error');
     const irrupcion1Input = $('#irrupcion1-input');
@@ -37,10 +41,17 @@ jQuery(document).ready(function ($) {
     const procesoSizeInput = $('#tamanio-input');
     const procesoSizeError = $('#tamanio-error');
     const procesoPrioridadSelect = $('#proceso-prioridad');
+    const procesoPrioridadError = $('#prioridad-error');
+    const procesoPrioridadClass = $('.prioridad');
     const procesosTableRow = $('#procesos-table-body');
     const procesosTableNull = $('#procesos-table-null');
     const maximoSizeParticion = $('#maxima-particion-size');
     const procesosError = $('#procesos-500-error');
+    const procesosCheck = $('#procesos-check');
+    const procesosDataTitle = $('#datos-procesos-titulo');
+    const simuladorCheck = $('#simulador-check');
+    const simuladorDataTitle = $('#datos-simulador-titulo');
+    let hasProcesos = false;
 
     section
         .on('change', '#algoritmo-planificacion', function () {
@@ -50,6 +61,11 @@ jQuery(document).ready(function ($) {
                 quantumContainer.show();
             } else {
                 quantumContainer.hide();
+            }
+            if($this.val() === 'prioridades') {
+                procesoPrioridadClass.show();
+            } else {
+                procesoPrioridadClass.hide();
             }
         })
         .on('change','#ta-input', function () {
@@ -71,6 +87,10 @@ jQuery(document).ready(function ($) {
         .on('change','#tamanio-input', function () {
             procesoSizeError.html('');
             procesoSizeInput.css('border', '1px solid #ced4da');
+        })
+        .on('change','#proceso-prioridad', function () {
+            procesoPrioridadError.html('');
+            procesoPrioridadSelect.css('border', '1px solid #ced4da');
         })
         .on('keyup', '#tamanio-input',function(e){
             if (e.keyCode === 13) {
@@ -107,7 +127,6 @@ jQuery(document).ready(function ($) {
                 type: 'POST',
                 data: data,
                 success: function(res){
-                    console.log(res);
                     if (res.code === 400) { //Si hubo algun error de validación por parte del usuario
                         const errorInput = res.error;
                         if (errorInput.includes('ta')) {
@@ -135,6 +154,10 @@ jQuery(document).ready(function ($) {
                                 parseInt(maximoSizeParticion.html()) + 'KB)' );
                             procesoSizeInput.css('border', 'solid 2px #dc3545');
                         }
+                        if (errorInput.includes('prioridad')) {
+                            procesoPrioridadError.html('Este campo no puede estar vacío');
+                            procesoPrioridadSelect.css('border', 'solid 2px #dc3545');
+                        }
                     }
                     else if(res.code === 500) { //Si hubo algún error en el server
                         procesosError.show();
@@ -150,6 +173,7 @@ jQuery(document).ready(function ($) {
                         const tdSize = $('<td></td>').html(size);
                         const tdPrioridad = $('<td></td>').html(prioridad);
 
+                        hasProcesos = true;
                         procesosTableNull.remove();
 
                         tr.append(tdId,tdTa,tdTi1,tdEs,tdTi2,tdSize,tdPrioridad);
@@ -162,26 +186,77 @@ jQuery(document).ready(function ($) {
                         procesoSizeInput.val(null);
                         procesoPrioridadSelect.val(null);
                         taInput.focus();
-
-                        // memoriaId.html(res.newMemoriaId); //Se muestra el ID de la memoria creada
-                        // simuladorId.html(res.newSimuladorId); //Se muestra el ID del simulador creado
-                        // //Se muestra el algoritmo de intercambio
-                        // if (algIntercambio === 'ff') {
-                        //     algoritmoIntercambioShow.html('First-fit');
-                        // } else if (algIntercambio === 'bf') {
-                        //     algoritmoIntercambioShow.html('Best-fit');
-                        // } else if (algIntercambio === 'wf') {
-                        //     algoritmoIntercambioShow.html('Worst-fit');
-                        // }
-                        // maximoSizeMemoria.html(res.maximaParticionSize);
-                        // $this.hide(); // Se oculta el botón
-                        // memoryCheck.show(); //Se muestra un check en el bloque de datos de memoria
-                        // memoryDataTitle.css('background-color', '#20c997'); //Fondo bloque datos memoria en verde
-                        // $('#nav-work-tab').tab('show'); //Se muestra la pestaña para la carga de procesos
                     }
                 }
             });
 
             e.preventDefault();
+        })
+        .on('click', '#btn-simulador-save', function (e) {
+            const $this = $(this);
+            const simuladorId = $('#simulador-id-span').html();
+            const algoritmoPlanificacion = algoritmoPlanificacionSelect.val();
+            const quantumValue = quantumInput.val();
+            const url = $this.attr('url');
+            const tituloFinal = '<h2 class="final">Finalizar Simulador</h2>'
+            const mensajeFinal = '<div class="finalizar"><p>El simulador ha sido cargado correctamente con los datos presentes en las ' +
+                'secciones de la derecha y está listo para ejecutarse.</p><p>Para continuar haga click en el siguiente' +
+                ' botón:</p></div>';
+            const buttonFinal = '<div class="text-center"><a href="/simular/'+ simuladorId +'" class="btn btn-primary fin">' +
+                '<i class="fas fa-power-off"></i> Iniciar simulación' +
+                '</a></div>';
+            const data = {
+                'simulador': {
+                    'id': simuladorId,
+                    'algoritmo_planificacion': algoritmoPlanificacion,
+                    'quantum': quantumValue
+                }
+            };
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: data,
+                success: function(res){
+                    if (res.code === 400) { //Si hubo algun error de validación por parte del usuario
+                        const errorInput = res.error;
+                        if (errorInput.includes('algoritmo_planificacion')) {
+                            algoritmoPlanificacionError.html('Este campo no puede estar vacío ni ser negativo');
+                            algoritmoPlanificacionSelect.css('border', 'solid 2px #dc3545');
+                        }
+                        if (errorInput.includes('quantum')) {
+                            quantumError.html('Este campo no puede estar vacío ni ser menor o igual a cero');
+                            quantumInput.css('border', 'solid 2px #dc3545');
+                        }
+                    }
+                    else if(res.code === 500) { //Si hubo algún error en el server
+                        procesosError.show();
+                        procesosError.html('Hubieron errores inesperados al guardar, ' +
+                            'por favor recargue la página e intentelo nuevamente');
+                    } else { // Si salió bien la response
+                        if (algoritmoPlanificacion === 'fcfs') {
+                            algoritmoPlanificacionShow.html('FCFS');
+                            quantumShow.html('No corresponde');
+                        } else if (algoritmoPlanificacion === 'rr') {
+                            algoritmoPlanificacionShow.html('Round-Robin');
+                            quantumShow.html(quantumValue);
+                        } else if (algoritmoPlanificacion === 'prioridades') {
+                            algoritmoPlanificacionShow.html('Prioridades');
+                            quantumShow.html('No corresponde');
+                        } else if  (algoritmoPlanificacion === 'multinivel') {
+                            algoritmoPlanificacionShow.html('Colas multinivel');
+                            quantumShow.html('No corresponde');
+                        }
+
+                        bloquePrincipal.html(tituloFinal);
+                        bloquePrincipal.append(mensajeFinal);
+                        bloquePrincipal.append(buttonFinal);
+                        simuladorCheck.show(); //Se muestra un check en el bloque de datos del simulador
+                        simuladorDataTitle.css('background-color', '#20c997'); //Fondo bloque datos memoria en verde
+                        procesosCheck.show(); //Se muestra un check en el bloque de datos de procesos
+                        procesosDataTitle.css('background-color', '#20c997'); //Fondo bloque datos memoria en verde
+                    }
+                }
+            });
         })
 });

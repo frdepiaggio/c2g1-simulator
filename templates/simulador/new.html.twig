@@ -8,7 +8,7 @@
 
 {% block body %}
     <div id="section" class="section">
-        <div class="bloque mr-2 w-50">
+        <div id="bloque-principal" class="bloque mr-2 w-50">
             <nav>
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
                     <a class="nav-item nav-link active" id="nav-partitions-tab"
@@ -33,7 +33,8 @@
         <div class="contenedor-bloque ml-2 w-50">
             <div class="bloque">
                 <h2 id="datos-simulador-titulo">Datos del Simulador</h2>
-                <div class="particion-list">
+                <div class="particion-list bloque-body">
+                    <i id="simulador-check" class="fas fa-check-circle"></i>
                     <div>
                         <span><i class="fas fa-star"></i> ID: </span>
                         <strong>
@@ -96,9 +97,9 @@
                 </div>
             </div>
             <div class="bloque procesos-data">
-                <h2>Datos de los Procesos</h2>
-                <div class="particion-list">
-
+                <h2 id="datos-procesos-titulo">Datos de los Procesos</h2>
+                <div class="particion-list bloque-body">
+                    <i id="procesos-check" class="fas fa-check-circle"></i>
                     <table>
                         <tr class="header first">
                             <th rowspan="2">ID</th>

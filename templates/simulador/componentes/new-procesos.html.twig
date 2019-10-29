@@ -8,6 +8,7 @@
         <label for="algoritmo-planificacion">
           Algoritmo de planificación
         </label>
+        <div id="algoritmo-planificacion-error"></div>
         <select id="algoritmo-planificacion" class="form-control">
           <option class="default-option" value="default">Elija un algoritmo de planificación</option>
           <option value="fcfs">FCFS</option>
@@ -21,8 +22,15 @@
           Quantum
         </label>
         <div id="quantum-error"></div>
-        <input type="number" class="form-control"
-               id="quantum-input" placeholder="Ingrese el quantum">
+        <select id="quantum-input" class="form-control">
+          <option class="default-option" value="default">Elija un quantum</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+        </select>
       </div>
     </div>
     <div class="agregar-proceso">
@@ -77,6 +85,7 @@
           <label for="proceso-prioridad">
             Prioridad
           </label>
+          <div id="prioridad-error"></div>
           <select id="proceso-prioridad" class="form-control">
             <option class="default-option" value="default">Elija un algoritmo de planificación</option>
             <option value="1">Baja</option>
@@ -94,10 +103,10 @@
         </div>
       </div>
     </div>
-    <div class="procesos-save text-right mt-4">
-      <button id="btn-procesos-save" class="btn btn-primary"
+    <div class="simulador-save text-right mt-4">
+      <button id="btn-simulador-save" class="btn btn-primary"
               type="button" name="button"
-{#              url="{{ path('simulador.new-memoria') }}"#}
+              url="{{ path('simulador.new-simulador') }}"
       >
         <i class="fas fa-save"></i> Guardar y continuar
       </button>

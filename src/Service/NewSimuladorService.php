@@ -83,6 +83,31 @@ class NewSimuladorService
             $response['mensaje'] = 'error';
             array_push($response['error'], 'size_max');
         }
+        if ($array['algoritmo_planificacion'] == 'prioridades' && $array['prioridad'] == 'NaN') {
+            $response['code'] = 400;
+            $response['mensaje'] = 'error';
+            array_push($response['error'], 'prioridad');
+        }
+        return $response;
+    }
+
+    function validarFormSimulador($array) {
+        $response = [
+          'code' => 200,
+          'mensaje' => 'ok',
+          'simulador' => null,
+          'error' => []
+        ];
+        if ($array['algoritmo_planificacion'] == 'default') {
+            $response['code'] = 400;
+            $response['mensaje'] = 'error';
+            array_push($response['error'], 'algoritmo_planificacion');
+        }
+        if ($array['algoritmo_planificacion'] == 'rr' && $array['quantum'] == 'default') {
+            $response['code'] = 400;
+            $response['mensaje'] = 'error';
+            array_push($response['error'], 'quantum');
+        }
         return $response;
     }
 }

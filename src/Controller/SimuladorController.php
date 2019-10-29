@@ -114,6 +114,38 @@ class SimuladorController extends AbstractController
     }
 
     /**
+     * @Route("/new-simulador", name="simulador.new-simulador", methods={"GET","POST"})
+     * @param Request $request
+     * @param NewSimuladorService $newSimuladorService
+     * @return JsonResponse
+     */
+    public function newSimulador(Request $request, NewSimuladorService $newSimuladorService) :Response
+    {
+        $em = $this->getDoctrine()->getManager();
+        $simuladorJson = $request->get('simulador');
+        $response = $newSimuladorService->validarFormSimulador($simuladorJson);
+
+        $qb = $em->getRepository('App:Simulador');
+        $simulador = $qb->findOneBy(array('id'=>$simuladorJson['id']));
+        if ($response['code'] == 200) {
+            try {
+                $algoritmoPlanificacion = $simuladorJson['algoritmo_planificacion'];
+                $quantum = intval($simuladorJson['quantum']);
+                $simulador->setAlgoritmoPlanificacion($algoritmoPlanificacion);
+                $simulador->setQuantum($quantum);
+                $em->flush();
+
+                $response['mensaje'] = 'Se cargo el simulador '.$simulador->getId();
+                $response['simulador'] = $simulador->getId();
+            } catch (\Exception $e) {
+                $response['code'] = 500;
+                $response['mensaje'] = 'Error: '. $e->getMessage();
+            }
+        }
+        return new JsonResponse($response);
+    }
+
+    /**
      * @Route("/prueba/{id}", name="simulador.prueba", methods={"GET","POST"})
      * @param Memoria $memoria
      * @return void
