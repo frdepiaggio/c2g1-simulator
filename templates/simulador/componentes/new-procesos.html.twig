@@ -33,6 +33,7 @@
         </select>
       </div>
     </div>
+    <div id="procesos-error"></div>
     <div class="agregar-proceso">
       <h2>Agregar proceso</h2>
       <div class="agregar-proceso-body p-4">
@@ -93,7 +94,7 @@
             <option value="3">Alta</option>
           </select>
         </div>
-        <div class="proceso-action text-right">
+        <div class="proceso-action text-left">
           <button id="btn-new-proceso" class="btn btn-secondary"
                   type="button" name="button"
                   url="{{ path('simulador.new-proceso') }}"

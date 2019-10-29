@@ -41,6 +41,14 @@ input, button, select {
     background-color: darken(#20c997, 10%);
     border-color: darken(#20c997,10%);
   }
+  &:disabled {
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+  &:disabled:hover {
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
 }
 .contenedor {
   width: 100%;

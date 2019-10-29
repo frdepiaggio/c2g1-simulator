@@ -23,6 +23,7 @@ jQuery(document).ready(function ($) {
 
     const section = $('#section');
     const bloquePrincipal = $('#bloque-principal');
+    const procesosErrorGeneral = $('#procesos-error');
     const algoritmoPlanificacionShow = $('#algoritmo-planificacion-show');
     const algoritmoPlanificacionSelect = $('#algoritmo-planificacion');
     const algoritmoPlanificacionError = $('#algoritmo-planificacion-error');
@@ -186,6 +187,7 @@ jQuery(document).ready(function ($) {
                         procesoSizeInput.val(null);
                         procesoPrioridadSelect.val(null);
                         taInput.focus();
+                        procesosErrorGeneral.html('');
                     }
                 }
             });
@@ -212,51 +214,54 @@ jQuery(document).ready(function ($) {
                     'quantum': quantumValue
                 }
             };
-
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: data,
-                success: function(res){
-                    if (res.code === 400) { //Si hubo algun error de validación por parte del usuario
-                        const errorInput = res.error;
-                        if (errorInput.includes('algoritmo_planificacion')) {
-                            algoritmoPlanificacionError.html('Este campo no puede estar vacío ni ser negativo');
-                            algoritmoPlanificacionSelect.css('border', 'solid 2px #dc3545');
+            if (hasProcesos) {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: data,
+                    success: function(res){
+                        if (res.code === 400) { //Si hubo algun error de validación por parte del usuario
+                            const errorInput = res.error;
+                            if (errorInput.includes('algoritmo_planificacion')) {
+                                algoritmoPlanificacionError.html('Este campo no puede estar vacío ni ser negativo');
+                                algoritmoPlanificacionSelect.css('border', 'solid 2px #dc3545');
+                            }
+                            if (errorInput.includes('quantum')) {
+                                quantumError.html('Este campo no puede estar vacío ni ser menor o igual a cero');
+                                quantumInput.css('border', 'solid 2px #dc3545');
+                            }
                         }
-                        if (errorInput.includes('quantum')) {
-                            quantumError.html('Este campo no puede estar vacío ni ser menor o igual a cero');
-                            quantumInput.css('border', 'solid 2px #dc3545');
+                        else if(res.code === 500) { //Si hubo algún error en el server
+                            procesosError.show();
+                            procesosError.html('Hubieron errores inesperados al guardar, ' +
+                                'por favor recargue la página e intentelo nuevamente');
+                        } else { // Si salió bien la response
+                            if (algoritmoPlanificacion === 'fcfs') {
+                                algoritmoPlanificacionShow.html('FCFS');
+                                quantumShow.html('No corresponde');
+                            } else if (algoritmoPlanificacion === 'rr') {
+                                algoritmoPlanificacionShow.html('Round-Robin');
+                                quantumShow.html(quantumValue);
+                            } else if (algoritmoPlanificacion === 'prioridades') {
+                                algoritmoPlanificacionShow.html('Prioridades');
+                                quantumShow.html('No corresponde');
+                            } else if  (algoritmoPlanificacion === 'multinivel') {
+                                algoritmoPlanificacionShow.html('Colas multinivel');
+                                quantumShow.html('No corresponde');
+                            }
+
+                            bloquePrincipal.html(tituloFinal);
+                            bloquePrincipal.append(mensajeFinal);
+                            bloquePrincipal.append(buttonFinal);
+                            simuladorCheck.show(); //Se muestra un check en el bloque de datos del simulador
+                            simuladorDataTitle.css('background-color', '#20c997'); //Fondo bloque datos memoria en verde
+                            procesosCheck.show(); //Se muestra un check en el bloque de datos de procesos
+                            procesosDataTitle.css('background-color', '#20c997'); //Fondo bloque datos memoria en verde
                         }
                     }
-                    else if(res.code === 500) { //Si hubo algún error en el server
-                        procesosError.show();
-                        procesosError.html('Hubieron errores inesperados al guardar, ' +
-                            'por favor recargue la página e intentelo nuevamente');
-                    } else { // Si salió bien la response
-                        if (algoritmoPlanificacion === 'fcfs') {
-                            algoritmoPlanificacionShow.html('FCFS');
-                            quantumShow.html('No corresponde');
-                        } else if (algoritmoPlanificacion === 'rr') {
-                            algoritmoPlanificacionShow.html('Round-Robin');
-                            quantumShow.html(quantumValue);
-                        } else if (algoritmoPlanificacion === 'prioridades') {
-                            algoritmoPlanificacionShow.html('Prioridades');
-                            quantumShow.html('No corresponde');
-                        } else if  (algoritmoPlanificacion === 'multinivel') {
-                            algoritmoPlanificacionShow.html('Colas multinivel');
-                            quantumShow.html('No corresponde');
-                        }
-
-                        bloquePrincipal.html(tituloFinal);
-                        bloquePrincipal.append(mensajeFinal);
-                        bloquePrincipal.append(buttonFinal);
-                        simuladorCheck.show(); //Se muestra un check en el bloque de datos del simulador
-                        simuladorDataTitle.css('background-color', '#20c997'); //Fondo bloque datos memoria en verde
-                        procesosCheck.show(); //Se muestra un check en el bloque de datos de procesos
-                        procesosDataTitle.css('background-color', '#20c997'); //Fondo bloque datos memoria en verde
-                    }
-                }
-            });
+                });
+            } else {
+                procesosErrorGeneral.html('Se necesita cargar por lo menos un proceso')
+            }
         })
 });
