@@ -1,0 +1,85 @@
+<div class="tab-pane fade show active" id="nav-partitions" role="tabpanel"
+     aria-labelledby="nav-profile-tab"
+>
+  <div class="d-flex">
+    <div class="form-particiones">
+      <div id="memoria-500-error"></div>
+      <form>
+        <div class="form-group">
+          <label for="memoria-size">
+            Tamaño de memoria (KB)
+            <i class="fas fa-asterisk"></i>
+          </label>
+          <div id="memoria-size-error"></div>
+          <input type="number" class="form-control"
+                 id="memoria-size" placeholder="Tamaño de memoria">
+        </div>
+        <div class="form-group">
+          <label for="so-size">
+            Cantidad de memoria usada por el S.O.
+            <i class="fas fa-asterisk"></i>
+          </label>
+          <div id="so-size-error"></div>
+          <input type="number" class="form-control"
+                 id="so-size" placeholder="Tamaño de memoria">
+        </div>
+        <div class="form-group">
+          <div id="tipo-error"></div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio"
+                   name="tipo-particiones" id="part-fijas"
+                   value="fijas">
+            <label class="form-check-label" for="part-fijas">
+              Particiones fijas
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio"
+                   name="tipo-particiones" id="part-variables"
+                   value="variables">
+            <label class="form-check-label" for="part-variables">
+              Particiones variables
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="algoritmo-intercambio">
+            Algoritmo de intercambio
+          </label>
+          <select id="algoritmo-intercambio" class="form-control">
+            <option value="ff">First-fit</option>
+            <option value="bf">Best-fit</option>
+            <option value="wf">Worst-fit</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="items-particiones w-50">
+      <div class="list">
+        <div class="new-partition">
+          <div class="header">
+            Nueva Partición
+          </div>
+          <label for="new-part">Tamaño de la partición</label>
+          <div id="new-part-error"></div>
+          <input id="new-part" class="form-control" type="number"
+                 name="new-part" value="">
+          <button class="btn btn-secondary btn-sm" id="add-part-btn"
+                  type="button" name="button"
+          >
+            Agregar partición
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="particion-list text-right">
+    <button id="btn-partitions" class="btn btn-primary"
+            type="button" name="button"
+            url="{{ path('simulador.new-memoria') }}"
+    >
+      <i class="fas fa-save"></i> Guardar y continuar
+    </button>
+  </div>
+</div>

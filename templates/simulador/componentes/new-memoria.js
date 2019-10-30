@@ -41,11 +41,19 @@ jQuery(document).ready(function ($) {
     const partitionContainer = $('#nav-partitions');
     const newPartitionBtn = partitionContainer.find('#add-part-btn');
     const memoryDisplay = $('#memory-size-span');
+    const maximoSizeMemoria = $('#maxima-particion-size');
+    const allProcesosInput = section.find('.form-procesos input');
+    const allProcesosSelect = section.find('.form-procesos select');
+    const allProcesosButton = section.find('.form-procesos button');
     let partitionsCount = 0;
     let tipoMemoria = null;
     let particionesArray = [];
 
     memoryDisplay.html(0);
+
+    allProcesosInput.prop('disabled', true);
+    allProcesosSelect.prop('disabled', true);
+    allProcesosButton.prop('disabled', true);
 
     section
         //Cuando se ingresa el tamaño de memoria
@@ -68,9 +76,23 @@ jQuery(document).ready(function ($) {
         })
         //Cuando se ingresa el tamaño del SO
         .on('change', '#so-size', function(){
+            let partitionContainer = $('#partitions-container');
+            let partitionDisplay = $("<div class='progress-bar'></div>");
             let memoryTotalSize = $('#memoria-size').val();
             let memorySoSize = $('#so-size').val();
             let availableMemory = memoryTotalSize - memorySoSize;
+            let partitionPercent = parseFloat(memorySoSize * 100 / memoryTotalSize);
+
+            partitionDisplay
+                .css({
+                    'width':partitionPercent+'%',
+                    'background-image':'linear-gradient(to right, #434343 0%, black 100%)',
+                    'color': 'white',
+                    'font-weight': 'bold'
+                })
+                .html('<span>S.O.</span><span>'+memorySoSize+' KB</span>')
+            ;
+            partitionContainer.append(partitionDisplay);
 
             $('#nav-partitions-tab').tab('show');
             memoryDisplay
@@ -137,16 +159,16 @@ jQuery(document).ready(function ($) {
         })
         //Cuando se hace click en el botón de agregar partición
         .on('click', '#add-part-btn', function(e){
+            let memoryTotalSize = $('#memoria-size').val();
             let partitionContainer = $('#partitions-container');
             let partitionDisplay = $("<div class='progress-bar'></div>");
             let random_colour =  'rgb('+ (Math.floor(Math.random() * 256)) + ','+ (Math.floor(Math.random() * 256)) + ','+ (Math.floor(Math.random() * 256)) + ')';
             let availableSize = parseInt($('#memory-size-span').attr('total'));
             let partitionSize = parseInt($('#new-part').val());
-            let partitionPercent = parseFloat(partitionSize * 100 / availableSize);
+            let partitionPercent = parseFloat(partitionSize * 100 / memoryTotalSize);
             let memorySize = parseInt(memoryDisplay.html());
 
             e.preventDefault();
-            console.log($(this).html());
             if (partitionSize > memorySize){
                 alert('No hay suficiente espacio');
                 partitionInput.val(null);
@@ -190,7 +212,7 @@ jQuery(document).ready(function ($) {
             const $this = $(this);
             const memorySize = parseInt($('#memoria-size').val());
             const soSize = parseInt($('#so-size').val());
-            const algIntercambio = $('#algoritmo-planificacion').val();
+            const algIntercambio = $('#algoritmo-intercambio').val();
             const url = $this.attr('url');
             const data = {
                 'memoria': {
@@ -248,9 +270,13 @@ jQuery(document).ready(function ($) {
                         } else if (algIntercambio === 'wf') {
                             algoritmoIntercambioShow.html('Worst-fit');
                         }
+                        maximoSizeMemoria.html(res.maximaParticionSize);
                         $this.hide(); // Se oculta el botón
                         memoryCheck.show(); //Se muestra un check en el bloque de datos de memoria
-                        memoryDataTitle.css('background-color', '#4CAF50'); //Fondo bloque datos memoria en verde
+                        memoryDataTitle.css('background-color', '#20c997'); //Fondo bloque datos memoria en verde
+                        allProcesosInput.prop('disabled', false); //Se habilitan los input para carga de procesos
+                        allProcesosSelect.prop('disabled', false);//Se habilitan los select para carga de procesos
+                        allProcesosButton.prop('disabled', false);//Se habilitan los botones para carga de procesos
                         $('#nav-work-tab').tab('show'); //Se muestra la pestaña para la carga de procesos
                     }
                 }

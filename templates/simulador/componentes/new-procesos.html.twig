@@ -1,0 +1,116 @@
+<div class="tab-pane fade" id="nav-work" role="tabpanel"
+     aria-labelledby="nav-contact-tab"
+>
+  <div id="procesos-500-error"></div>
+  <form class="form-procesos">
+    <div class="d-flex">
+      <div class="form-group alg-planificacion">
+        <label for="algoritmo-planificacion">
+          Algoritmo de planificación
+        </label>
+        <div id="algoritmo-planificacion-error"></div>
+        <select id="algoritmo-planificacion" class="form-control">
+          <option class="default-option" value="default">Elija un algoritmo de planificación</option>
+          <option value="fcfs">FCFS</option>
+          <option value="rr">Round-Robin</option>
+          <option value="prioridades">Prioridades</option>
+          <option value="multinivel">Colas multinivel</option>
+        </select>
+      </div>
+      <div class="form-group ml-3 quantum-container">
+        <label for="quantum-input">
+          Quantum
+        </label>
+        <div id="quantum-error"></div>
+        <select id="quantum-input" class="form-control">
+          <option class="default-option" value="default">Elija un quantum</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+        </select>
+      </div>
+    </div>
+    <div id="procesos-error"></div>
+    <div class="agregar-proceso">
+      <h2>Agregar proceso</h2>
+      <div class="agregar-proceso-body p-4">
+        <div class="form-group ta">
+          <label for="ta-input">
+            Tiempo de arribo (TA)
+          </label>
+          <div id="ta-error"></div>
+          <input type="number" class="form-control"
+                 id="ta-input" placeholder="Ingrese tiempo de arribo del proceso">
+        </div>
+        <div id="ciclo-proceso">
+          <h3>Ciclo del proceso</h3>
+          <div class="d-flex">
+            <div class="form-group p-1 irrupcion">
+              <label for="irrupcion1-input">
+                Irrupción CPU
+              </label>
+              <div id="irrupcion1-error"></div>
+              <input type="number" class="form-control"
+                     id="irrupcion1-input" placeholder="Ingrese primer irrupción a la CPU">
+            </div>
+            <div class="form-group p-1 irrupcion">
+              <label for="entradas-salidas-input">
+                Irrupción E/S
+              </label>
+              <div id="entradas-salidas-error"></div>
+              <input type="number" class="form-control"
+                     id="entradas-salidas-input" placeholder="Ingrese irrupción de E/S">
+            </div>
+            <div class="form-group p-1 irrupcion">
+              <label for="irrupcion2-input">
+                Irrupción CPU
+              </label>
+              <div id="irrupcion2-error"></div>
+              <input type="number" class="form-control"
+                     id="irrupcion2-input" placeholder="Ingrese segunda irrupción a la CPU">
+            </div>
+          </div>
+        </div>
+        <div class="form-group tamanio">
+          <label for="tamanio-input">
+            Tamaño (KB)
+          </label>
+          <div id="tamanio-error"></div>
+          <input type="number" class="form-control"
+                 id="tamanio-input" placeholder="Ingrese tamaño del proceso">
+        </div>
+        <div class="form-group prioridad">
+          <label for="proceso-prioridad">
+            Prioridad
+          </label>
+          <div id="prioridad-error"></div>
+          <select id="proceso-prioridad" class="form-control">
+            <option class="default-option" value="default">Elija un algoritmo de planificación</option>
+            <option value="1">Baja</option>
+            <option value="2">Media</option>
+            <option value="3">Alta</option>
+          </select>
+        </div>
+        <div class="proceso-action text-left">
+          <button id="btn-new-proceso" class="btn btn-secondary"
+                  type="button" name="button"
+                  url="{{ path('simulador.new-proceso') }}"
+          >
+            Agregar <i class="fas fa-plus-circle"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="simulador-save text-right mt-4">
+      <button id="btn-simulador-save" class="btn btn-primary"
+              type="button" name="button"
+              url="{{ path('simulador.new-simulador') }}"
+      >
+        <i class="fas fa-save"></i> Guardar y continuar
+      </button>
+    </div>
+  </form>
+</div>
