@@ -34,6 +34,7 @@ class DefaultController extends AbstractController
 
     /**
      * @Route("/simular/{id}", name="simular")
+     * @param Simulador $simulador
      * @param SimuladorService $simuladorService
      * @return Response
      */
@@ -41,10 +42,11 @@ class DefaultController extends AbstractController
     {
         $procesos = $simulador->getProcesos();
         $memoria = $simulador->getMemoria();
-        $rafagas = $simuladorService->simular($memoria, $procesos);
+        list($rafagaInicial, $rafagas) = $simuladorService->simular($simulador);
 
         return $this->render('simulador/output.html.twig', [
             'controller_name' => 'DefaultController',
+            'rafagaInicial' => $rafagaInicial,
             'rafagas' => $rafagas,
             'memoria' => $memoria,
             'procesos' => $procesos,

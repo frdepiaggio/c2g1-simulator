@@ -2,10 +2,19 @@
 
 namespace App\Service;
 
+use App\Entity\Memoria;
+use App\Entity\Particion;
+use App\Entity\Proceso;
+use App\Entity\Simulador;
+
 class SimuladorService
 {
-    function simular($memoria, $procesos)
+    function simular(Simulador $simulador)
     {
+        $memoria = $simulador->getMemoria();
+        $procesos = $simulador->getProcesos();
+
+        $rafagaInicial = [];
         $rafagas = []; //Array principal donde se van a almacenar todas las ráfagas
         $cola_nuevos = []; //Esta cola resguarda todos los procesos que piden cpu
         $cola_listos = []; //Esta cola guarda los procesos que entran en memoria
@@ -24,9 +33,45 @@ class SimuladorService
             //Cargo la cola de nuevos con los procesos que arriban en la unidad de tiempo actual
             $cola_nuevos = $this->guardarProcesosColaNuevos($cola_nuevos, $procesos, $t);
 
-            //Llamo a la funcion de asignación de memoria
-            list($cola_listos, $cola_nuevos, $particiones) =
-              $this->asignacionParticionesFijasFF($cola_listos, $cola_nuevos, $particiones);
+            if ($memoria->getTipo() == 'fijas') {
+                switch ($simulador->getAlgoritmoIntercambio()) {
+                    case 'ff':
+                        //Llamo a la funcion de asignación de memoria
+                        list($cola_listos, $cola_nuevos, $particiones) =
+                            $this->asignacionParticionesFijasFF($cola_listos, $cola_nuevos, $particiones)
+                        ;
+                        break;
+                    case 'bf':
+                        dd('no hay BEST-FIT');
+                        break;
+                    case 'wf':
+                        dd('no hay WORST-FIT');
+                        break;
+                }
+            } elseif ($memoria->getTipo() == 'variables') {
+                dd('no hay PARTICIONES VARIABLES AUN');
+//                switch ($simulador->getAlgoritmoIntercambio()) {
+//                    case 'ff':
+//                        dd('no hay PARTICIONES VARIABLES AUN');
+//                        break;
+//                    case 'bf':
+//                        dd('no hay PARTICIONES VARIABLES AUN');
+//                        break;
+//                    case 'wf':
+//                        dd('no hay PARTICIONES VARIABLES AUN');
+//                        break;
+//                }
+            } else {
+                dd('Se rompio todo');
+            }
+
+            if ($t == 0) {
+                $rafagaInicial = [
+                    'cola_nuevos' => $cola_nuevos,
+                    'cola_listos' => $cola_listos,
+                    'particiones' => $particiones,
+                ];
+            }
 
             //Pongo en null toda la rafaga actual para preparar la ejecución del proceso
             $rafagaActual = [
@@ -44,15 +89,31 @@ class SimuladorService
              * recorriendo los procesos que se bloquearon por una entrada/salida
              */
             list($cola_bloqueados, $cola_nuevos) =
-              $this->tratarBloqueados($cola_bloqueados, $cola_nuevos);
+              $this->tratarBloqueados($cola_bloqueados, $cola_nuevos)
+            ;
 
-            /*
-             * Ejecuto el algoritmo de planificación actualizando
-             * las colas, las particiones (si hay que liberar) y
-             * la rafaga actual
-             */
-            list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
-              $this->fcfs($cola_listos, $cola_bloqueados, $particiones, $rafagaActual);
+            switch ($simulador->getAlgoritmoPlanificacion()) {
+                case 'fcfs':
+                    /*
+                     * Ejecuto el algoritmo de planificación actualizando
+                     * las colas, las particiones (si hay que liberar) y
+                     * la rafaga actual
+                     */
+                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
+                        $this->fcfs($cola_listos, $cola_bloqueados, $particiones, $rafagaActual)
+                    ;
+                    break;
+                case 'rr':
+                    dd('no hay Round-Robin aun');
+                    break;
+                case 'prioridades':
+                    dd('no hay prioridades aun');
+                    break;
+                case 'multinivel':
+                    dd('no hay multinivel aun');
+                    break;
+            }
+
 
             //Seteo el estado de las colas para la ráfaga actual
             $rafagaActual['cola_nuevos'] = $cola_nuevos;
@@ -67,10 +128,10 @@ class SimuladorService
             $condicionFin = $this->finalizoSimulador($cola_listos, $cola_bloqueados, $cola_nuevos);
             ++$t;
         }
-        return $rafagas;
+        return [$rafagaInicial, $rafagas];
     }
 
-    function getParticionesArray($memoria)
+    function getParticionesArray(Memoria $memoria)
     {
         $particiones = [];
         foreach ($memoria->getParticiones() as $key => $particion) {
@@ -85,7 +146,7 @@ class SimuladorService
 
     }
 
-    function serializarParticion($particion, $id)
+    function serializarParticion(Particion $particion, $id)
     {
         return [
           'id' => $id,
@@ -94,7 +155,7 @@ class SimuladorService
         ];
     }
 
-    function serializarProceso($proceso, $id)
+    function serializarProceso(Proceso $proceso, $id)
     {
         return [
           'id' => $id,
@@ -157,11 +218,13 @@ class SimuladorService
         if (!empty($cola_listos)) {
             $procesoEnTratamiento = $cola_listos[0];
             $ciclo = $procesoEnTratamiento['ciclo'];
+            $rafagaActual['ejecuto'] = $procesoEnTratamiento; //Cargar proceso ejecutado
 
             if ($ciclo[0]['tipo'] == 'irrupcion') {
                 $tiempo_remanente = $ciclo[0]['valor'] - 1;
 
                 if ($tiempo_remanente == 0 && isset($ciclo[1])) { //Si se termina la irrupcion y viene un bloqueo
+
                     unset($ciclo[0]); //Sacar la irrupción que llego a cero del ciclo
                     unset($cola_listos[0]); //Sacar el proceso de la cola de listos
                     $procesoEnTratamiento['ciclo'] = array_values($ciclo); //Actualizar el proceso sin la irrupción que termino
@@ -171,6 +234,7 @@ class SimuladorService
                     $rafagaActual['bloqueo'] = $procesoEnTratamiento; //Cargar proceso ejecutado
 
                 } else if ($tiempo_remanente == 0 && !isset($ciclo[1])) { // Si termina la irrupción y termina el proceso
+
                     unset($ciclo[0]); //Sacar la irrupción que llego a cero del ciclo
                     unset($cola_listos[0]); //Sacar el proceso de la cola de listos
                     $procesoEnTratamiento['ciclo'] = array_values($ciclo); //Actualizar el ciclo del proceso
@@ -181,8 +245,6 @@ class SimuladorService
                     //El proceso se ejecuta normalmente y sigue en CPU
                     $ciclo[0]['valor'] = $tiempo_remanente; //Se resta la irrupcion
                     $cola_listos[0]['ciclo'] = $ciclo; //Se actualiza el ciclo en la cola de listos
-                    $rafagaActual['ejecuto'] = $procesoEnTratamiento; //Cargar proceso ejecutado
-
                 }
             }
         }

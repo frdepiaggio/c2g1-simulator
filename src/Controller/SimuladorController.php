@@ -38,6 +38,8 @@ class SimuladorController extends AbstractController
                 $memoria = new Memoria();
                 $memoria->setSize(intval($memoriaJson['totalSize']));
                 $memoria->setSoSize(intval($memoriaJson['soSize']));
+                $memoria->setTipo($memoriaJson['tipo']);
+
                 $em->persist($memoria);
                 $em->flush();
 

@@ -228,6 +228,9 @@ form, .list, .particion-list {
         padding: 0.2rem 0.5rem;
       }
     }
+    .second th{
+      background: darken(#dee2e6, 10%);
+    }
     #procesos-table-body {
       #procesos-table-null {
         font-style: italic;
