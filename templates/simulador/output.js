@@ -22,7 +22,7 @@ jQuery(document).ready(function ($) {
         const objetivoDisplay = objetivoTag.css('display');
 
         if (objetivoDisplay === 'none') {
-            const height = parseInt(ganttBody.css('height')) + parseInt(objetivoTag.css('height')) +10;
+            const height = parseInt(ganttBody.css('height')) + parseInt(objetivoTag.css('height')) +20;
             console.log(height);
             objetivoTag.show();
             flechaTag.show();

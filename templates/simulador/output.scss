@@ -19,7 +19,7 @@
   padding-bottom: 1rem;
   h2 {
     padding: .5rem;
-    background: #3f51b5;
+    background: rgba(63, 81, 181, 0.6);
     border-top-left-radius: 10px;
     color: white;
     border-top-right-radius: 10px;
@@ -28,7 +28,7 @@
     text-align: center;
   }
   .gantt-body {
-    padding: 20px;
+    padding: 20px 20px 50px;
     margin: 2rem;
     text-align: -webkit-center;
     overflow-x: auto;
@@ -65,19 +65,99 @@
       right: -115px;
       top: 158%;
       box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 4px 0px;
+      .proceso-name {
+        position: relative;
+        right: 0;
+        bottom: 0;
+        padding: 2px 5px;
+        background: white;
+      }
+      .popover-body {
+        > div {
+          margin-bottom: .5rem;
+        }
+      }
+      .cola {
+        background: white;
+        border-radius: 10px;
+        box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 4px 0px;
+        &.nuevos {
+          .titulo {
+            background: #CDDC39;
+            color: black;
+          }
+        }
+        &.listos {
+          .titulo {
+            background: #4CAF50;
+          }
+        }
+        &.bloqueados {
+          .titulo {
+            background: #795548;
+          }
+        }
+        .titulo {
+          border-top-left-radius: 10px;
+          text-align: center;
+          border-top-right-radius: 10px;
+          padding: 0.3rem;
+          color: white;
+        }
+        .cola-body {
+          padding: .5rem;
+          border-radius: 5px;
+          .par {
+            color: black;
+            background: #caced2;
+            padding: .1rem 0.3rem;
+            &:first-child {
+              border-bottom-left-radius: 5px;
+              border-top-left-radius: 5px;
+            }
+            &:last-child {
+              border-bottom-right-radius: 5px;
+              border-top-right-radius: 5px;
+            }
+          }
+          .impar {
+            color: black;
+            background: #b1b1b1;
+            padding: .1rem 0.3rem;
+            &:last-child {
+              border-bottom-right-radius: 5px;
+              border-top-right-radius: 5px;
+            }
+          }
+        }
+      }
     }
     .gantt-line {
       margin-top: 50px;
       width: 50px;
       border-bottom: solid 2px;
       position: relative;
-      height: 5px;
-      border-left: solid 1px;
+      border-left: solid 2px;
+      border-top: solid 2px;
+      height: 10px;
+      background-color: #8b96d2;
+      &.first {
+        border-bottom-left-radius: 5px;
+        border-top-left-radius: 5px;
+      }
+      &.last {
+        border-right: solid 2px;
+        border-bottom-right-radius: 5px;
+        border-top-right-radius: 5px;
+      }
+      &.ocioso {
+        background-color: #fff;
+      }
     }
     .proceso-name {
       position: absolute;
       right: 8px;
-      bottom: 3px;
+      bottom: 10px;
       padding: 7px 10px;
       border-radius: 5px;
       font-weight: bold;
@@ -85,39 +165,42 @@
     }
     .proceso-sale {
       position: absolute;
-      right: -26px;
-      bottom: 0;
+      right: -24px;
+      bottom: 8px;
       padding: 20px 10px 3px 14px;
       border-right: none;
-      border-left: solid 2px;
-      border-top: solid 2px;
+      border-left: solid 4px;
+      border-top: solid 4px;
       border-top-right-radius: 0;
       border-top-left-radius: 30px;
-      height: 50px;
+      height: 55px;
     }
     .proceso-bloquea {
       position: absolute;
-      left: 25px;
-      bottom: 0;
+      left: 22px;
+      bottom: 8px;
       padding: 20px 10px 3px 14px;
       border-left: none;
-      border-right: solid 2px;
-      border-top: solid 2px;
+      border-right: solid 4px rgb(102, 102, 102);
+      border-top: solid 4px rgb(102, 102, 102);
       border-top-left-radius: 0;
       border-top-right-radius: 30px;
-      height: 50px;
+      height: 55px;
     }
     .flecha {
       position: absolute;
-      left: 72px;
-      top: -56px;
+      left: 65px;
+      top: -69px;
       font-weight: bold;
+      font-size: 20px;
     }
     .flecha-bloquea {
       position: absolute;
-      right: 20px;
-      top: -56px;
+      right: 17px;
+      top: -69px;
       font-weight: bold;
+      font-size: 20px;
+      color: rgb(102, 102, 102);
     }
   }
 }
