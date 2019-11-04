@@ -1,10 +1,20 @@
 .flex {
   display: flex;
-  width: fit-content;
+  width: 100%;
   margin: 0 auto;
 }
 .flex > div{
-  margin: 0 20px;
+  &:first-child {
+    min-width: 40%;
+    margin: 0 10px 0 0;
+  }
+  &:nth-of-type(2) {
+    min-width: 28%;
+  }
+  &:last-child {
+    min-width: 30%;
+    margin: 0 0 0 10px;
+  }
   text-align: center;
 }
 
@@ -27,6 +37,46 @@
     font-weight: bold;
     text-align: center;
   }
+  .referencias {
+    width: fit-content;
+    box-shadow: #00000024 0px 1px 10px 0px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    margin: 1.5rem;
+    padding: 1rem;
+    .proceso-referencia {
+      margin-right: .2rem;
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-weight: bold;
+      box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 2px;
+    }
+    .gantt-line-referencia {
+      width: 30px;
+      margin-right: .2rem;
+      border: solid 2px;
+      height: 10px;
+      background: #8b96d2;
+      &.ocioso {
+        background-color: white;
+      }
+    }
+    i {
+      font-size: 1.2rem;
+      &.bloquea {
+        color: rgb(102, 102, 102);
+      }
+      &.interrumpe {
+        color: lighten(rgb(102,102,102), 30%)
+      }
+      &.sale {
+        color: black;
+      }
+    }
+    span {
+      font-style: italic;
+    }
+  }
   .gantt-body {
     padding: 20px 20px 50px;
     margin: 2rem;
@@ -40,21 +90,17 @@
       a {
         color: #3f51b5;
         padding: 7px 10px;
-        cursor: pointer;
         font-weight: bold;
-        background: whitesmoke;
-        box-shadow: rgba(0, 0, 0, 0.35) 0px 1px 1px;
+        //background: whitesmoke;
+        //box-shadow: rgba(0, 0, 0, 0.35) 0px 1px 1px;
         border-radius: 10px;
-        &:hover {
-          text-decoration: underline;
-        }
       }
     }
     .popover-flecha {
       display: none;
       position: absolute;
-      left: -9px;
-      top: 139%;
+      left: 12px;
+      top: 23px;
       width: 0;
       height: 0;
       border-left: 10px solid transparent;
@@ -69,8 +115,7 @@
       display: none;
       background: #dee2e6;
       position: absolute;
-      right: -115px;
-      top: 158%;
+      top: 34px;
       box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 4px 0px;
       .proceso-name {
         position: relative;
@@ -148,6 +193,10 @@
       border-top: solid 2px;
       height: 10px;
       background-color: #8b96d2;
+      &:hover {
+        cursor: pointer;
+        background-color: darken(#8b96d2, 10%);
+      }
       &.first {
         border-bottom-left-radius: 5px;
         border-top-left-radius: 5px;
@@ -159,6 +208,9 @@
       }
       &.ocioso {
         background-color: #fff;
+        &:hover {
+          background-color: darken(#fff, 10%);
+        }
       }
     }
     .proceso-name {
@@ -193,6 +245,10 @@
       border-top-left-radius: 0;
       border-top-right-radius: 30px;
       height: 55px;
+      &.interrumpe {
+        border-right: solid 4px lighten(rgb(102, 102, 102), 30%);
+        border-top: solid 4px lighten(rgb(102, 102, 102), 30%);
+      }
     }
     .flecha {
       position: absolute;
@@ -208,6 +264,9 @@
       font-weight: bold;
       font-size: 20px;
       color: rgb(102, 102, 102);
+      &.interrumpe {
+        color: lighten(rgb(102,102,102), 30%)
+      }
     }
   }
 }

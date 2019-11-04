@@ -1,0 +1,232 @@
+<div class="gantt">
+    <h2>Diagrama de Gantt</h2>
+    <div class="w-100">
+        <div class="referencias px-4 d-flex">
+            <div class="mr-3">
+                <div class="d-flex align-items-center mb-1">
+                    <div class="proceso-referencia">x</div>
+                    <span>ID del proceso que esta en ejecución</span>
+                </div>
+                <div class="mb-1">
+                    <i class="fas fa-share sale"></i>
+                    <span>El proceso termina su ciclo de irrupción</span>
+                </div>
+                <div class="mb-1">
+                    <i class="fas fa-reply bloquea"></i>
+                    <span>El proceso de bloquea</span>
+                </div>
+                <div class="mb-1">
+                    <i class="fas fa-reply interrumpe"></i>
+                    <span>El proceso se interrumpe</span>
+                </div>
+            </div>
+            <div>
+                <div class="d-flex align-items-center">
+                    <div class="gantt-line-referencia"></div>
+                    <span>Proceso ejecutandose en CPU</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="gantt-line-referencia ocioso"></div>
+                    <span>CPU ociosa</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="gantt-body" altura="">
+        <div style="display: inline-flex;">
+            <div style="position: relative;">
+                <div class="gantt-ejex">0</div>
+            </div>
+            {% for t, rafaga in rafagas %}
+                <div
+                        class="gantt-line
+                            {% if t == 0 %}
+                                first
+                            {% endif %}
+                            {% if not rafagas[t]['ejecuto'] %}
+                                 ocioso
+                            {% endif %}
+                            "
+                        objetivo="propover-{{ t + 1 }}" data-toggle="popover"
+                        data-container="body" data-html="true"
+                        data-placement="bottom" flecha="popover-flecha-{{ t + 1 }}"
+                >
+                    {% if rafaga['finalizo'] %}
+                        <div class="proceso-name">{{ rafaga['finalizo']['id'] }}</div>
+                        <div class="proceso-sale"></div>
+                        <div class="flecha"><i class="fas fa-chevron-right"></i></div>
+                    {% endif %}
+                    {% if rafaga['bloqueo'] %}
+                        <div class="proceso-name">{{ rafaga['bloqueo']['id'] }}</div>
+                        <div class="proceso-bloquea"></div>
+                        <div class="flecha-bloquea"><i class="fas fa-chevron-left"></i></div>
+                    {% endif %}
+                    {% if rafaga['interrumpe'] is defined %}
+                        {% if rafagas[t+1] is defined and
+                            rafaga["interrumpe"]['id'] != rafagas[t+1]['ejecuto']['id']
+                        %}
+                            <div class="proceso-name">{{ rafaga['interrumpe']['id'] }}</div>
+                            <div class="proceso-bloquea interrumpe"></div>
+                            <div class="flecha-bloquea interrumpe"><i class="fas fa-chevron-left"></i></div>
+                        {% endif %}
+                    {% endif %}
+                    <div id="popover-flecha-{{ t + 1 }}" class="popover-flecha"></div>
+                    <div class="data-popover" id="propover-{{ t + 1 }}" style="display: none;">
+                        <div class="popover-body">
+                            {% if rafaga['ejecuto'] %}
+                                <div>
+                                    <span>Se ejecutó: </span>
+                                    <span class="proceso-name">
+                                            <strong>{{ rafaga['ejecuto']['id'] }}</strong>
+                                        </span>
+                                </div>
+                            {% endif %}
+                            {% if rafaga['interrumpe'] is defined %}
+                                <div>
+                                    <span>Se interrumpió: </span>
+                                    <span class="proceso-name">
+                                            <strong>{{ rafaga['interrumpe']['id'] }}</strong>
+                                        </span>
+                                </div>
+                            {% endif %}
+                            {% if rafaga['bloqueo'] %}
+                                <div>
+                                    <span>Se bloquea: </span>
+                                    <span class="proceso-name">
+                                            <strong>{{ rafaga['bloqueo']['id'] }}</strong>
+                                        </span>
+                                </div>
+                            {% endif %}
+                            {% if rafaga['finalizo'] %}
+                                <div>
+                                    <span>Finaliza: </span>
+                                    <span class="proceso-name">
+                                            <strong>{{ rafaga['finalizo']['id'] }}</strong>
+                                        </span>
+                                </div>
+                            {% endif %}
+                            {% if rafaga['cola_nuevos']|length %}
+                                <div class="cola nuevos">
+                                    <div class="titulo">Cola de nuevos procesos</div>
+                                    <div class="d-flex cola-body">
+                                        {% for t, procesoNuevo in rafaga['cola_nuevos'] %}
+                                            <div
+                                                    {% if t is divisible by(2) %}
+                                                        class="par"
+                                                    {% else %}
+                                                        class="impar"
+                                                    {% endif %}
+                                            >
+                                                {{ procesoNuevo['id'] }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if rafaga['cola_listos']|length %}
+                                <div class="cola listos">
+                                    <div class="titulo">Cola de procesos listos</div>
+                                    <div class="d-flex cola-body">
+                                        {% for t, procesoNuevo in rafaga['cola_listos'] %}
+                                            <div
+                                                    {% if t is divisible by(2) %}
+                                                        class="par"
+                                                    {% else %}
+                                                        class="impar"
+                                                    {% endif %}
+                                            >
+                                                {{ procesoNuevo['id'] }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if rafaga['cola_bloqueados']|length %}
+                                <div class="cola bloqueados">
+                                    <div class="titulo">Cola de procesos bloqueados</div>
+                                    <div class="d-flex cola-body">
+                                        {% for t, procesoNuevo in rafaga['cola_bloqueados'] %}
+                                            <div
+                                                    {% if t is divisible by(2) %}
+                                                        class="par"
+                                                    {% else %}
+                                                        class="impar"
+                                                    {% endif %}
+                                            >
+                                                {{ procesoNuevo['id'] }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div>
+                                <span>Memoria</span>
+                                <div>
+                                    <ul>
+                                        {% for particion in rafaga['particiones'] %}
+                                            <li>
+                                                <div>
+                                                    Paticion {{ particion['id'] }}:
+                                                    {% if particion['proceso_asignado'] %}
+                                                        {{ particion['proceso_asignado']['id'] }}
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% for procesoNuevo in rafaga['cola_bloqueados'] %}
+                                    <span>{{ procesoNuevo['id'] }}</span> -
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="position: relative;">
+                    <div class="gantt-ejex">
+                        <a>
+                            {{ t + 1 }}
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="gantt-line last"></div>
+        </div>
+    </div>
+
+    {#        <div id="popovers">#}
+    {#            <div>#}
+    {#                <h3>t= 0</h3>#}
+    {#                <div>#}
+    {#                    <span>Cola de nuevos</span>#}
+    {#                    {% for procesoNuevo in rafagaInicial['cola_nuevos'] %}#}
+    {#                        <span>{{ procesoNuevo['id'] }}</span> -#}
+    {#                    {% endfor %}#}
+    {#                </div>#}
+    {#                <div>#}
+    {#                    <span>Cola de listos</span>#}
+    {#                    {% for procesoNuevo in rafagaInicial['cola_listos'] %}#}
+    {#                        <span>{{ procesoNuevo['id'] }}</span> -#}
+    {#                    {% endfor %}#}
+    {#                </div>#}
+    {#                <div>#}
+    {#                    <span>Memoria</span>#}
+    {#                    <div>#}
+    {#                        <ul>#}
+    {#                            {% for particion in rafagaInicial['particiones'] %}#}
+    {#                                <li>#}
+    {#                                    <div>#}
+    {#                                        Paticion {{ particion['id'] }}:#}
+    {#                                        {% if particion['proceso_asignado'] %}#}
+    {#                                            {{ particion['proceso_asignado']['id'] }}#}
+    {#                                        {% endif %}#}
+    {#                                    </div>#}
+    {#                                </li>#}
+    {#                            {% endfor %}#}
+    {#                        </ul>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+</div>

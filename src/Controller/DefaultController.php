@@ -59,8 +59,7 @@ class DefaultController extends AbstractController
             'controller_name' => 'DefaultController',
             'rafagaInicial' => $rafagaInicial,
             'rafagas' => $rafagas,
-            'memoria' => $memoria,
-            'procesos' => $procesos,
+            'simulador' => $simulador
         ]);
     }
 }
