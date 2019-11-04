@@ -49,6 +49,58 @@ class PlanificacionService
         return [array_values($cola_listos), array_values($cola_bloqueados), $particiones, $rafagaActual];
     }
 
+    function rr($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $quantum) {
+        if (!empty($cola_listos)) {
+            $procesoEnTratamiento = $cola_listos[0];
+            $ciclo = $procesoEnTratamiento['ciclo'];
+            $quantumProceso = $procesoEnTratamiento['quantum'];
+            $rafagaActual['ejecuto'] = $procesoEnTratamiento; //Cargar proceso ejecutado
+
+            if ($ciclo[0]['tipo'] == 'irrupcion') {
+                $tiempo_remanente = $ciclo[0]['valor'] - 1;
+                $tiempo_remanente_quantum = $quantumProceso -1;
+
+                if ($tiempo_remanente == 0 && isset($ciclo[1])) { //Si se termina la irrupcion y viene un bloqueo
+
+                    unset($ciclo[0]); //Sacar la irrupción que llego a cero del ciclo
+                    unset($cola_listos[0]); //Sacar el proceso de la cola de listos
+                    $procesoEnTratamiento['ciclo'] = array_values($ciclo); //Actualizar el proceso sin la irrupción que termino
+                    $procesoEnTratamiento['quantum'] = $quantum;
+                    $particiones = $this->intercambioService->liberarProcesoDeMemoria($procesoEnTratamiento, $particiones); //Libero la memoria
+                    array_push($cola_bloqueados, $procesoEnTratamiento);
+
+                    $rafagaActual['bloqueo'] = $procesoEnTratamiento; //Cargar proceso ejecutado
+
+                } else if ($tiempo_remanente == 0 && !isset($ciclo[1])) { // Si termina la irrupción y termina el proceso
+
+                    unset($ciclo[0]); //Sacar la irrupción que llego a cero del ciclo
+                    unset($cola_listos[0]); //Sacar el proceso de la cola de listos
+                    $procesoEnTratamiento['ciclo'] = array_values($ciclo); //Actualizar el ciclo del proceso
+                    $particiones = $this->intercambioService->liberarProcesoDeMemoria($procesoEnTratamiento, $particiones); //Libero la memoria
+                    $rafagaActual['finalizo'] = $procesoEnTratamiento; //Cargar proceso finalizado
+
+                } else if ($tiempo_remanente_quantum == 0) { //Si se termina la irrupcion y viene un bloqueo
+
+                    $ciclo[0]['valor'] = $tiempo_remanente; //Se resta la irrupcion
+                    $procesoEnTratamiento['ciclo'] = $ciclo;
+                    $procesoEnTratamiento['quantum'] = $quantum; //Se resetea el quantum del proceso
+
+                    unset($cola_listos[0]); //Sacar el proceso de la cola de listos
+                    array_push($cola_listos, $procesoEnTratamiento); //Se lo vuelve a poner al final de la cola de listos
+
+                    $rafagaActual['bloqueo'] = $procesoEnTratamiento; //Cargar proceso ejecutado
+
+                } else {
+                    //El proceso se ejecuta normalmente y sigue en CPU
+                    $ciclo[0]['valor'] = $tiempo_remanente; //Se resta la irrupcion
+                    $cola_listos[0]['ciclo'] = $ciclo; //Se actualiza el ciclo en la cola de listos
+                    $cola_listos[0]['quantum'] = $tiempo_remanente_quantum;
+                }
+            }
+        }
+
+        return [array_values($cola_listos), array_values($cola_bloqueados), $particiones, $rafagaActual];
+    }
 
     function tratarBloqueados($cola_bloqueados, $cola_nuevos) {
         if (!empty($cola_bloqueados)) {

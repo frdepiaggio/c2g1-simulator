@@ -43,17 +43,17 @@ class DefaultController extends AbstractController
         $procesos = $simulador->getProcesos();
         $memoria = $simulador->getMemoria();
 
-        if ($simulador->getRafagas() && $simulador->getRafagaInicial()) {
-            $rafagas = $simulador->getRafagas();
-            $rafagaInicial = $simulador->getRafagaInicial();
-        } else {
+//        if ($simulador->getRafagas() && $simulador->getRafagaInicial()) {
+//            $rafagas = $simulador->getRafagas();
+//            $rafagaInicial = $simulador->getRafagaInicial();
+//        } else {
             list($rafagaInicial, $rafagas) = $simuladorService->simular($simulador);
-            $em = $this->getDoctrine()->getManager();
-            $simulador->setRafagas($rafagas);
-            $simulador->setRafagaInicial($rafagaInicial);
-
-            $em->flush();
-        }
+//            $em = $this->getDoctrine()->getManager();
+//            $simulador->setRafagas($rafagas);
+//            $simulador->setRafagaInicial($rafagaInicial);
+//
+//            $em->flush();
+//        }
 
         return $this->render('simulador/output.html.twig', [
             'controller_name' => 'DefaultController',
