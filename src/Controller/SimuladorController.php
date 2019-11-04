@@ -21,6 +21,18 @@ use App\Service\NewSimuladorService;
 class SimuladorController extends AbstractController
 {
     /**
+     * @Route("/", name="simulador_index", methods={"GET"})
+     */
+    public function index(): Response
+    {
+        $simuladores = $this->getDoctrine()
+          ->getRepository(Simulador::class)
+          ->findAll();
+
+        return $this->render('simulador/index.html.twig', ['simuladores' => $simuladores]);
+    }
+
+    /**
      * @Route("/new-memoria", name="simulador.new-memoria", methods={"GET","POST"})
      * @param Request $request
      * @param NewSimuladorService $newSimuladorService

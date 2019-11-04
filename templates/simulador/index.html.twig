@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} - Listado de simulaciones{% endblock %}
+
+{% block stylesheets %}
+
+{% endblock %}
+
+{% block body %}
+    <div class="tabla my-4 pb-3 mx-auto w-100">
+        <h2 class="text-center">Simulaciones cargadas</h2>
+        <table class="my-4 mx-auto" style="text-align: center;">
+            <tr class="header">
+                <th>ID</th>
+                <th>Cantidad de procesos</th>
+                <th>Algoritmo de intercambio</th>
+                <th>Algoritmo de planificación</th>
+                <th>Acciones</th>
+            </tr>
+            <tbody>
+            {% for simulador in simuladores %}
+                <tr>
+                    <td>{{ simulador.id }}</td>
+                    <td>{{ simulador.procesos|length }}</td>
+                    <td>{{ simulador.algoritmoIntercambio }}</td>
+                    <td>{{ simulador.algoritmoPlanificacion }}</td>
+                    <td>
+                        <a class="btn btn-primary p-1 m-1" href="{{ path('simular', {'id': simulador.id}) }}">
+                            Ejecutar
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a class="btn btn-secondary p-1 m-1" href="{{ path('home') }}">
+        Volver
+    </a>
+{% endblock %}
+
+{% block javascripts %}
+
+{% endblock %}
