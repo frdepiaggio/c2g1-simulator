@@ -40,7 +40,7 @@ class SimuladorService
         while (!$condicionFin) {
 
             //Cargo la cola de nuevos con los procesos que arriban en la unidad de tiempo actual
-            $cola_nuevos = $this->guardarProcesosColaNuevos($cola_nuevos, $procesos, $t);
+            $cola_nuevos = $this->guardarProcesosColaNuevos($cola_nuevos, $procesos, $t, $simulador->getQuantum());
 
             if ($memoria->getTipo() == 'fijas') {
                 switch ($simulador->getAlgoritmoIntercambio()) {
@@ -111,7 +111,15 @@ class SimuladorService
                     ;
                     break;
                 case 'rr':
-                    dd('no hay Round-Robin aun');
+                    /*
+                     * Ejecuto el algoritmo de planificación actualizando
+                     * las colas, las particiones (si hay que liberar) y
+                     * la rafaga actual
+                     */
+                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
+                      $this->planificacionService
+                        ->rr($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $simulador->getQuantum())
+                    ;
                     break;
                 case 'prioridades':
                     dd('no hay prioridades aun');
@@ -162,9 +170,9 @@ class SimuladorService
         ];
     }
 
-    function serializarProceso(Proceso $proceso, $id)
+    function serializarProceso(Proceso $proceso, $id, $quantum = null)
     {
-        return [
+        $procesoSerializado = [
           'id' => $id,
           'size' => $proceso->getSize(),
           'ta' => $proceso->getTa(),
@@ -174,13 +182,17 @@ class SimuladorService
             2 => ['tipo' => 'irrupcion', 'valor' => $proceso->getTi2()]
           ]
         ];
+        if ($quantum > 0) {
+            $procesoSerializado['quantum'] = $quantum;
+        }
+        return $procesoSerializado;
     }
 
-    function guardarProcesosColaNuevos($cola_nuevos, $procesos, $rafaga)
+    function guardarProcesosColaNuevos($cola_nuevos, $procesos, $rafaga, $quantum = null)
     {
         foreach ($procesos as $key => $proceso) {
             //Le doy formato de array al proceso
-            $procesoFormateado = $this->serializarProceso($proceso, $key);
+            $procesoFormateado = $this->serializarProceso($proceso, $key, $quantum);
             if ($proceso->getTa() == $rafaga) {
                 array_push($cola_nuevos, $procesoFormateado);
             }

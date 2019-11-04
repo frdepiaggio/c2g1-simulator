@@ -44,6 +44,16 @@ class Simulador
      */
     private $procesos;
 
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $rafagaInicial = [];
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $rafagas = [];
+
     public function __construct()
     {
         $this->procesos = new ArrayCollection();
@@ -129,6 +139,30 @@ class Simulador
                 $proceso->setSimulador(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRafagaInicial(): ?array
+    {
+        return $this->rafagaInicial;
+    }
+
+    public function setRafagaInicial(?array $rafagaInicial): self
+    {
+        $this->rafagaInicial = $rafagaInicial;
+
+        return $this;
+    }
+
+    public function getRafagas(): ?array
+    {
+        return $this->rafagas;
+    }
+
+    public function setRafagas(?array $rafagas): self
+    {
+        $this->rafagas = $rafagas;
 
         return $this;
     }
