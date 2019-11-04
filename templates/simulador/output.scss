@@ -1,0 +1,123 @@
+.flex {
+  display: flex;
+  width: fit-content;
+  margin: 0 auto;
+}
+.flex > div{
+  margin: 0 20px;
+  text-align: center;
+}
+
+.output-contenedor {
+  padding-top: 1rem;
+}
+.gantt {
+  box-shadow: #00000024 0px 1px 10px 0px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  margin: 10px auto;
+  padding-bottom: 1rem;
+  h2 {
+    padding: .5rem;
+    background: #3f51b5;
+    border-top-left-radius: 10px;
+    color: white;
+    border-top-right-radius: 10px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-align: center;
+  }
+  .gantt-body {
+    padding: 20px;
+    margin: 2rem;
+    text-align: -webkit-center;
+    overflow-x: auto;
+    //height: 30rem;
+    .gantt-ejex {
+      position: absolute;
+      left: -9px;
+      top: 110%;
+      a {
+        padding: 0px 6px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+    }
+    .popover-flecha {
+      display: none;
+      position: absolute;
+      left: -9px;
+      top: 139%;
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 10px solid #dee2e6;
+    }
+    .data-popover {
+      text-align: left;
+      width: max-content;
+      padding: 1rem;
+      border-radius: 10px;
+      display: none;
+      background: #dee2e6;
+      position: absolute;
+      right: -115px;
+      top: 158%;
+      box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 4px 0px;
+    }
+    .gantt-line {
+      margin-top: 50px;
+      width: 50px;
+      border-bottom: solid 2px;
+      position: relative;
+      height: 5px;
+      border-left: solid 1px;
+    }
+    .proceso-name {
+      position: absolute;
+      right: 8px;
+      bottom: 3px;
+      padding: 7px 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 4px 0px;
+    }
+    .proceso-sale {
+      position: absolute;
+      right: -26px;
+      bottom: 0;
+      padding: 20px 10px 3px 14px;
+      border-right: none;
+      border-left: solid 2px;
+      border-top: solid 2px;
+      border-top-right-radius: 0;
+      border-top-left-radius: 30px;
+      height: 50px;
+    }
+    .proceso-bloquea {
+      position: absolute;
+      left: 25px;
+      bottom: 0;
+      padding: 20px 10px 3px 14px;
+      border-left: none;
+      border-right: solid 2px;
+      border-top: solid 2px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 30px;
+      height: 50px;
+    }
+    .flecha {
+      position: absolute;
+      left: 72px;
+      top: -56px;
+      font-weight: bold;
+    }
+    .flecha-bloquea {
+      position: absolute;
+      right: 20px;
+      top: -56px;
+      font-weight: bold;
+    }
+  }
+}

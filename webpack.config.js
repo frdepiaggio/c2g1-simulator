@@ -24,7 +24,8 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/js/app.js')
-    .addEntry('simulador', './templates/simulador/simulador.js')
+    .addEntry('new-simulador', './templates/simulador/new.js')
+    .addEntry('output-simulador', './templates/simulador/output.js')
     .addEntry('home', './templates/home/home.js')
     //.addEntry('page1', './assets/js/page1.js')
     //.addEntry('page2', './assets/js/page2.js')

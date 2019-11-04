@@ -38,6 +38,11 @@ class Memoria
      */
     private $simulador;
 
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $tipo;
+
     public function __construct()
     {
         $this->particiones = new ArrayCollection();
@@ -116,6 +121,18 @@ class Memoria
         if ($this !== $simulador->getMemoria()) {
             $simulador->setMemoria($this);
         }
+
+        return $this;
+    }
+
+    public function getTipo(): ?string
+    {
+        return $this->tipo;
+    }
+
+    public function setTipo(?string $tipo): self
+    {
+        $this->tipo = $tipo;
 
         return $this;
     }
