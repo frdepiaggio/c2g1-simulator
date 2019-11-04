@@ -65,6 +65,7 @@ class PlanificacionService
                     unset($ciclo[0]); //Sacar la irrupción que llego a cero del ciclo
                     unset($cola_listos[0]); //Sacar el proceso de la cola de listos
                     $procesoEnTratamiento['ciclo'] = array_values($ciclo); //Actualizar el proceso sin la irrupción que termino
+                    $procesoEnTratamiento['quantum'] = $quantum;
                     $particiones = $this->intercambioService->liberarProcesoDeMemoria($procesoEnTratamiento, $particiones); //Libero la memoria
                     array_push($cola_bloqueados, $procesoEnTratamiento);
 
@@ -80,7 +81,10 @@ class PlanificacionService
 
                 } else if ($tiempo_remanente_quantum == 0) { //Si se termina la irrupcion y viene un bloqueo
 
+                    $ciclo[0]['valor'] = $tiempo_remanente; //Se resta la irrupcion
+                    $procesoEnTratamiento['ciclo'] = $ciclo;
                     $procesoEnTratamiento['quantum'] = $quantum; //Se resetea el quantum del proceso
+
                     unset($cola_listos[0]); //Sacar el proceso de la cola de listos
                     array_push($cola_listos, $procesoEnTratamiento); //Se lo vuelve a poner al final de la cola de listos
 
