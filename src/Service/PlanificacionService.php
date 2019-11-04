@@ -84,6 +84,8 @@ class PlanificacionService
                     unset($cola_listos[0]); //Sacar el proceso de la cola de listos
                     array_push($cola_listos, $procesoEnTratamiento); //Se lo vuelve a poner al final de la cola de listos
 
+                    $rafagaActual['bloqueo'] = $procesoEnTratamiento; //Cargar proceso ejecutado
+
                 } else {
                     //El proceso se ejecuta normalmente y sigue en CPU
                     $ciclo[0]['valor'] = $tiempo_remanente; //Se resta la irrupcion
