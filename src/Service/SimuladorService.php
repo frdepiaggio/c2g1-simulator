@@ -140,7 +140,7 @@ class SimuladorService
             array_push($rafagas, $rafagaActual);
 
             //Pregunto si la cola de listos tiene todos los procesos ya cargadados
-            $condicionFin = $this->finalizoSimulador($cola_listos, $cola_bloqueados, $cola_nuevos);
+            $condicionFin = $this->finalizoSimulador($cola_listos, $cola_bloqueados, $cola_nuevos, $procesos, $t);
             ++$t;
         }
         return [$rafagaInicial, $rafagas];
@@ -201,8 +201,12 @@ class SimuladorService
         return $cola_nuevos;
     }
 
-    function finalizoSimulador($cola_listos, $cola_bloqueados, $cola_nuevos) {
-
+    function finalizoSimulador($cola_listos, $cola_bloqueados, $cola_nuevos, $procesos, $t) {
+        foreach ($procesos as $proceso) {
+            if ($proceso->getTa() > $t) {
+                return false;
+            }
+        }
         return !(count($cola_listos) || count($cola_bloqueados) || count($cola_nuevos));
     }
 }

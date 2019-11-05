@@ -79,7 +79,7 @@ class PlanificacionService
                     $particiones = $this->intercambioService->liberarProcesoDeMemoria($procesoEnTratamiento, $particiones); //Libero la memoria
                     $rafagaActual['finalizo'] = $procesoEnTratamiento; //Cargar proceso finalizado
 
-                } else if ($tiempo_remanente_quantum == 0) { //Si se termina la irrupcion y viene un bloqueo
+                } else if ($tiempo_remanente_quantum == 0) { //Si se termina el quantum
 
                     $ciclo[0]['valor'] = $tiempo_remanente; //Se resta la irrupcion
                     $procesoEnTratamiento['ciclo'] = $ciclo;
@@ -88,7 +88,7 @@ class PlanificacionService
                     unset($cola_listos[0]); //Sacar el proceso de la cola de listos
                     array_push($cola_listos, $procesoEnTratamiento); //Se lo vuelve a poner al final de la cola de listos
 
-                    $rafagaActual['bloqueo'] = $procesoEnTratamiento; //Cargar proceso ejecutado
+                    $rafagaActual['interrumpe'] = $procesoEnTratamiento; //Cargar proceso ejecutado
 
                 } else {
                     //El proceso se ejecuta normalmente y sigue en CPU
