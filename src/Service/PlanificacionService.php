@@ -11,7 +11,7 @@ class PlanificacionService
         $this->intercambioService = $intercambioService;
     }
 
-    function fcfs($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) {
+    function fcfs($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $tipoMemoria) {
         if (!empty($cola_listos)) {
             $procesoEnTratamiento = $cola_listos[0];
             $ciclo = $procesoEnTratamiento['ciclo'];
@@ -25,7 +25,9 @@ class PlanificacionService
                     unset($ciclo[0]); //Sacar la irrupción que llego a cero del ciclo
                     unset($cola_listos[0]); //Sacar el proceso de la cola de listos
                     $procesoEnTratamiento['ciclo'] = array_values($ciclo); //Actualizar el proceso sin la irrupción que termino
-                    $particiones = $this->intercambioService->liberarProcesoDeMemoria($procesoEnTratamiento, $particiones); //Libero la memoria
+                    $particiones = $this->intercambioService
+                        ->liberarProcesoDeMemoria($procesoEnTratamiento, $particiones, $tipoMemoria) //Libero la memoria
+                    ;
                     array_push($cola_bloqueados, $procesoEnTratamiento);
 
                     $rafagaActual['bloqueo'] = $procesoEnTratamiento; //Cargar proceso ejecutado
@@ -35,7 +37,9 @@ class PlanificacionService
                     unset($ciclo[0]); //Sacar la irrupción que llego a cero del ciclo
                     unset($cola_listos[0]); //Sacar el proceso de la cola de listos
                     $procesoEnTratamiento['ciclo'] = array_values($ciclo); //Actualizar el ciclo del proceso
-                    $particiones = $this->intercambioService->liberarProcesoDeMemoria($procesoEnTratamiento, $particiones); //Libero la memoria
+                    $particiones = $this->intercambioService
+                        ->liberarProcesoDeMemoria($procesoEnTratamiento, $particiones, $tipoMemoria) //Libero la memoria
+                    ;
                     $rafagaActual['finalizo'] = $procesoEnTratamiento; //Cargar proceso finalizado
 
                 } else {
@@ -49,7 +53,7 @@ class PlanificacionService
         return [array_values($cola_listos), array_values($cola_bloqueados), $particiones, $rafagaActual];
     }
 
-    function rr($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $quantum) {
+    function rr($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $quantum, $tipoMemoria) {
         if (!empty($cola_listos)) {
             $procesoEnTratamiento = $cola_listos[0];
             $ciclo = $procesoEnTratamiento['ciclo'];
@@ -66,7 +70,9 @@ class PlanificacionService
                     unset($cola_listos[0]); //Sacar el proceso de la cola de listos
                     $procesoEnTratamiento['ciclo'] = array_values($ciclo); //Actualizar el proceso sin la irrupción que termino
                     $procesoEnTratamiento['quantum'] = $quantum;
-                    $particiones = $this->intercambioService->liberarProcesoDeMemoria($procesoEnTratamiento, $particiones); //Libero la memoria
+                    $particiones = $this->intercambioService
+                        ->liberarProcesoDeMemoria($procesoEnTratamiento, $particiones, $tipoMemoria)
+                    ; //Libero la memoria
                     array_push($cola_bloqueados, $procesoEnTratamiento);
 
                     $rafagaActual['bloqueo'] = $procesoEnTratamiento; //Cargar proceso ejecutado
@@ -76,7 +82,9 @@ class PlanificacionService
                     unset($ciclo[0]); //Sacar la irrupción que llego a cero del ciclo
                     unset($cola_listos[0]); //Sacar el proceso de la cola de listos
                     $procesoEnTratamiento['ciclo'] = array_values($ciclo); //Actualizar el ciclo del proceso
-                    $particiones = $this->intercambioService->liberarProcesoDeMemoria($procesoEnTratamiento, $particiones); //Libero la memoria
+                    $particiones = $this->intercambioService
+                        ->liberarProcesoDeMemoria($procesoEnTratamiento, $particiones, $tipoMemoria)
+                    ; //Libero la memoria
                     $rafagaActual['finalizo'] = $procesoEnTratamiento; //Cargar proceso finalizado
 
                 } else if ($tiempo_remanente_quantum == 0) { //Si se termina el quantum

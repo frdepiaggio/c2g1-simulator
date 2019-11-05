@@ -21,7 +21,9 @@ class SimuladorService
     function simular(Simulador $simulador)
     {
         $memoria = $simulador->getMemoria();
+        $algoritmoIntercambio = $simulador->getAlgoritmoIntercambio();
         $procesos = $simulador->getProcesos();
+        $algoritmoPlanificacion = $simulador->getAlgoritmoPlanificacion();
 
         $rafagaInicial = [];
         $rafagas = []; //Array principal donde se van a almacenar todas las ráfagas
@@ -43,33 +45,26 @@ class SimuladorService
             $cola_nuevos = $this->guardarProcesosColaNuevos($cola_nuevos, $procesos, $t, $simulador->getQuantum());
 
             if ($memoria->getTipo() == 'fijas') {
-                switch ($simulador->getAlgoritmoIntercambio()) {
-                    case 'ff':
-                        //Llamo a la funcion de asignación de memoria
-                        list($cola_listos, $cola_nuevos, $particiones) =
-                            $this->intercambioService->asignacionParticionesFijasFF($cola_listos, $cola_nuevos, $particiones)
-                        ;
-                        break;
-                    case 'bf':
-                        dd('no hay BEST-FIT');
-                        break;
-                    case 'wf':
-                        dd('no hay WORST-FIT');
-                        break;
-                }
+                //Llamo a la funcion de asignación de memoria
+                list($cola_listos, $cola_nuevos, $particiones) =
+                    $this->intercambioService
+                        ->asignacionParticionesFijas(
+                            $cola_listos,
+                            $cola_nuevos,
+                            $particiones,
+                            $algoritmoIntercambio
+                        )
+                ;
             } elseif ($memoria->getTipo() == 'variables') {
-                dd('no hay PARTICIONES VARIABLES AUN');
-//                switch ($simulador->getAlgoritmoIntercambio()) {
-//                    case 'ff':
-//                        dd('no hay PARTICIONES VARIABLES AUN');
-//                        break;
-//                    case 'bf':
-//                        dd('no hay PARTICIONES VARIABLES AUN');
-//                        break;
-//                    case 'wf':
-//                        dd('no hay PARTICIONES VARIABLES AUN');
-//                        break;
-//                }
+                list($cola_listos, $cola_nuevos, $particiones) =
+                    $this->intercambioService
+                        ->asignacionParticionesVariables(
+                            $cola_listos,
+                            $cola_nuevos,
+                            $particiones,
+                            $algoritmoIntercambio
+                        )
+                ;
             }
 
             if ($t == 0) {
@@ -98,8 +93,7 @@ class SimuladorService
             list($cola_bloqueados, $cola_nuevos) =
               $this->planificacionService->tratarBloqueados($cola_bloqueados, $cola_nuevos)
             ;
-
-            switch ($simulador->getAlgoritmoPlanificacion()) {
+            switch ($algoritmoPlanificacion) {
                 case 'fcfs':
                     /*
                      * Ejecuto el algoritmo de planificación actualizando
@@ -107,7 +101,8 @@ class SimuladorService
                      * la rafaga actual
                      */
                     list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
-                        $this->planificacionService->fcfs($cola_listos, $cola_bloqueados, $particiones, $rafagaActual)
+                        $this->planificacionService
+                            ->fcfs($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo())
                     ;
                     break;
                 case 'rr':
@@ -118,7 +113,7 @@ class SimuladorService
                      */
                     list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
                       $this->planificacionService
-                        ->rr($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $simulador->getQuantum())
+                        ->rr($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $simulador->getQuantum(), $memoria->getTipo())
                     ;
                     break;
                 case 'prioridades':
