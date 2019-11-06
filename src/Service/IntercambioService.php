@@ -34,18 +34,14 @@ class IntercambioService
         return [$cola_listos, $cola_nuevos, $particiones];
     }
 
-    function liberarProcesoDeMemoria($proceso, $particiones, $tipo)
+    function liberarProcesoDeMemoria($proceso, $particiones)
     {
         foreach ($particiones as $key => $particion) {
             if ($particion['proceso_asignado']['id'] == $proceso['id'] ) {
                 $particiones[$key]['proceso_asignado'] = null;
             }
         }
-//        if ($tipo == 'variables' and isset($keyTarget)) {
-//            dd($particiones);
-//            $particionesNuevas = $this->unirParticiones($particiones);
-//            $particiones = $particionesNuevas;
-//        }
+
         return $particiones;
     }
 
@@ -72,56 +68,44 @@ class IntercambioService
                 $particiones[$particionKey+1]['proceso_asignado'] == null &&
                 $particiones[$particionKey]['proceso_asignado'] == null
             ) {
-                $particionesNuevas = [];
-                $nuevaParticion = $particion;
-                $nuevaParticion['size'] = $particiones[$particionKey]['size'] + $particiones[$particionKey+1]['size'];
+                $particiones[$particionKey]['size'] =
+                    $particiones[$particionKey]['size'] + $particiones[$particionKey +1]['size'];
 
-                array_push($particionesNuevas, $nuevaParticion);
-                if (isset($particiones[$particionKey+2])) {
-                    $particionesPosteriores = array_slice($particiones, $particionKey+2);
-                    foreach ($particionesPosteriores as $p) {
-                        array_push($particionesNuevas, $p);
-                    }
-                }
-                $this->unirParticiones(array_values($particionesNuevas));
+                unset($particiones[$particionKey +1]);
+                $particiones = array_values($particiones);
+
+                return $this->unirParticiones($particiones);
             }
         }
 
         return $particiones;
     }
 
-    function actualizarParticionesVariables($particiones, $particionTarget, $particionTargetKey, $proceso)
+    function actualizarParticionesVariables($particiones, $particionTargetKey, $proceso)
     {
-        $particionesNuevas = []; //Inicializo un array para las nuevas particiones resultantes
-        //Pregunto si existe algun elemento anterior
-        if (isset($particiones[$particionTargetKey - 1])) {
-            //Extraigo la porcion de array anterior a la particion encontrada
-            $particionesAnteriores = array_slice($particiones, 0, $particionTargetKey-1);
-            foreach ($particionesAnteriores as $particionAnterior) {
-                //Inserto dichas particiones dentro del array de particiones nuevas
-                array_push($particionesNuevas, $particionAnterior);
-            }
-        }
-        //Divido la particion
-        list($particionActualizada, $particionNueva) = $this->dividirParticion($particionTarget, $proceso);
-        //Inserto la particion actualizada y la nueva dentro del array de particiones nuevas
-        array_push($particionesNuevas, $particionActualizada);
-        array_push($particionesNuevas, $particionNueva);
+        if ($proceso['size'] == $particiones[$particionTargetKey]['size']) {
+            $particiones[$particionTargetKey]['proceso_asignado'] = $proceso;
+        } elseif ($proceso['size'] < $particiones[$particionTargetKey]['size']) {
+            $nuevaParticion = $particiones[$particionTargetKey];
+            $nuevaParticion['id'] = $particiones[$particionTargetKey]['id'] + 0.5;
+            $nuevaParticion['size'] = $proceso['size'];
+            $nuevaParticion['proceso_asignado'] = $proceso;
 
-        //Pregunto si existe algun elemento posterior
-        if (isset($particiones[$particionTargetKey + 1])) {
-            //Extraigo la porcion de array posterior a la particion encontrada
-            $particionesPosteriores = array_slice($particiones, $particionTargetKey+1);
-            foreach ($particionesPosteriores as $particionPosterior) {
-                //Aumento el id en 1 de la particion e inserto en el array de particiones nuevas
-                $particionPosterior['id'] = $particionPosterior['id'] + 1;
-                array_push($particionesNuevas, $particionPosterior);
-            }
-            if (count($particiones) > 2 ) {
-                dd($particiones, '-----------', $particionActualizada, $particionNueva, $particionesPosteriores, $particionesNuevas);
+            $particiones[$particionTargetKey]['size'] =
+                $particiones[$particionTargetKey]['size'] - $nuevaParticion['size'];
+
+            array_push($particiones, $nuevaParticion);
+
+            usort($particiones, function ($a, $b) {
+                return strcmp($a["id"], $b["id"]);
+            });
+
+            foreach ($particiones as $key => $particion) {
+                $particiones[$key]['id'] = $key;
             }
         }
-        return $particionesNuevas;
+
+        return $particiones;
     }
 
     function actualizarparticionesFijas($particiones, $key, $proceso)
@@ -144,7 +128,7 @@ class IntercambioService
                         $particionesNuevas = $this->actualizarparticionesFijas($particiones, $particionKey, $proceso);
                     } else {
                         $particionesNuevas =
-                            $this->actualizarParticionesVariables($particiones, $particion, $particionKey, $proceso)
+                            $this->actualizarParticionesVariables($particiones, $particionKey, $proceso)
                         ;
                     }
                     //Asigno el proceso a la partición
@@ -154,7 +138,9 @@ class IntercambioService
                     //Saco el proceso de la cola de nuevos
                     unset($cola_nuevos[$procesoKey]);
 
-                    $this->ff($cola_listos, $cola_nuevos, $particionesNuevas, $tipo);
+                    if ($tipo == 'variables') {
+                        return $this->ff($cola_listos, $cola_nuevos, $particionesNuevas, $tipo);
+                    }
                 }
             }
         }

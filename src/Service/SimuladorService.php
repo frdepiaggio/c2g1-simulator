@@ -18,6 +18,7 @@ class SimuladorService
         $this->intercambioService = $intercambioService;
     }
 
+
     function simular(Simulador $simulador)
     {
         $memoria = $simulador->getMemoria();
@@ -40,7 +41,7 @@ class SimuladorService
         $t = 0;
 
         while (!$condicionFin) {
-
+            $particiones = $this->liberarProcesosFinalizadosBloqueados($rafagas, $particiones);
             //Cargo la cola de nuevos con los procesos que arriban en la unidad de tiempo actual
             $cola_nuevos = $this->guardarProcesosColaNuevos($cola_nuevos, $procesos, $t, $simulador->getQuantum());
 
@@ -56,6 +57,7 @@ class SimuladorService
                         )
                 ;
             } elseif ($memoria->getTipo() == 'variables') {
+                $particiones = $this->intercambioService->unirParticiones($particiones);
                 list($cola_listos, $cola_nuevos, $particiones) =
                     $this->intercambioService
                         ->asignacionParticionesVariables(
@@ -124,7 +126,6 @@ class SimuladorService
                     break;
             }
 
-
             //Seteo el estado de las colas para la ráfaga actual
             $rafagaActual['cola_nuevos'] = $cola_nuevos;
             $rafagaActual['cola_listos'] = $cola_listos;
@@ -139,6 +140,25 @@ class SimuladorService
             ++$t;
         }
         return [$rafagaInicial, $rafagas];
+    }
+
+    function liberarProcesosFinalizadosBloqueados($rafagas, $particiones) {
+        $ultimaRafaga = end($rafagas);
+        if ($ultimaRafaga) {
+            if ($ultimaRafaga['finalizo']) {
+                $procesoEnTratamiento = $ultimaRafaga['finalizo'];
+                $particiones = $this->intercambioService
+                        ->liberarProcesoDeMemoria($procesoEnTratamiento, $particiones)
+                    ; //Libero la memoria
+            }
+            if ($ultimaRafaga['bloqueo']) {
+                $procesoEnTratamiento = $ultimaRafaga['bloqueo'];
+                $particiones = $this->intercambioService
+                    ->liberarProcesoDeMemoria($procesoEnTratamiento, $particiones)
+                ; //Libero la memoria
+            }
+        }
+        return $particiones;
     }
 
     function getParticionesArray(Memoria $memoria)
