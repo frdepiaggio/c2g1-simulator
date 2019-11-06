@@ -18,7 +18,11 @@ class SimuladorService
         $this->intercambioService = $intercambioService;
     }
 
-
+    /*
+     * Esta es la función principal, la cual se llama desde el controlador
+     * y gestiona toda la simulación, pasando las distintas variables
+     * por diversas funciones.
+     * */
     function simular(Simulador $simulador)
     {
         $memoria = $simulador->getMemoria();
@@ -41,34 +45,24 @@ class SimuladorService
         $t = 0;
 
         while (!$condicionFin) {
+            //Se liberan de memoria los procesos que se bloquearon o finalizaron en la ultima rafaga
             $particiones = $this->liberarProcesosFinalizadosBloqueados($rafagas, $particiones);
             //Cargo la cola de nuevos con los procesos que arriban en la unidad de tiempo actual
             $cola_nuevos = $this->guardarProcesosColaNuevos($cola_nuevos, $procesos, $t, $simulador->getQuantum());
 
-            if ($memoria->getTipo() == 'fijas') {
-                //Llamo a la funcion de asignación de memoria
-                list($cola_listos, $cola_nuevos, $particiones) =
-                    $this->intercambioService
-                        ->asignacionParticionesFijas(
-                            $cola_listos,
-                            $cola_nuevos,
-                            $particiones,
-                            $algoritmoIntercambio
-                        )
-                ;
-            } elseif ($memoria->getTipo() == 'variables') {
-                $particiones = $this->intercambioService->unirParticiones($particiones);
-                list($cola_listos, $cola_nuevos, $particiones) =
-                    $this->intercambioService
-                        ->asignacionParticionesVariables(
-                            $cola_listos,
-                            $cola_nuevos,
-                            $particiones,
-                            $algoritmoIntercambio
-                        )
-                ;
-            }
+            //Se guardan los nuevos procesos a memoria
+            list($cola_listos, $cola_nuevos, $particiones) =
+                $this->intercambioService
+                    ->asignacionMemoria(
+                        $cola_listos,
+                        $cola_nuevos,
+                        $particiones,
+                        $algoritmoIntercambio,
+                        $memoria->getTipo()
+                    )
+            ;
 
+            //Seteamos la rafaga inicial
             if ($t == 0) {
                 $rafagaInicial = [
                     'cola_nuevos' => $cola_nuevos,
@@ -95,24 +89,15 @@ class SimuladorService
             list($cola_bloqueados, $cola_nuevos) =
               $this->planificacionService->tratarBloqueados($cola_bloqueados, $cola_nuevos)
             ;
+            //Se ejecuta el algoritmo de planificación correspondiente
             switch ($algoritmoPlanificacion) {
                 case 'fcfs':
-                    /*
-                     * Ejecuto el algoritmo de planificación actualizando
-                     * las colas, las particiones (si hay que liberar) y
-                     * la rafaga actual
-                     */
                     list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
                         $this->planificacionService
                             ->fcfs($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo())
                     ;
                     break;
                 case 'rr':
-                    /*
-                     * Ejecuto el algoritmo de planificación actualizando
-                     * las colas, las particiones (si hay que liberar) y
-                     * la rafaga actual
-                     */
                     list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
                       $this->planificacionService
                         ->rr($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $simulador->getQuantum(), $memoria->getTipo())
@@ -161,6 +146,10 @@ class SimuladorService
         return $particiones;
     }
 
+    /*
+     * Esta función devuelve particiones serializadas en array,
+     * pasando como parámetro un objeto Memoria.
+     * */
     function getParticionesArray(Memoria $memoria)
     {
         $particiones = [];
@@ -173,9 +162,11 @@ class SimuladorService
         }
 
         return $particiones;
-
     }
 
+    /*
+     * Esta función serializa una partición en formato array
+     * */
     function serializarParticion(Particion $particion, $id)
     {
         return [
@@ -185,6 +176,9 @@ class SimuladorService
         ];
     }
 
+    /*
+     * Esta función serializa un proceso en formato array
+     * */
     function serializarProceso(Proceso $proceso, $id, $quantum = null)
     {
         $procesoSerializado = [
@@ -203,6 +197,10 @@ class SimuladorService
         return $procesoSerializado;
     }
 
+    /*
+     * Esta función se encarga de actualizar la cola de nuevos
+     * con procesos que quieran arribar
+     * */
     function guardarProcesosColaNuevos($cola_nuevos, $procesos, $rafaga, $quantum = null)
     {
         foreach ($procesos as $key => $proceso) {
@@ -216,6 +214,10 @@ class SimuladorService
         return $cola_nuevos;
     }
 
+    /*
+     * Esta función chequea si todavía queda algún proceso a tratar
+     * para poder finalizar (o no) la simulación.
+     * */
     function finalizoSimulador($cola_listos, $cola_bloqueados, $cola_nuevos, $procesos, $t) {
         foreach ($procesos as $proceso) {
             if ($proceso->getTa() > $t) {

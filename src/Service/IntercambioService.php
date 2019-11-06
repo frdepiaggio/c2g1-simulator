@@ -4,11 +4,19 @@ namespace App\Service;
 
 class IntercambioService
 {
-    function asignacionParticionesFijas($cola_listos, $cola_nuevos, $particiones, $algoritmo = null)
+    /*
+     * Esta función se encarga de llamar a las funciones correspondientes dependiendo
+     * del tipo de memoria y algoritmo de intercambio de la simulación.
+     * */
+    function asignacionMemoria($cola_listos, $cola_nuevos, $particiones, $algoritmo, $tipo)
     {
+        if ($tipo == 'variables') {
+            $particiones = $this->unirParticiones($particiones);
+        }
+
         if ($algoritmo == 'ff') {
             list($cola_listos, $cola_nuevos, $particiones) =
-                $this->ff($cola_listos, $cola_nuevos, $particiones, 'fijas')
+                $this->ff($cola_listos, $cola_nuevos, $particiones, $tipo)
             ;
         } elseif ($algoritmo == 'bf') {
             dd('no hay best-fit');
@@ -19,21 +27,10 @@ class IntercambioService
         return [$cola_listos, $cola_nuevos, $particiones];
     }
 
-    function asignacionParticionesVariables($cola_listos, $cola_nuevos, $particiones, $algoritmo = null)
-    {
-        if ($algoritmo == 'ff') {
-            list($cola_listos, $cola_nuevos, $particiones) =
-                $this->ff($cola_listos, $cola_nuevos, $particiones, 'variables')
-            ;
-        } elseif ($algoritmo == 'bf') {
-            dd('no hay best-fit');
-        } else {
-            dd('no hay worst-fit');
-        }
-
-        return [$cola_listos, $cola_nuevos, $particiones];
-    }
-
+    /*
+     * Esta función desasigna el proceso de la partición.
+     * Buscando dicho proceso en el array de particiones
+     * */
     function liberarProcesoDeMemoria($proceso, $particiones)
     {
         foreach ($particiones as $key => $particion) {
@@ -45,35 +42,32 @@ class IntercambioService
         return $particiones;
     }
 
-    function dividirParticion($particion, $proceso)
-    {
-        $sizeActual = $particion['size'];
-        $sizeProceso = $proceso['size'];
-
-        $particionVieja = $particion;
-        $particionVieja['size'] = $sizeActual - $sizeProceso;
-
-        $particionNueva = [
-            'id' => $particion['id'] +1,
-            'size' => $proceso['size'],
-            'proceso_asignado' => $proceso
-        ];
-        return [$particionVieja, $particionNueva];
-    }
-
+    /*
+     * Esta función permite unir las particiones vacias que
+     * se encuentran contiguas en memoria
+     * */
     function unirParticiones($particiones)
     {
+        //Recorro las particiones
         foreach ($particiones as $particionKey => $particion) {
+            /*
+             * Pregunto si hay una siguiente particion y si,
+             * ni la actual ni la siguiente tienen un proceso asignado
+             * */
             if (isset($particiones[$particionKey+1]) &&
                 $particiones[$particionKey+1]['proceso_asignado'] == null &&
-                $particiones[$particionKey]['proceso_asignado'] == null
-            ) {
+                $particiones[$particionKey]['proceso_asignado'] == null)
+            {
+                //A la particion actual le sumo el tamaño de ambas particiones
                 $particiones[$particionKey]['size'] =
                     $particiones[$particionKey]['size'] + $particiones[$particionKey +1]['size'];
 
+                //Elimino la siguiente partición
                 unset($particiones[$particionKey +1]);
+                //Reseteo los indices del array $particiones
                 $particiones = array_values($particiones);
 
+                //Vuelvo a llamar a la función con las particiones actualizadas
                 return $this->unirParticiones($particiones);
             }
         }
@@ -81,25 +75,41 @@ class IntercambioService
         return $particiones;
     }
 
+    /*
+     * Esta función permite, dados el array de particiones, la posicion de una
+     * particion y un proceso, asignar dicho proceso a la particion requerida y actualizando
+     * el esquema de particiones variables.
+     * */
     function actualizarParticionesVariables($particiones, $particionTargetKey, $proceso)
     {
+        /*
+         * Si el tamaño del proceso es exactamente igual al de la particion objetivo
+         * solo se asignará el proceso a dicha partición.
+        */
         if ($proceso['size'] == $particiones[$particionTargetKey]['size']) {
             $particiones[$particionTargetKey]['proceso_asignado'] = $proceso;
-        } elseif ($proceso['size'] < $particiones[$particionTargetKey]['size']) {
+        } elseif ($proceso['size'] < $particiones[$particionTargetKey]['size']) { //Si es menor
+            //Se crea una nueva particion
             $nuevaParticion = $particiones[$particionTargetKey];
+            //Esto se realiza para que la nueva partición quede contigua a la objetivo cuando ordenemos el array
             $nuevaParticion['id'] = $particiones[$particionTargetKey]['id'] + 0.5;
-            $nuevaParticion['size'] = $proceso['size'];
-            $nuevaParticion['proceso_asignado'] = $proceso;
+            $nuevaParticion['size'] = $proceso['size']; //Se le asigna el mismo tamaño del proceso
+            $nuevaParticion['proceso_asignado'] = $proceso; //El proceso es asignado a la nueva partición
 
+            //Se actualiza el tamaño de la partición objetivo restandole el de la nueva
             $particiones[$particionTargetKey]['size'] =
                 $particiones[$particionTargetKey]['size'] - $nuevaParticion['size'];
 
+            //Se agrega la nueva particion al array de particiones, quedando ésta, en última posición
             array_push($particiones, $nuevaParticion);
 
+            //Se ordena el array de particiones por id, quedando la nueva particion inmediatamente
+            //después de la particion objetivo actualizada, ya que tiene su mismo id + 0.5
             usort($particiones, function ($a, $b) {
                 return strcmp($a["id"], $b["id"]);
             });
 
+            //Se actualizan los id (para evitar que la nueva partición no tenga un entero como id)
             foreach ($particiones as $key => $particion) {
                 $particiones[$key]['id'] = $key;
             }
@@ -108,13 +118,22 @@ class IntercambioService
         return $particiones;
     }
 
-    function actualizarparticionesFijas($particiones, $key, $proceso)
+    /*
+     * Esta función permite, dados el array de particiones, la posicion de una
+     * particion y un proceso, asignar dicho proceso a la particion requerida y actualizando
+     * el esquema de particiones fijas.
+     * */
+    function actualizarParticionesFijas($particiones, $particionTargetKey, $proceso)
     {
-        $particiones[$key]['proceso_asignado'] = $proceso;
+        //Se asigna el proceso a la partición
+        $particiones[$particionTargetKey]['proceso_asignado'] = $proceso;
 
         return $particiones;
     }
 
+    /*
+     * Esta función permite gestionar el algorimo de intercambio "First-Fit"
+     * */
     function ff($cola_listos, $cola_nuevos, $particiones, $tipo) {
         //Recorro las particiones
         foreach ($particiones as $particionKey => $particion) {
@@ -125,11 +144,11 @@ class IntercambioService
                     $proceso['size'] <= $particion['size']
                 ) {
                     if ($tipo == 'fijas') {
-                        $particionesNuevas = $this->actualizarparticionesFijas($particiones, $particionKey, $proceso);
+                        $particionesNuevas =
+                            $this->actualizarParticionesFijas($particiones, $particionKey, $proceso);
                     } else {
                         $particionesNuevas =
-                            $this->actualizarParticionesVariables($particiones, $particionKey, $proceso)
-                        ;
+                            $this->actualizarParticionesVariables($particiones, $particionKey, $proceso);
                     }
                     //Asigno el proceso a la partición
                     $particiones = $particionesNuevas;
@@ -137,7 +156,7 @@ class IntercambioService
                     array_push($cola_listos, $cola_nuevos[$procesoKey]);
                     //Saco el proceso de la cola de nuevos
                     unset($cola_nuevos[$procesoKey]);
-
+                    //Si el tipo de memoria es de "particiones variables" se vuelve a llamar a la función
                     if ($tipo == 'variables') {
                         return $this->ff($cola_listos, $cola_nuevos, $particionesNuevas, $tipo);
                     }
