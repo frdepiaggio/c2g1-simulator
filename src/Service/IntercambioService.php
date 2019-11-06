@@ -16,10 +16,12 @@ class IntercambioService
 
         if ($algoritmo == 'ff') {
             list($cola_listos, $cola_nuevos, $particiones) =
-                $this->ff($cola_listos, $cola_nuevos, $particiones, $tipo)
+                $this->firstFit($cola_listos, $cola_nuevos, $particiones, $tipo)
             ;
         } elseif ($algoritmo == 'bf') {
-            dd('no hay best-fit');
+            list($cola_listos, $cola_nuevos, $particiones) =
+                $this->bestFit($cola_listos, $cola_nuevos, $particiones, $tipo)
+            ;
         } else {
             dd('no hay worst-fit');
         }
@@ -106,7 +108,7 @@ class IntercambioService
             //Se ordena el array de particiones por id, quedando la nueva particion inmediatamente
             //después de la particion objetivo actualizada, ya que tiene su mismo id + 0.5
             usort($particiones, function ($a, $b) {
-                return strcmp($a["id"], $b["id"]);
+                return ($a['id'] < $b['id']) ? -1 : 1;
             });
 
             //Se actualizan los id (para evitar que la nueva partición no tenga un entero como id)
@@ -134,7 +136,7 @@ class IntercambioService
     /*
      * Esta función permite gestionar el algorimo de intercambio "First-Fit"
      * */
-    function ff($cola_listos, $cola_nuevos, $particiones, $tipo) {
+    function firstFit($cola_listos, $cola_nuevos, $particiones, $tipo) {
         //Recorro las particiones
         foreach ($particiones as $particionKey => $particion) {
             //Recorro los procesos
@@ -158,7 +160,72 @@ class IntercambioService
                     unset($cola_nuevos[$procesoKey]);
                     //Si el tipo de memoria es de "particiones variables" se vuelve a llamar a la función
                     if ($tipo == 'variables') {
-                        return $this->ff($cola_listos, $cola_nuevos, $particionesNuevas, $tipo);
+                        return $this->firstFit($cola_listos, $cola_nuevos, $particionesNuevas, $tipo);
+                    }
+                }
+            }
+        }
+        return [$cola_listos, $cola_nuevos, $particiones];
+    }
+
+    function buscarElementoKey($id, $array) {
+        foreach ($array as $key => $elemento) {
+            if ($elemento['id'] == $id) {
+                return $key;
+            }
+        }
+        return null;
+    }
+
+    /*
+     * Esta función permite gestionar el algorimo de intercambio "First-Fit"
+     * */
+    function bestFit($cola_listos, $cola_nuevos, $particiones, $tipo) {
+        $particionesAuxiliar = $particiones;
+
+        usort($particionesAuxiliar, function ($a, $b) {
+            return ($a['size'] < $b['size']) ? -1 : 1;
+        });
+
+        $colaNuevosAuxiliar = $cola_nuevos;
+
+        usort($colaNuevosAuxiliar, function ($a, $b) {
+            return ($a['size'] > $b['size']) ? -1 : 1;
+        });
+
+        //Recorro las particiones
+        foreach ($particionesAuxiliar as $particionAuxKey => $particion) {
+            //Recorro los procesos
+            foreach ($colaNuevosAuxiliar as $procesoAuxKey => $proceso) {
+                //Asigno si el proceso cabe en la particion y si tiene de status nuevo
+                if ($particiones[$particionAuxKey]['proceso_asignado'] == null and
+                    $proceso['size'] <= $particion['size'])
+                {
+                    $particionKeyReal =
+                        $this->buscarElementoKey($particionesAuxiliar[$particionAuxKey]['id'], $particiones);
+                    $procesoKeyReal =
+                        $this->buscarElementoKey($colaNuevosAuxiliar[$procesoAuxKey]['id'], $cola_nuevos);
+
+                    if ($procesoKeyReal && $procesoKeyReal) {
+                        $procesoReal = $cola_nuevos[$procesoKeyReal];
+
+                        if ($tipo == 'fijas') {
+                            $particionesNuevas =
+                                $this->actualizarParticionesFijas($particiones, $particionKeyReal, $procesoReal);
+                        } else {
+                            $particionesNuevas =
+                                $this->actualizarParticionesVariables($particiones, $particionKeyReal, $procesoReal);
+                        }
+                        //Asigno el proceso a la partición
+                        $particiones = $particionesNuevas;
+                        //Pongo el proceso en la cola de listos
+                        array_push($cola_listos, $cola_nuevos[$particionKeyReal]);
+                        //Saco el proceso de la cola de nuevos
+                        unset($cola_nuevos[$particionKeyReal]);
+                        //Si el tipo de memoria es de "particiones variables" se vuelve a llamar a la función
+                        if ($tipo == 'variables') {
+                            return $this->bestFit($cola_listos, $cola_nuevos, $particionesNuevas, $tipo);
+                        }
                     }
                 }
             }
