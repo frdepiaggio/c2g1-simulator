@@ -20,7 +20,7 @@ class IntercambioService
             ;
         } elseif ($algoritmo == 'bf') {
             list($cola_listos, $cola_nuevos, $particiones) =
-                $this->bestFit($cola_listos, $cola_nuevos, $particiones, $tipo)
+                $this->bestFit($cola_listos, $cola_nuevos, $particiones)
             ;
         } else {
             dd('no hay worst-fit');
@@ -180,52 +180,47 @@ class IntercambioService
     /*
      * Esta función permite gestionar el algorimo de intercambio "First-Fit"
      * */
-    function bestFit($cola_listos, $cola_nuevos, $particiones, $tipo) {
+    function bestFit($cola_listos, $cola_nuevos, $particiones) {
+        //Creo arrays auxiliares de particiones y cola de nuevos
         $particionesAuxiliar = $particiones;
+        $colaNuevosAuxiliar = $cola_nuevos;
 
+        //Ordeno las particiones de menor a mayor y los procesos de mayor a menor
         usort($particionesAuxiliar, function ($a, $b) {
             return ($a['size'] < $b['size']) ? -1 : 1;
         });
-
-        $colaNuevosAuxiliar = $cola_nuevos;
-
         usort($colaNuevosAuxiliar, function ($a, $b) {
             return ($a['size'] > $b['size']) ? -1 : 1;
         });
 
-        //Recorro las particiones
+        //Recorro las particiones auxiliares
         foreach ($particionesAuxiliar as $particionAuxKey => $particion) {
-            //Recorro los procesos
+            //Recorro los procesos auxiliares
             foreach ($colaNuevosAuxiliar as $procesoAuxKey => $proceso) {
-                //Asigno si el proceso cabe en la particion y si tiene de status nuevo
-                if ($particiones[$particionAuxKey]['proceso_asignado'] == null and
+                //Si el proceso auxiliar cabe en la particion auxiliar y si tiene de status nuevo
+                if ($particionesAuxiliar[$particionAuxKey]['proceso_asignado'] == null and
                     $proceso['size'] <= $particion['size'])
                 {
+                    //Busco las posiciones del proceso y la particion en los arrays originales
                     $particionKeyReal =
                         $this->buscarElementoKey($particionesAuxiliar[$particionAuxKey]['id'], $particiones);
                     $procesoKeyReal =
                         $this->buscarElementoKey($colaNuevosAuxiliar[$procesoAuxKey]['id'], $cola_nuevos);
 
-                    if ($procesoKeyReal && $procesoKeyReal) {
+                    //Pregunto si encontró ambos
+                    if (!is_null($procesoKeyReal) && !is_null($particionKeyReal)) {
+                        //Hago la asignación de la misma manera que en First-Fit
                         $procesoReal = $cola_nuevos[$procesoKeyReal];
-
-                        if ($tipo == 'fijas') {
-                            $particionesNuevas =
-                                $this->actualizarParticionesFijas($particiones, $particionKeyReal, $procesoReal);
-                        } else {
-                            $particionesNuevas =
-                                $this->actualizarParticionesVariables($particiones, $particionKeyReal, $procesoReal);
-                        }
+                        $particionesNuevas =
+                            $this->actualizarParticionesFijas($particiones, $particionKeyReal, $procesoReal);
                         //Asigno el proceso a la partición
                         $particiones = $particionesNuevas;
                         //Pongo el proceso en la cola de listos
-                        array_push($cola_listos, $cola_nuevos[$particionKeyReal]);
+                        array_push($cola_listos, $cola_nuevos[$procesoKeyReal]);
                         //Saco el proceso de la cola de nuevos
-                        unset($cola_nuevos[$particionKeyReal]);
-                        //Si el tipo de memoria es de "particiones variables" se vuelve a llamar a la función
-                        if ($tipo == 'variables') {
-                            return $this->bestFit($cola_listos, $cola_nuevos, $particionesNuevas, $tipo);
-                        }
+                        unset($cola_nuevos[$procesoKeyReal]);
+
+                        $cola_nuevos = array_values($cola_nuevos);
                     }
                 }
             }

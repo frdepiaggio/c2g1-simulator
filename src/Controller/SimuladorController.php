@@ -57,9 +57,10 @@ class SimuladorController extends AbstractController
 
                 $partQty = 0;
                 $maxParticion = 0;
-                foreach ($memoriaJson['particiones'] as $particionSize) {
+                foreach ($memoriaJson['particiones'] as $particionArray) {
                     $particion = new Particion();
-                    $particion->setSize($particionSize);
+                    $particion->setSize($particionArray['size']);
+                    $particion->setColor($particionArray['color']);
                     $particion->setMemoria($memoria);
                     $em->persist($particion);
                     if ($particion->getSize() > $maxParticion) {

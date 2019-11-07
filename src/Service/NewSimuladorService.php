@@ -36,8 +36,8 @@ class NewSimuladorService
         if (!in_array('totalSize', $response['error']) && !in_array('soSize', $response['error'])) {
             $particionesTotalSize = 0;
             $availableMemoria = $array['totalSize'] - $array['soSize'];
-            foreach ($array['particiones'] as $particionSize ) {
-                $particionesTotalSize = $particionesTotalSize + $particionSize;
+            foreach ($array['particiones'] as $particionArray ) {
+                $particionesTotalSize = $particionesTotalSize + $particionArray['size'];
             }
             if ($particionesTotalSize <> $availableMemoria) {
                 $response['code'] = 400;
