@@ -61,13 +61,13 @@
       {% for t, rafaga in rafagas %}
         <div
           class="gantt-line
-                        {% if t == 0 %}
-                            first
-                        {% endif %}
-                        {% if not rafagas[t]['ejecuto'] %}
-                             ocioso
-                        {% endif %}
-                        "
+            {% if t == 0 %}
+                first
+            {% endif %}
+            {% if not rafagas[t]['ejecuto'] %}
+                 ocioso
+            {% endif %}
+          "
           objetivo="propover-{{ t + 1 }}" data-toggle="popover"
           data-container="body" data-html="true"
           data-placement="bottom" flecha="popover-flecha-{{ t + 1 }}"

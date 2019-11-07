@@ -116,19 +116,26 @@ jQuery(document).ready(function ($) {
             const memoryPercent = parseInt(memoryTotalSize) * 100 / memorySize;
             const bestFit = $('#bf');
             let partitionDisplay = $("<div class='progress-bar'></div>");
+            let random_colour =  'rgb('+ (Math.floor(Math.random() * 256)) + ','+ (Math.floor(Math.random() * 256)) + ','+ (Math.floor(Math.random() * 256)) + ')';
 
             if($this.is(':checked')) {
+                const partitionArray = {
+                    'size': memoryTotalSize,
+                    'color': random_colour
+                };
+
                 bestFit.remove();
                 partitionDisplay
-                    .css({'width':memoryPercent + '%', 'background-color':'rgba(63, 81, 181, 0.9)'})
+                    .css({'width':memoryPercent + '%', 'background-color':random_colour})
                     .html('<span>P1</span><span>'+memoryTotalSize+' KB</span>')
                 ;
+
                 partitionContainer.append(partitionDisplay);
                 $('#part-fijas').prop('disabled', true);
                 newPartitionSection.hide();
                 partitionFormSection.css('width', '100%');
                 tipoMemoria = 'variables';
-                particionesArray.push(memoryTotalSize);
+                particionesArray.push(partitionArray);
                 memoryQtyInput.prop('disabled', true);
                 soQtyInput.prop('disabled', true);
                 tipoError.html('');

@@ -3,9 +3,12 @@
   <h2>Mapa de memoria</h2>
   <div class="px-4">
     <div class="d-flex justify-content-start flex-wrap align-content-around">
+      <div class="p-2">
+        {{ funciones.renderMemoria(0, rafagaInicial['particiones'], simulador.memoria) }}
+      </div>
       {% for t,rafaga in rafagas %}
         <div class="p-2">
-          {{ funciones.renderMemoria(t+1, rafaga['particiones'], simulador.memoria) }}
+          {{ funciones.renderMemoria(t, rafaga['particiones'], simulador.memoria) }}
         </div>
       {% endfor %}
     </div>

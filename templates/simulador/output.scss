@@ -306,24 +306,51 @@
   }
 }
 .memoria-bloque {
+  .titulo {
+    background-color: #b3b3b3;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: .3rem;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+  }
   box-shadow: #00000024 0px 1px 10px 0px;
   border-radius: 10px;
   .particiones-container {
     height: 200px;
+    box-shadow: #00000024 0px 1px 10px 0px;
+    border-radius: 7px;
     .particion-block {
-      width: 7rem;
+      width: 9rem;
+      border-bottom: solid 2px #303030;
+      &:first-child {
+        border-top-left-radius: 7px;
+        border-top-right-radius: 7px;
+        .particion {
+          border-top-left-radius: 5px;
+          .particion-null {
+            border-top-left-radius: 5px;
+          }
+        }
+      }
+      &.so {
+        border-bottom-left-radius: 7px;
+        border-bottom-right-radius: 7px;
+        border-bottom: none;
+      }
       .particion {
         height: 100%;
-        width: 80%;
+        width: 65%;
         &.so {
           background-image:linear-gradient(to right, #434343 0%, black 100%);
           color: white;
           text-align: center;
           font-weight: bold;
+          border-bottom-left-radius: 5px;
         }
         .proceso-name {
-          width: 10px;
-          padding: 7px 10px;
+          padding: 1px 5px;
           border-radius: 5px;
           font-weight: bold;
           box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 4px 0px;
@@ -345,8 +372,11 @@
           background-size: 8px 8px;
         }
       }
-      .tamanio {
-        font-size: .6rem;
+      .datos {
+        width: 25%;
+        .tamanio {
+          font-size: .6rem;
+        }
       }
     }
   }

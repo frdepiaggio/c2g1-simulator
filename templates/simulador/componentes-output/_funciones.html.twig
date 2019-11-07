@@ -185,32 +185,40 @@
     <div class="titulo">t= {{ t }}</div>
     <div class="p-3">
       <div class="particiones-container">
-        <div class="d-flex align-items-center particion-block" style="height: {{ memoriaSOPercent }}%">
-          <div class="particion so">
-            SO
-          </div>
-          <div class="tamanio ml-1">
-            {{ memoriaSO }}KB
-          </div>
-        </div>
         <div class="particiones-usuario" style="height: {{ memoriaUsuarioPercent }}%">
           {% for particion in particiones %}
             {% set particionPercent = (particion['size'] * 100) / memoriaUsuario %}
             <div class="d-flex align-items-center particion-block" style="height: {{ particionPercent }}%">
               <div class="particion text-center" style="background-color:{{ particion['color'] }}; height: 100%;">
                 {% if particion['proceso_asignado'] %}
-                  <div class="proceso-name">{{ particion['proceso_asignado']['id'] }}</div>
+                  <div class="d-flex justify-content-center align-items-center h-100">
+                    <div class="proceso-name">{{ particion['proceso_asignado']['id'] }}</div>
+                  </div>
                 {% else %}
                   <div class="particion-null"></div>
                 {% endif %}
               </div>
-              <div class="datos ml-1 text-left">
-                <div class="id">P{{ particion['id'] }}</div>
-                <div class="tamanio">{{ particion['size'] }}KB</div>
+              <div class="datos ml-1">
+                <div class="d-flex flex-column justify-content-start align-items-center">
+                  <div class="id"><strong>P{{ particion['id'] }}</strong></div>
+                  <div class="tamanio">{{ particion['size'] }}KB</div>
+                </div>
               </div>
             </div>
 
           {% endfor %}
+        </div>
+        <div class="d-flex align-items-center particion-block so" style="height: {{ memoriaSOPercent }}%">
+          <div class="particion so">
+            SO
+          </div>
+          <div class="datos ml-1">
+            <div class="d-flex flex-column justify-content-start align-items-center h-100">
+              <div class="tamanio">
+                {{ memoriaSO }}KB
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
