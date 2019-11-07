@@ -216,11 +216,12 @@ class IntercambioService
                             $this->actualizarParticionesFijas($particiones, $particionKeyReal, $procesoReal);
                         //Asigno el proceso a la partición
                         $particiones = $particionesNuevas;
+                        $particionesAuxiliar[$particionAuxKey]['proceso_asignado'] = 'algo';
                         //Pongo el proceso en la cola de listos
                         array_push($cola_listos, $cola_nuevos[$procesoKeyReal]);
                         //Saco el proceso de la cola de nuevos
                         unset($cola_nuevos[$procesoKeyReal]);
-
+                        unset($colaNuevosAuxiliar[$procesoAuxKey]);
                         $cola_nuevos = array_values($cola_nuevos);
                     }
                 }

@@ -306,6 +306,7 @@
   }
 }
 .memoria-bloque {
+  background: white;
   .titulo {
     background-color: #b3b3b3;
     border-top-left-radius: 10px;
@@ -339,10 +340,17 @@
         border-bottom-right-radius: 7px;
         border-bottom: none;
       }
+      .particion:has(.proceso-name) {
+        
+      }
       .particion {
         height: 100%;
         width: 65%;
         background-color: rgba(63, 81, 181, 0.9);
+        position: relative;
+        &:hover {
+          cursor: pointer;
+        }
         &.so {
           background-image:linear-gradient(to right, #434343 0%, black 100%);
           color: white;
@@ -357,7 +365,17 @@
           box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 4px 0px;
           background-color: white;
         }
+        .mensaje {
+          display: none;
+          position: absolute;
+          background: white;
+          top: -65px;
+          padding: 5px 10px;
+          box-shadow: #00000024 0px 1px 10px 0px;
+          border-radius: 10px;
+        }
         .particion-null {
+          cursor: default;
           height: 100%;
           width: 100%;
           background-image:

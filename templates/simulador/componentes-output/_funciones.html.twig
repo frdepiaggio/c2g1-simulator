@@ -171,10 +171,19 @@
               >
                 {% if particion['proceso_asignado'] %}
                   <div class="d-flex justify-content-center align-items-center h-100">
-                    <div class="proceso-name">{{ particion['proceso_asignado']['id'] }}</div>
+                    <div class="proceso-name" tamanio="{{ particion['proceso_asignado']['size'] }}">
+                      {{ particion['proceso_asignado']['id'] }}
+                    </div>
+                    <div class="mensaje" show="false">
+                      tamaño del proceso:
+                      {{ particion['proceso_asignado']['size'] }}KB
+                    </div>
                   </div>
                 {% else %}
                   <div class="particion-null"></div>
+                  <div class="mensaje" show="false">
+                    No posee un proceso asignado
+                  </div>
                 {% endif %}
               </div>
               <div class="datos ml-1">

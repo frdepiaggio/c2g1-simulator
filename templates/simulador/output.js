@@ -47,6 +47,20 @@ jQuery(document).ready(function ($) {
 
         e.preventDefault();
     });
+    $('.mapa-memoria').on('click', '.particion',function (e) {
+        const $this = $(this);
+        const mensaje = $this.find('.mensaje');
+        const displayMensaje = mensaje.css('display');
+
+        if (displayMensaje === "none") {
+            mensaje.show()
+        } else {
+            mensaje.hide()
+        }
+
+        e.preventDefault();
+
+    });
     // $("[data-toggle=popover]").popover({
     //     html: true,
     //     content: function () {
