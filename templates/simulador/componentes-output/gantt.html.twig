@@ -56,7 +56,7 @@
         <a href="">
           <i class="far fa-play-circle"></i>
         </a>
-        {{ funciones.renderRafagaInicialData(rafagaInicial) }}
+        {{ funciones.renderRafagaInicialData(rafagaInicial, simulador.memoria) }}
       </div>
       {% for t, rafaga in rafagas %}
         <div
@@ -90,7 +90,7 @@
               <div class="flecha-bloquea interrumpe"><i class="fas fa-chevron-left"></i></div>
             {% endif %}
           {% endif %}
-          {{ funciones.renderRafagaData(t, rafaga) }}
+          {{ funciones.renderRafagaData(t, rafagas, simulador.memoria) }}
         </div>
         <div style="position: relative;">
           <div class="gantt-ejex">

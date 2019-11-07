@@ -2,13 +2,13 @@
 <div class="gantt">
   <h2>Mapa de memoria</h2>
   <div class="px-4">
-    <div class="d-flex justify-content-start flex-wrap align-content-around">
+    <div class="d-flex justify-content-center flex-wrap align-content-around">
       <div class="p-2">
-        {{ funciones.renderMemoria(0, rafagaInicial['particiones'], simulador.memoria) }}
+        {{ funciones.renderMemoria(0, rafagaInicial['particiones'], simulador.memoria, "t = 0") }}
       </div>
-      {% for t,rafaga in rafagas %}
+      {% for t,rafaga in rafagas if t>0 %}
         <div class="p-2">
-          {{ funciones.renderMemoria(t, rafaga['particiones'], simulador.memoria) }}
+          {{ funciones.renderMemoria(t, rafaga['particiones'], simulador.memoria, "t = " ~ t ) }}
         </div>
       {% endfor %}
     </div>

@@ -1,4 +1,5 @@
-{% macro renderRafagaInicialData(rafagaInicial) %}
+{% macro renderRafagaInicialData(rafagaInicial, memoria) %}
+  {% import _self as this %}
   <div id="popover-flecha-0" class="popover-flecha" style="left: 24px;"></div>
   <div class="data-popover" id="propover-0" style="display: none;">
     <h3>Datos iniciales</h3>
@@ -40,30 +41,18 @@
         </div>
       {% endif %}
       <div>
-        <span>Memoria</span>
-        <div>
-          <ul>
-            {% for particion in rafagaInicial['particiones'] %}
-              <li>
-                <div>
-                  Paticion {{ particion['id'] }}:
-                  {% if particion['proceso_asignado'] %}
-                    {{ particion['proceso_asignado']['id'] }}
-                  {% endif %}
-                </div>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
+        {{ this.renderMemoria(0, rafagaInicial['particiones'], memoria, "Datos de la memoria") }}
       </div>
     </div>
   </div>
 {% endmacro %}
 
-{% macro renderRafagaData(t, rafaga) %}
+{% macro renderRafagaData(t, rafagas, memoria) %}
+  {% import _self as this %}
+  {% set rafaga = rafagas[t] %}
   <div id="popover-flecha-{{ t + 1 }}" class="popover-flecha"></div>
   <div class="data-popover" id="propover-{{ t + 1 }}" style="display: none;">
-    <h3>Datos de la rafaga {{ t }}-{{ t+1 }}</h3>
+    <h3>Datos de la rafaga {{ t+1 }}</h3>
     <div class="popover-body p-3">
       {% if rafaga['ejecuto'] %}
         <div>
@@ -152,44 +141,34 @@
         </div>
       {% endif %}
       <div>
-        <span>Memoria</span>
-        <div>
-          <ul>
-            {% for particion in rafaga['particiones'] %}
-              <li>
-                <div>
-                  Paticion {{ particion['id'] }}:
-                  {% if particion['proceso_asignado'] %}
-                    {{ particion['proceso_asignado']['id'] }}
-                  {% endif %}
-                </div>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-        {% for procesoNuevo in rafaga['cola_bloqueados'] %}
-          <span>{{ procesoNuevo['id'] }}</span> -
-        {% endfor %}
+        {% if rafagas[t+1] is defined %}
+          {% set rafagaSiguiente = rafagas[t+1] %}
+          {{ this.renderMemoria(t, rafagaSiguiente['particiones'], memoria, "Datos de la memoria") }}
+        {% endif %}
       </div>
     </div>
   </div>
 {% endmacro %}
 
-{% macro renderMemoria(t, particiones, memoria) %}
+{% macro renderMemoria(t, particiones, memoria, titulo) %}
   {% set memoriaTotal = memoria.size %}
   {% set memoriaSO = memoria.soSize %}
   {% set memoriaUsuario = memoria.size - memoria.soSize %}
   {% set memoriaSOPercent = (memoriaSO * 100) / memoriaTotal %}
   {% set memoriaUsuarioPercent = (memoriaUsuario * 100) / memoriaTotal %}
   <div class="memoria-bloque">
-    <div class="titulo">t= {{ t }}</div>
+    <div class="titulo">{{ titulo }}</div>
     <div class="p-3">
       <div class="particiones-container">
         <div class="particiones-usuario" style="height: {{ memoriaUsuarioPercent }}%">
           {% for particion in particiones %}
             {% set particionPercent = (particion['size'] * 100) / memoriaUsuario %}
             <div class="d-flex align-items-center particion-block" style="height: {{ particionPercent }}%">
-              <div class="particion text-center" style="background-color:{{ particion['color'] }}; height: 100%;">
+              <div class="particion text-center"
+                {% if particion['proceso_asignado'] or memoria.tipo == "fijas" %}
+                  style="background-color:{{ particion['color'] }}; height: 100%;"
+                {% endif %}
+              >
                 {% if particion['proceso_asignado'] %}
                   <div class="d-flex justify-content-center align-items-center h-100">
                     <div class="proceso-name">{{ particion['proceso_asignado']['id'] }}</div>
@@ -200,17 +179,20 @@
               </div>
               <div class="datos ml-1">
                 <div class="d-flex flex-column justify-content-start align-items-center">
-                  <div class="id"><strong>P{{ particion['id'] }}</strong></div>
+                  {% if particion['proceso_asignado'] or memoria.tipo == "fijas" %}
+                    <div class="id"><strong>P{{ particion['id'] }}</strong></div>
+                  {% endif %}
                   <div class="tamanio">{{ particion['size'] }}KB</div>
                 </div>
               </div>
             </div>
-
           {% endfor %}
         </div>
         <div class="d-flex align-items-center particion-block so" style="height: {{ memoriaSOPercent }}%">
           <div class="particion so">
-            SO
+            <div class="d-flex justify-content-center align-items-center h-100">
+              <div>S.O.</div>
+            </div>
           </div>
           <div class="datos ml-1">
             <div class="d-flex flex-column justify-content-start align-items-center h-100">
