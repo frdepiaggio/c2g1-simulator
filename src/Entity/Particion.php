@@ -27,6 +27,11 @@ class Particion
      */
     private $memoria;
 
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $color;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -52,6 +57,18 @@ class Particion
     public function setMemoria(?Memoria $memoria): self
     {
         $this->memoria = $memoria;
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): self
+    {
+        $this->color = $color;
 
         return $this;
     }

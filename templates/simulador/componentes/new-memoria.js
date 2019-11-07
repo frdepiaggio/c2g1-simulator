@@ -111,14 +111,19 @@ jQuery(document).ready(function ($) {
         .on('change', '#part-variables', function () {
             const $this = $(this);
             const partitionContainer = $('#partitions-container');
+            const memorySize = $('#memoria-size').val();
             const memoryTotalSize = $('#memory-size-span').html();
+            const memoryPercent = parseInt(memoryTotalSize) * 100 / memorySize;
+            const bestFit = $('#bf');
             let partitionDisplay = $("<div class='progress-bar'></div>");
+
             if($this.is(':checked')) {
+                bestFit.remove();
                 partitionDisplay
-                    .css({'width':'100%', 'background-color':'rgba(63, 81, 181, 0.9)'})
+                    .css({'width':memoryPercent + '%', 'background-color':'rgba(63, 81, 181, 0.9)'})
                     .html('<span>P1</span><span>'+memoryTotalSize+' KB</span>')
                 ;
-                partitionContainer.html(partitionDisplay);
+                partitionContainer.append(partitionDisplay);
                 $('#part-fijas').prop('disabled', true);
                 newPartitionSection.hide();
                 partitionFormSection.css('width', '100%');
@@ -133,7 +138,9 @@ jQuery(document).ready(function ($) {
         //Cuando se elige el tipo de particiones en FIJAS
         .on('change', '#part-fijas', function () {
             const $this = $(this);
+            const worstFit = $('#wf');
             if($this.is(':checked')) {
+                worstFit.remove();
                 $('#part-variables').prop('disabled', true);
                 newPartitionSection.show();
                 partitionFormSection.css('width', '50%');
@@ -175,7 +182,10 @@ jQuery(document).ready(function ($) {
                 $(this).prop('disabled', true);
 
             } else {
-
+                const partitionArray = {
+                    'size': partitionSize,
+                    'color': random_colour
+                };
                 // Como se muestra
                 partitionsCount = partitionsCount + 1;
                 if (partitionsCount > 0) {
@@ -194,14 +204,14 @@ jQuery(document).ready(function ($) {
                 memoryDisplay.html(memoryDisplayValue);
 
                 // Guardar particion en el array de particiones
-                particionesArray.push(partitionSize);
+                particionesArray.push(partitionArray);
 
                 partitionError.html('');
                 partitionInput.css('border', '1px solid #ced4da');
             }
 
             $('#cant-part-span').html(partitionsCount);
-            if (memoryDisplay.html() == 0) {
+            if (memoryDisplay.html() === 0) {
                 partitionInput.prop({'disabled':true, 'placeholder':'No hay mas espacio'});
                 partitionContainer.css('background-color', random_colour);
                 $(this).prop('disabled', true);

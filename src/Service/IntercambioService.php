@@ -16,10 +16,12 @@ class IntercambioService
 
         if ($algoritmo == 'ff') {
             list($cola_listos, $cola_nuevos, $particiones) =
-                $this->ff($cola_listos, $cola_nuevos, $particiones, $tipo)
+                $this->firstFit($cola_listos, $cola_nuevos, $particiones, $tipo)
             ;
         } elseif ($algoritmo == 'bf') {
-            dd('no hay best-fit');
+            list($cola_listos, $cola_nuevos, $particiones) =
+                $this->bestFit($cola_listos, $cola_nuevos, $particiones)
+            ;
         } else {
             dd('no hay worst-fit');
         }
@@ -106,7 +108,7 @@ class IntercambioService
             //Se ordena el array de particiones por id, quedando la nueva particion inmediatamente
             //después de la particion objetivo actualizada, ya que tiene su mismo id + 0.5
             usort($particiones, function ($a, $b) {
-                return strcmp($a["id"], $b["id"]);
+                return ($a['id'] < $b['id']) ? -1 : 1;
             });
 
             //Se actualizan los id (para evitar que la nueva partición no tenga un entero como id)
@@ -134,7 +136,7 @@ class IntercambioService
     /*
      * Esta función permite gestionar el algorimo de intercambio "First-Fit"
      * */
-    function ff($cola_listos, $cola_nuevos, $particiones, $tipo) {
+    function firstFit($cola_listos, $cola_nuevos, $particiones, $tipo) {
         //Recorro las particiones
         foreach ($particiones as $particionKey => $particion) {
             //Recorro los procesos
@@ -158,7 +160,67 @@ class IntercambioService
                     unset($cola_nuevos[$procesoKey]);
                     //Si el tipo de memoria es de "particiones variables" se vuelve a llamar a la función
                     if ($tipo == 'variables') {
-                        return $this->ff($cola_listos, $cola_nuevos, $particionesNuevas, $tipo);
+                        return $this->firstFit($cola_listos, $cola_nuevos, $particionesNuevas, $tipo);
+                    }
+                }
+            }
+        }
+        return [$cola_listos, $cola_nuevos, $particiones];
+    }
+
+    function buscarElementoKey($id, $array) {
+        foreach ($array as $key => $elemento) {
+            if ($elemento['id'] == $id) {
+                return $key;
+            }
+        }
+        return null;
+    }
+
+    /*
+     * Esta función permite gestionar el algorimo de intercambio "First-Fit"
+     * */
+    function bestFit($cola_listos, $cola_nuevos, $particiones) {
+        //Creo arrays auxiliares de particiones y cola de nuevos
+        $particionesAuxiliar = $particiones;
+        $colaNuevosAuxiliar = $cola_nuevos;
+
+        //Ordeno las particiones de menor a mayor y los procesos de mayor a menor
+        usort($particionesAuxiliar, function ($a, $b) {
+            return ($a['size'] < $b['size']) ? -1 : 1;
+        });
+        usort($colaNuevosAuxiliar, function ($a, $b) {
+            return ($a['size'] > $b['size']) ? -1 : 1;
+        });
+
+        //Recorro las particiones auxiliares
+        foreach ($particionesAuxiliar as $particionAuxKey => $particion) {
+            //Recorro los procesos auxiliares
+            foreach ($colaNuevosAuxiliar as $procesoAuxKey => $proceso) {
+                //Si el proceso auxiliar cabe en la particion auxiliar y si tiene de status nuevo
+                if ($particionesAuxiliar[$particionAuxKey]['proceso_asignado'] == null and
+                    $proceso['size'] <= $particion['size'])
+                {
+                    //Busco las posiciones del proceso y la particion en los arrays originales
+                    $particionKeyReal =
+                        $this->buscarElementoKey($particionesAuxiliar[$particionAuxKey]['id'], $particiones);
+                    $procesoKeyReal =
+                        $this->buscarElementoKey($colaNuevosAuxiliar[$procesoAuxKey]['id'], $cola_nuevos);
+
+                    //Pregunto si encontró ambos
+                    if (!is_null($procesoKeyReal) && !is_null($particionKeyReal)) {
+                        //Hago la asignación de la misma manera que en First-Fit
+                        $procesoReal = $cola_nuevos[$procesoKeyReal];
+                        $particionesNuevas =
+                            $this->actualizarParticionesFijas($particiones, $particionKeyReal, $procesoReal);
+                        //Asigno el proceso a la partición
+                        $particiones = $particionesNuevas;
+                        //Pongo el proceso en la cola de listos
+                        array_push($cola_listos, $cola_nuevos[$procesoKeyReal]);
+                        //Saco el proceso de la cola de nuevos
+                        unset($cola_nuevos[$procesoKeyReal]);
+
+                        $cola_nuevos = array_values($cola_nuevos);
                     }
                 }
             }
