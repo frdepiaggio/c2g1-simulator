@@ -170,9 +170,10 @@ class SimuladorService
     function serializarParticion(Particion $particion, $id)
     {
         return [
-          'id' => $id,
-          'size' => $particion->getSize(),
-          'proceso_asignado' => null
+            'id' => $id,
+            'size' => $particion->getSize(),
+            'color' => $particion->getColor(),
+            'proceso_asignado' => null
         ];
     }
 

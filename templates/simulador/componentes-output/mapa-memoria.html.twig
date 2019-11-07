@@ -1,0 +1,13 @@
+{% import "simulador/componentes-output/_funciones.html.twig" as funciones %}
+<div class="gantt">
+  <h2>Mapa de memoria</h2>
+  <div class="px-4">
+    <div class="d-flex justify-content-start flex-wrap align-content-around">
+      {% for t,rafaga in rafagas %}
+        <div class="p-2">
+          {{ funciones.renderMemoria(t+1, rafaga['particiones'], simulador.memoria) }}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

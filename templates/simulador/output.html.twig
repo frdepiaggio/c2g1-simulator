@@ -8,34 +8,35 @@
 
     {{ include('simulador/componentes-output/datos.html.twig') }}
     {{ include('simulador/componentes-output/gantt.html.twig') }}
+    {{ include('simulador/componentes-output/mapa-memoria.html.twig') }}
     <a class="btn btn-secondary p-1 m-1" href="{{ path('home') }}">
         Volver
     </a>
 
-    <div>
-        Dejo un dump acá por cuestiones de prueba
-    </div>
-    {% for key,rafaga in rafagas %}
-        <div style="font-size: .7rem">
-            <span>t= {{ key }}</span>
-            <ul>
-                {% for particion in rafaga['particiones'] %}
-                    <li>
-                        <div>id: {{ particion['id'] }}</div>
-                        <div>size: {{ particion['size'] }}</div>
-                        <div>proceso asignado:
-                            {% if particion['proceso_asignado'] %}
-                                {{ particion['proceso_asignado']['id'] }}
-                            {% else %}
-                                null
-                            {% endif %}
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endfor %}
-    {{ dump(rafagas) }}
+{#    <div>#}
+{#        Dejo un dump acá por cuestiones de prueba#}
+{#    </div>#}
+{#    {% for key,rafaga in rafagas %}#}
+{#        <div style="font-size: .7rem">#}
+{#            <span>t= {{ key }}</span>#}
+{#            <ul>#}
+{#                {% for particion in rafaga['particiones'] %}#}
+{#                    <li>#}
+{#                        <div>id: {{ particion['id'] }}</div>#}
+{#                        <div>size: {{ particion['size'] }}</div>#}
+{#                        <div>proceso asignado:#}
+{#                            {% if particion['proceso_asignado'] %}#}
+{#                                {{ particion['proceso_asignado']['id'] }}#}
+{#                            {% else %}#}
+{#                                null#}
+{#                            {% endif %}#}
+{#                        </div>#}
+{#                    </li>#}
+{#                {% endfor %}#}
+{#            </ul>#}
+{#        </div>#}
+{#    {% endfor %}#}
+{#    {{ dump(rafagas) }}#}
 
 {% endblock %}
 

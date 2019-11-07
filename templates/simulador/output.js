@@ -23,7 +23,6 @@ jQuery(document).ready(function ($) {
 
         if (objetivoDisplay === 'none') {
             const height = parseInt(ganttBody.css('height')) + parseInt(objetivoTag.css('height')) +20;
-            console.log(height);
             objetivoTag.show();
             flechaTag.show();
             countPopover = countPopover +1;

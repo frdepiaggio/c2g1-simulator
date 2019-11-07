@@ -1,0 +1,219 @@
+{% macro renderRafagaInicialData(rafagaInicial) %}
+  <div id="popover-flecha-0" class="popover-flecha" style="left: 24px;"></div>
+  <div class="data-popover" id="propover-0" style="display: none;">
+    <h3>Datos iniciales</h3>
+    <div class="popover-body p-3">
+      {% if rafagaInicial['cola_nuevos']|length %}
+        <div class="cola nuevos">
+          <div class="titulo">Cola de nuevos procesos</div>
+          <div class="d-flex cola-body">
+            {% for t, procesoNuevo in rafagaInicial['cola_nuevos'] %}
+              <div
+                {% if t is divisible by(2) %}
+                  class="par"
+                {% else %}
+                  class="impar"
+                {% endif %}
+              >
+                {{ procesoNuevo['id'] }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+      {% if rafagaInicial['cola_listos']|length %}
+        <div class="cola listos">
+          <div class="titulo">Cola de procesos listos</div>
+          <div class="d-flex cola-body">
+            {% for t, procesoNuevo in rafagaInicial['cola_listos'] %}
+              <div
+                {% if t is divisible by(2) %}
+                  class="par"
+                {% else %}
+                  class="impar"
+                {% endif %}
+              >
+                {{ procesoNuevo['id'] }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+      <div>
+        <span>Memoria</span>
+        <div>
+          <ul>
+            {% for particion in rafagaInicial['particiones'] %}
+              <li>
+                <div>
+                  Paticion {{ particion['id'] }}:
+                  {% if particion['proceso_asignado'] %}
+                    {{ particion['proceso_asignado']['id'] }}
+                  {% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro renderRafagaData(t, rafaga) %}
+  <div id="popover-flecha-{{ t + 1 }}" class="popover-flecha"></div>
+  <div class="data-popover" id="propover-{{ t + 1 }}" style="display: none;">
+    <h3>Datos de la rafaga {{ t }}-{{ t+1 }}</h3>
+    <div class="popover-body p-3">
+      {% if rafaga['ejecuto'] %}
+        <div>
+          <span>Se ejecutó: </span>
+          <span class="proceso-name">
+              <strong>{{ rafaga['ejecuto']['id'] }}</strong>
+          </span>
+        </div>
+      {% endif %}
+      {% if rafaga['interrumpe'] is defined %}
+        <div>
+          <span>Se interrumpió: </span>
+          <span class="proceso-name">
+              <strong>{{ rafaga['interrumpe']['id'] }}</strong>
+          </span>
+        </div>
+      {% endif %}
+      {% if rafaga['bloqueo'] %}
+        <div>
+          <span>Se bloquea: </span>
+          <span class="proceso-name">
+              <strong>{{ rafaga['bloqueo']['id'] }}</strong>
+          </span>
+        </div>
+      {% endif %}
+      {% if rafaga['finalizo'] %}
+        <div>
+          <span>Finaliza: </span>
+          <span class="proceso-name">
+              <strong>{{ rafaga['finalizo']['id'] }}</strong>
+          </span>
+        </div>
+      {% endif %}
+      {% if rafaga['cola_nuevos']|length %}
+        <div class="cola nuevos">
+          <div class="titulo">Cola de nuevos procesos</div>
+          <div class="d-flex cola-body">
+            {% for t, procesoNuevo in rafaga['cola_nuevos'] %}
+              <div
+                {% if t is divisible by(2) %}
+                  class="par"
+                {% else %}
+                  class="impar"
+                {% endif %}
+              >
+                {{ procesoNuevo['id'] }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+      {% if rafaga['cola_listos']|length %}
+        <div class="cola listos">
+          <div class="titulo">Cola de procesos listos</div>
+          <div class="d-flex cola-body">
+            {% for t, procesoNuevo in rafaga['cola_listos'] %}
+              <div
+                {% if t is divisible by(2) %}
+                  class="par"
+                {% else %}
+                  class="impar"
+                {% endif %}
+              >
+                {{ procesoNuevo['id'] }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+      {% if rafaga['cola_bloqueados']|length %}
+        <div class="cola bloqueados">
+          <div class="titulo">Cola de procesos bloqueados</div>
+          <div class="d-flex cola-body">
+            {% for t, procesoNuevo in rafaga['cola_bloqueados'] %}
+              <div
+                {% if t is divisible by(2) %}
+                  class="par"
+                {% else %}
+                  class="impar"
+                {% endif %}
+              >
+                {{ procesoNuevo['id'] }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+      <div>
+        <span>Memoria</span>
+        <div>
+          <ul>
+            {% for particion in rafaga['particiones'] %}
+              <li>
+                <div>
+                  Paticion {{ particion['id'] }}:
+                  {% if particion['proceso_asignado'] %}
+                    {{ particion['proceso_asignado']['id'] }}
+                  {% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% for procesoNuevo in rafaga['cola_bloqueados'] %}
+          <span>{{ procesoNuevo['id'] }}</span> -
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro renderMemoria(t, particiones, memoria) %}
+  {% set memoriaTotal = memoria.size %}
+  {% set memoriaSO = memoria.soSize %}
+  {% set memoriaUsuario = memoria.size - memoria.soSize %}
+  {% set memoriaSOPercent = (memoriaSO * 100) / memoriaTotal %}
+  {% set memoriaUsuarioPercent = (memoriaUsuario * 100) / memoriaTotal %}
+  <div class="memoria-bloque">
+    <div class="titulo">t= {{ t }}</div>
+    <div class="p-3">
+      <div class="particiones-container">
+        <div class="d-flex align-items-center particion-block" style="height: {{ memoriaSOPercent }}%">
+          <div class="particion so">
+            SO
+          </div>
+          <div class="tamanio ml-1">
+            {{ memoriaSO }}KB
+          </div>
+        </div>
+        <div class="particiones-usuario" style="height: {{ memoriaUsuarioPercent }}%">
+          {% for particion in particiones %}
+            {% set particionPercent = (particion['size'] * 100) / memoriaUsuario %}
+            <div class="d-flex align-items-center particion-block" style="height: {{ particionPercent }}%">
+              <div class="particion text-center" style="background-color:{{ particion['color'] }}; height: 100%;">
+                {% if particion['proceso_asignado'] %}
+                  <div class="proceso-name">{{ particion['proceso_asignado']['id'] }}</div>
+                {% else %}
+                  <div class="particion-null"></div>
+                {% endif %}
+              </div>
+              <div class="datos ml-1 text-left">
+                <div class="id">P{{ particion['id'] }}</div>
+                <div class="tamanio">{{ particion['size'] }}KB</div>
+              </div>
+            </div>
+
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+{% endmacro %}
