@@ -97,6 +97,7 @@ class IntercambioService
             $nuevaParticion['id'] = $particiones[$particionTargetKey]['id'] + 0.5;
             $nuevaParticion['size'] = $proceso['size']; //Se le asigna el mismo tamaño del proceso
             $nuevaParticion['proceso_asignado'] = $proceso; //El proceso es asignado a la nueva partición
+            $nuevaParticion['color'] = '#'. $this->random_color();
 
             //Se actualiza el tamaño de la partición objetivo restandole el de la nueva
             $particiones[$particionTargetKey]['size'] =
@@ -215,16 +216,25 @@ class IntercambioService
                             $this->actualizarParticionesFijas($particiones, $particionKeyReal, $procesoReal);
                         //Asigno el proceso a la partición
                         $particiones = $particionesNuevas;
+                        $particionesAuxiliar[$particionAuxKey]['proceso_asignado'] = 'algo';
                         //Pongo el proceso en la cola de listos
                         array_push($cola_listos, $cola_nuevos[$procesoKeyReal]);
                         //Saco el proceso de la cola de nuevos
                         unset($cola_nuevos[$procesoKeyReal]);
-
+                        unset($colaNuevosAuxiliar[$procesoAuxKey]);
                         $cola_nuevos = array_values($cola_nuevos);
                     }
                 }
             }
         }
         return [$cola_listos, $cola_nuevos, $particiones];
+    }
+
+    function random_color_part() {
+        return str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT);
+    }
+
+    function random_color() {
+        return $this->random_color_part() . $this->random_color_part() . $this->random_color_part();
     }
 }

@@ -23,7 +23,6 @@ jQuery(document).ready(function ($) {
 
         if (objetivoDisplay === 'none') {
             const height = parseInt(ganttBody.css('height')) + parseInt(objetivoTag.css('height')) +20;
-            console.log(height);
             objetivoTag.show();
             flechaTag.show();
             countPopover = countPopover +1;
@@ -47,6 +46,20 @@ jQuery(document).ready(function ($) {
         }
 
         e.preventDefault();
+    });
+    $('.mapa-memoria').on('click', '.particion',function (e) {
+        const $this = $(this);
+        const mensaje = $this.find('.mensaje');
+        const displayMensaje = mensaje.css('display');
+
+        if (displayMensaje === "none") {
+            mensaje.show()
+        } else {
+            mensaje.hide()
+        }
+
+        e.preventDefault();
+
     });
     // $("[data-toggle=popover]").popover({
     //     html: true,

@@ -45,8 +45,9 @@ class SimuladorService
         $t = 0;
 
         while (!$condicionFin) {
+            $ultimaRafaga = end($rafagas);
             //Se liberan de memoria los procesos que se bloquearon o finalizaron en la ultima rafaga
-            $particiones = $this->liberarProcesosFinalizadosBloqueados($rafagas, $particiones);
+            $particiones = $this->liberarProcesosFinalizadosBloqueados($ultimaRafaga, $particiones);
             //Cargo la cola de nuevos con los procesos que arriban en la unidad de tiempo actual
             $cola_nuevos = $this->guardarProcesosColaNuevos($cola_nuevos, $procesos, $t, $simulador->getQuantum());
 
@@ -127,17 +128,16 @@ class SimuladorService
         return [$rafagaInicial, $rafagas];
     }
 
-    function liberarProcesosFinalizadosBloqueados($rafagas, $particiones) {
-        $ultimaRafaga = end($rafagas);
-        if ($ultimaRafaga) {
-            if ($ultimaRafaga['finalizo']) {
-                $procesoEnTratamiento = $ultimaRafaga['finalizo'];
+    function liberarProcesosFinalizadosBloqueados($rafaga, $particiones) {
+        if ($rafaga) {
+            if ($rafaga['finalizo']) {
+                $procesoEnTratamiento = $rafaga['finalizo'];
                 $particiones = $this->intercambioService
                         ->liberarProcesoDeMemoria($procesoEnTratamiento, $particiones)
                     ; //Libero la memoria
             }
-            if ($ultimaRafaga['bloqueo']) {
-                $procesoEnTratamiento = $ultimaRafaga['bloqueo'];
+            if ($rafaga['bloqueo']) {
+                $procesoEnTratamiento = $rafaga['bloqueo'];
                 $particiones = $this->intercambioService
                     ->liberarProcesoDeMemoria($procesoEnTratamiento, $particiones)
                 ; //Libero la memoria
@@ -170,9 +170,10 @@ class SimuladorService
     function serializarParticion(Particion $particion, $id)
     {
         return [
-          'id' => $id,
-          'size' => $particion->getSize(),
-          'proceso_asignado' => null
+            'id' => $id,
+            'size' => $particion->getSize(),
+            'color' => $particion->getColor(),
+            'proceso_asignado' => null
         ];
     }
 
