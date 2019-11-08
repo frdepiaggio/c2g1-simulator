@@ -55,6 +55,19 @@ class DefaultController extends AbstractController
 //            $em->flush();
 //        }
 
+        $rafagaFinal = [
+            'ejecuto' => null,
+            'ejecuto_es' => null,
+            'finalizo' => null,
+            'finalizo_es' => null,
+            'bloqueo' => null,
+            'cola_nuevos' => null,
+            'cola_listos' => null,
+            'cola_bloqueados' => null,
+            'particiones' => $simuladorService->getParticionesArray($memoria)
+        ];
+
+        array_push($rafagas, $rafagaFinal);
         return $this->render('simulador/output.html.twig', [
             'controller_name' => 'DefaultController',
             'rafagaInicial' => $rafagaInicial,
