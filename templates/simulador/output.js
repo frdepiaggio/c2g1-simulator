@@ -13,8 +13,42 @@
 jQuery(document).ready(function ($) {
     let countPopover = 0;
 
-    $("[data-toggle=popover]").on('click', function (e) {
-        const ganttBody = $('.gantt-body');
+    $("[data-toggle=popover_procesador]").on('click', function (e) {
+        const ganttBody = $('.gantt-body.procesador');
+        const target = $(this).attr('objetivo');
+        const flecha = $(this).attr('flecha');
+        const objetivoTag = $('#'+target);
+        const flechaTag = $('#'+flecha);
+        const objetivoDisplay = objetivoTag.css('display');
+
+        if (objetivoDisplay === 'none') {
+            const height = parseInt(ganttBody.css('height')) + parseInt(objetivoTag.css('height')) +20;
+            objetivoTag.show();
+            flechaTag.show();
+            countPopover = countPopover +1;
+
+            if (countPopover === 1) {
+                const originalHeight = ganttBody.css('height');
+
+                ganttBody.attr('altura', originalHeight);
+                ganttBody.css('height', height);
+            }
+        } else {
+            const altura = parseInt(ganttBody.attr('altura'));
+            objetivoTag.hide();
+            flechaTag.hide();
+            countPopover = countPopover -1;
+
+            if (countPopover === 0) {
+                ganttBody.css('height', altura);
+                ganttBody.attr('altura', 'false');
+            }
+        }
+
+        e.preventDefault();
+    });
+    $("[data-toggle=popover_bloqueo]").on('click', function (e) {
+        const ganttBody = $('.gantt-body.bloqueo');
         const target = $(this).attr('objetivo');
         const flecha = $(this).attr('flecha');
         const objetivoTag = $('#'+target);

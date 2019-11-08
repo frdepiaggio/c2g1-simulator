@@ -98,10 +98,11 @@ class PlanificacionService
         return [array_values($cola_listos), array_values($cola_bloqueados), $particiones, $rafagaActual];
     }
 
-    function tratarBloqueados($cola_bloqueados, $cola_nuevos) {
+    function tratarBloqueados($cola_bloqueados, $cola_nuevos, $rafaga) {
         if (!empty($cola_bloqueados)) {
             $procesoEnTratamiento = $cola_bloqueados[0];
             $ciclo = $cola_bloqueados[0]['ciclo'];
+            $rafaga['ejecuto_es'] = $procesoEnTratamiento;
 
             if ($ciclo[0]['tipo'] == 'bloqueo') {
                 $bloqueo_remanente = $ciclo[0]['valor'] - 1;
@@ -110,6 +111,7 @@ class PlanificacionService
                     unset($ciclo[0]); //Sacar la irrupción que llego a cero del ciclo
                     unset($cola_bloqueados[0]); //Sacar el proceso de la cola de listos
                     $procesoEnTratamiento['ciclo'] = array_values($ciclo); //Actualizar el proceso sin la irrupción que termino
+                    $rafaga['finalizo_es'] = $procesoEnTratamiento;
                     array_push($cola_nuevos, $procesoEnTratamiento); //El proceso vuelve a la cola de nuevos a competir por memoria
 
                 } else {
@@ -121,6 +123,6 @@ class PlanificacionService
             }
         }
 
-        return [array_values($cola_bloqueados), array_values($cola_nuevos)];
+        return [array_values($cola_bloqueados), array_values($cola_nuevos), $rafaga];
     }
 }

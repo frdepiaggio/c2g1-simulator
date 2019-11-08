@@ -74,21 +74,23 @@ class SimuladorService
 
             //Pongo en null toda la rafaga actual para preparar la ejecución del proceso
             $rafagaActual = [
-              'ejecuto' => null,
-              'finalizo' => null,
-              'bloqueo' => null,
-              'cola_nuevos' => null,
-              'cola_listos' => null,
-              'cola_bloqueados' => null,
-              'particiones' => null,
+                'ejecuto' => null,
+                'ejecuto_es' => null,
+                'finalizo' => null,
+                'finalizo_es' => null,
+                'bloqueo' => null,
+                'cola_nuevos' => null,
+                'cola_listos' => null,
+                'cola_bloqueados' => null,
+                'particiones' => null,
             ];
 
             /*
              * Actualizo las colas de bloqueados y nuevos
              * recorriendo los procesos que se bloquearon por una entrada/salida
              */
-            list($cola_bloqueados, $cola_nuevos) =
-              $this->planificacionService->tratarBloqueados($cola_bloqueados, $cola_nuevos)
+            list($cola_bloqueados, $cola_nuevos, $rafagaActual) =
+              $this->planificacionService->tratarBloqueados($cola_bloqueados, $cola_nuevos, $rafagaActual)
             ;
             //Se ejecuta el algoritmo de planificación correspondiente
             switch ($algoritmoPlanificacion) {

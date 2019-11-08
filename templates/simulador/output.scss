@@ -37,6 +37,12 @@
     font-weight: bold;
     text-align: center;
   }
+  h3 {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: .5rem 1.5rem;
+    text-align: center;
+  }
   .referencias {
     width: fit-content;
     box-shadow: #00000024 0px 1px 10px 0px;
@@ -66,6 +72,9 @@
       background: #4CAF50;
       &.ocioso {
         background-color: white;
+      }
+      &.bloqueado {
+        background-color: rgba(63, 81, 181, 0.6);
       }
     }
     i {
@@ -132,6 +141,12 @@
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
         font-weight: bold;
+        span {
+          background-color: darken(#66666652, 50%);
+          color: white;
+          padding: 2px 7px;
+          border-radius: 5px;
+        }
       }
       .proceso-name {
         position: relative;
@@ -228,6 +243,12 @@
       border-top: solid 2px;
       height: 10px;
       background-color: #4CAF50;
+      &.bloqueo {
+        background-color: rgba(63, 81, 181, 0.6);
+        &:hover {
+          background-color: darken(rgba(63, 81, 181, 0.6), 10%);
+        }
+      }
       &:hover {
         cursor: pointer;
         background-color: darken(#4CAF50, 10%);
@@ -324,7 +345,7 @@
     border-radius: 7px;
     .particion-block {
       width: 9rem;
-      border-bottom: solid 2px #303030;
+      box-shadow: #00000024 0px 2px 4px 0px;
       &:first-child {
         border-top-left-radius: 7px;
         border-top-right-radius: 7px;
@@ -341,7 +362,7 @@
         border-bottom: none;
       }
       .particion:has(.proceso-name) {
-        
+
       }
       .particion {
         height: 100%;

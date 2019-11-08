@@ -30,17 +30,22 @@
         </div>
         <div class="d-flex align-items-center mb-2">
           <div class="gantt-line-referencia icon"></div>
-          <span>Proceso ejecutandose en CPU</span>
+          <span>Proceso ejecutando irrupción en CPU</span>
+        </div>
+        <div class="d-flex align-items-center mb-2">
+          <div class="gantt-line-referencia bloqueado icon"></div>
+          <span>Proceso ejecutando irrupción de E/S</span>
         </div>
         <div class="d-flex align-items-center mb-2">
           <div class="gantt-line-referencia ocioso icon"></div>
-          <span>CPU ociosa</span>
+          <span>Dispositivo ocioso</span>
         </div>
       </div>
 
     </div>
   </div>
-  <div class="gantt-body" altura="">
+  <h3>CPU</h3>
+  <div class="gantt-body procesador" altura="">
     <div style="display: inline-flex;">
       <div style="position: relative;">
         <div class="gantt-ejex" style="left: 36px;">
@@ -63,12 +68,14 @@
           class="gantt-line
             {% if t == 0 %}
                 first
+            {% elseif t == rafagas|length-1 %}
+                 last
             {% endif %}
             {% if not rafagas[t]['ejecuto'] %}
                  ocioso
             {% endif %}
           "
-          objetivo="propover-{{ t + 1 }}" data-toggle="popover"
+          objetivo="propover-{{ t + 1 }}" data-toggle="popover_procesador"
           data-container="body" data-html="true"
           data-placement="bottom" flecha="popover-flecha-{{ t + 1 }}"
         >
@@ -100,7 +107,58 @@
           </div>
         </div>
       {% endfor %}
-      <div class="gantt-line ocioso last"></div>
+    </div>
+  </div>
+  <h3>E/S</h3>
+  <div class="gantt-body bloqueo" altura="">
+    <div style="display: inline-flex;">
+      <div style="position: relative;">
+        <div class="gantt-ejex" style="left: 36px;">
+          <a>
+            0
+          </a>
+        </div>
+      </div>
+      <div
+        class="gantt-line estado-inicial" objetivo="propover-bloqueo-0" data-toggle="popover"
+        flecha="popover-bloqueo-flecha-0"
+      >
+        <a href="">
+          <i class="far fa-play-circle"></i>
+        </a>
+        {{ funciones.renderRafagaESInicialData(rafagaInicial, simulador.memoria) }}
+      </div>
+      {% for t, rafaga in rafagas %}
+        <div
+          class="gantt-line bloqueo
+            {% if t == 0 %}
+                first
+            {% elseif t == rafagas|length-1 %}
+                 last
+            {% endif %}
+            {% if not rafagas[t]['ejecuto_es'] %}
+                 ocioso
+            {% endif %}
+          "
+          objetivo="propover-bloqueo-{{ t + 1 }}" data-toggle="popover_bloqueo"
+          data-container="body" data-html="true"
+          data-placement="bottom" flecha="popover-bloqueo-flecha-{{ t + 1 }}"
+        >
+          {% if rafaga['finalizo_es'] %}
+            <div class="proceso-name">{{ rafaga['finalizo_es']['id'] }}</div>
+            <div class="proceso-sale"></div>
+            <div class="flecha"><i class="fas fa-chevron-right"></i></div>
+          {% endif %}
+          {{ funciones.renderRafagaESData(t, rafagas, simulador.memoria) }}
+        </div>
+        <div style="position: relative;">
+          <div class="gantt-ejex">
+            <a>
+              {{ t + 1 }}
+            </a>
+          </div>
+        </div>
+      {% endfor %}
     </div>
   </div>
 </div>
