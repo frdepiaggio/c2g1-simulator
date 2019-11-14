@@ -1,42 +1,52 @@
 {% macro renderRafagaInicialData(rafagaInicial, memoria) %}
   {% import _self as this %}
-  <div id="popover-flecha-0" class="popover-flecha" style="left: 24px;"></div>
-  <div class="data-popover" id="propover-0" style="display: none;">
+  <div id="popover-flecha-0" class="popover-flecha animated fadeIn faster" style="left: 24px;"></div>
+  <div class="data-popover animated fadeIn faster" id="propover-0" style="display: none;">
     <h3>Datos iniciales</h3>
     <div class="popover-body p-3">
       {% if rafagaInicial['cola_nuevos']|length %}
         <div class="cola nuevos">
           <div class="titulo">Cola de nuevos procesos</div>
-          <div class="d-flex cola-body">
-            {% for t, procesoNuevo in rafagaInicial['cola_nuevos'] %}
-              <div
-                {% if t is divisible by(2) %}
-                  class="par"
-                {% else %}
-                  class="impar"
-                {% endif %}
-              >
-                {{ procesoNuevo['id'] }}
-              </div>
-            {% endfor %}
+          <div class="cola-nuevos-mostrar">
+            <div class="d-flex cola-body">
+              {% for t, procesoNuevo in rafagaInicial['cola_nuevos'] %}
+                <div
+                  {% if t is divisible by(2) %}
+                    class="par"
+                  {% else %}
+                    class="impar"
+                  {% endif %}
+                >
+                  {{ procesoNuevo['id'] }}
+                </div>
+              {% endfor %}
+            </div>
           </div>
         </div>
       {% endif %}
       {% if rafagaInicial['cola_listos']|length %}
         <div class="cola listos">
           <div class="titulo">Cola de procesos listos</div>
-          <div class="d-flex cola-body">
-            {% for t, procesoNuevo in rafagaInicial['cola_listos'] %}
-              <div
-                {% if t is divisible by(2) %}
-                  class="par"
-                {% else %}
-                  class="impar"
+          <div class="cola-listos-mostrar">
+            <div class="d-flex cola-body">
+              {% for t, procesoNuevo in rafagaInicial['cola_listos']|reverse %}
+                <div
+                  {% if t is divisible by(2) %}
+                    class="par"
+                  {% else %}
+                    class="impar"
+                  {% endif %}
+                >
+                  {{ procesoNuevo['id'] }}
+                  <sub><strong>{{ procesoNuevo['ciclo'][0]['valor'] }}</strong></sub>
+                </div>
+                {% if t == rafagaInicial['cola_listos']|length -1 %}
+                  <div class="indicador">
+                    <i class="fas fa-long-arrow-alt-left"></i>
+                  </div>
                 {% endif %}
-              >
-                {{ procesoNuevo['id'] }}
-              </div>
-            {% endfor %}
+              {% endfor %}
+            </div>
           </div>
         </div>
       {% endif %}
@@ -50,12 +60,12 @@
 {% macro renderRafagaData(t, rafagas, memoria) %}
   {% import _self as this %}
   {% set rafaga = rafagas[t] %}
-  <div id="popover-flecha-{{ t + 1 }}" class="popover-flecha"></div>
-  <div class="data-popover" id="propover-{{ t + 1 }}" style="display: none;">
+  <div id="popover-flecha-{{ t + 1 }}" class="popover-flecha animated fadeIn faster"></div>
+  <div class="data-popover animated fadeIn faster" id="propover-{{ t + 1 }}" style="display: none;">
     <h3>Ráfaga de CPU <span>t = {{ t+1 }}</span></h3>
     <div class="popover-body p-3">
       {% if rafaga['ejecuto'] %}
-        <div>
+        <div class="ejecuto-proceso">
           <span>Se ejecutó: </span>
           <span class="proceso-name">
               <strong>{{ rafaga['ejecuto']['id'] }}</strong>
@@ -79,7 +89,7 @@
         </div>
       {% endif %}
       {% if rafaga['finalizo'] %}
-        <div>
+        <div class="finaliza-proceso">
           <span>Finaliza: </span>
           <span class="proceso-name">
               <strong>{{ rafaga['finalizo']['id'] }}</strong>
@@ -89,41 +99,46 @@
       {% if rafaga['cola_nuevos']|length %}
         <div class="cola nuevos">
           <div class="titulo">Cola de nuevos procesos</div>
-          <div class="d-flex cola-body">
-            {% for t, procesoNuevo in rafaga['cola_nuevos']|reverse %}
-              <div
-                {% if t is divisible by(2) %}
-                  class="par"
-                {% else %}
-                  class="impar"
-                {% endif %}
-              >
-                {{ procesoNuevo['id'] }}
-              </div>
-            {% endfor %}
+          <div class="cola-nuevos-mostrar">
+            <div class="d-flex cola-body">
+              {% for t, procesoNuevo in rafaga['cola_nuevos']|reverse %}
+                <div
+                  {% if t is divisible by(2) %}
+                    class="par"
+                  {% else %}
+                    class="impar"
+                  {% endif %}
+                >
+                  {{ procesoNuevo['id'] }}
+                </div>
+              {% endfor %}
+            </div>
           </div>
         </div>
       {% endif %}
       {% if rafaga['cola_listos']|length %}
         <div class="cola listos">
           <div class="titulo">Cola de procesos listos</div>
-          <div class="d-flex cola-body">
-            {% for t, procesoNuevo in rafaga['cola_listos']|reverse %}
-              <div
-                {% if t is divisible by(2) %}
-                  class="par"
-                {% else %}
-                  class="impar"
-                {% endif %}
-              >
-                {{ procesoNuevo['id'] }}
-              </div>
-              {% if t == rafaga['cola_listos']|length -1 %}
-                <div class="indicador">
-                  <i class="fas fa-long-arrow-alt-left"></i>
+          <div class="cola-listos-mostrar">
+            <div class="d-flex cola-body">
+              {% for t, procesoNuevo in rafaga['cola_listos']|reverse %}
+                <div
+                  {% if t is divisible by(2) %}
+                    class="par"
+                  {% else %}
+                    class="impar"
+                  {% endif %}
+                >
+                  {{ procesoNuevo['id'] }}
+                  <sub><strong>{{ procesoNuevo['ciclo'][0]['valor'] }}</strong></sub>
                 </div>
-              {% endif %}
-            {% endfor %}
+                {% if t == rafaga['cola_listos']|length -1 %}
+                  <div class="indicador">
+                    <i class="fas fa-long-arrow-alt-left"></i>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
           </div>
         </div>
       {% endif %}
@@ -161,7 +176,7 @@
   {% set memoriaUsuario = memoria.size - memoria.soSize %}
   {% set memoriaSOPercent = (memoriaSO * 100) / memoriaTotal %}
   {% set memoriaUsuarioPercent = (memoriaUsuario * 100) / memoriaTotal %}
-  <div class="memoria-bloque">
+  <div class="memoria-bloque animated fadeIn faster">
     <div class="titulo">{{ titulo }}</div>
     <div class="p-3">
       <div class="particiones-container">
@@ -225,8 +240,8 @@
 {% macro renderRafagaESData(t, rafagas, memoria) %}
   {% import _self as this %}
   {% set rafaga = rafagas[t] %}
-  <div id="popover-bloqueo-flecha-{{ t + 1 }}" class="popover-flecha"></div>
-  <div class="data-popover" id="propover-bloqueo-{{ t + 1 }}" style="display: none;">
+  <div id="popover-bloqueo-flecha-{{ t + 1 }}" class="popover-flecha animated fadeIn faster"></div>
+  <div class="data-popover animated fadeIn faster" id="propover-bloqueo-{{ t + 1 }}" style="display: none;">
     <h3>Ráfaga de E/S <span>t = {{ t+1 }}</span></h3>
     <div class="popover-body p-3">
       {% if rafaga['ejecuto_es'] %}
@@ -266,23 +281,26 @@
       {% if rafaga['cola_bloqueados']|length %}
         <div class="cola bloqueados">
           <div class="titulo">Cola de procesos bloqueados</div>
-          <div class="d-flex cola-body">
-            {% for t, procesoNuevo in rafaga['cola_bloqueados']|reverse %}
-              <div
-                {% if t is divisible by(2) %}
-                  class="par"
-                {% else %}
-                  class="impar"
-                {% endif %}
-              >
-                {{ procesoNuevo['id'] }}
-              </div>
-              {% if t == rafaga['cola_bloqueados']|length -1 and rafaga['ejecuto_es'] %}
-                <div class="indicador">
-                  <i class="fas fa-long-arrow-alt-left"></i>
+          <div class="cola-bloqueados-mostrar">
+            <div class="d-flex cola-body">
+              {% for t, procesoNuevo in rafaga['cola_bloqueados']|reverse %}
+                <div
+                  {% if t is divisible by(2) %}
+                    class="par"
+                  {% else %}
+                    class="impar"
+                  {% endif %}
+                >
+                  {{ procesoNuevo['id'] }}
+                  <sub><strong>{{ procesoNuevo['ciclo'][0]['valor'] }}</strong></sub>
                 </div>
-              {% endif %}
-            {% endfor %}
+                {% if t == rafaga['cola_bloqueados']|length -1 and rafaga['ejecuto_es'] %}
+                  <div class="indicador">
+                    <i class="fas fa-long-arrow-alt-left"></i>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
           </div>
         </div>
       {% endif %}
@@ -292,10 +310,10 @@
 
 {% macro renderRafagaESInicialData(rafagaInicial, memoria) %}
   {% import _self as this %}
-  <div id="popover-flecha-0" class="popover-flecha" style="left: 24px;"></div>
-  <div class="data-popover" id="propover-0" style="display: none;">
+  <div id="popover-bloqueo-flecha-0" class="popover- animated fadeIn faster" style="left: 24px;"></div>
+  <div class="data-popover animated fadeIn faster" id="propover-bloqueo-0" style="display: none;">
     <h3>Entradas/Salidas</h3>
-    <div class="popover-body p-3">
+    <div class="popover-body p-3" style="width: 5rem;">
       Este diagrama muestra las irrupciones de entradas/salidas que realizan los procesos
     </div>
   </div>

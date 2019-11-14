@@ -1,3 +1,29 @@
+.cola-body {
+  padding: .5rem;
+  border-radius: 5px;
+  .par {
+    color: black;
+    background: #caced2;
+    padding: .1rem 0.3rem;
+    &:first-child {
+      border-bottom-left-radius: 5px;
+      border-top-left-radius: 5px;
+    }
+    &:last-child {
+      border-bottom-right-radius: 5px;
+      border-top-right-radius: 5px;
+    }
+  }
+  .impar {
+    color: black;
+    background: #b1b1b1;
+    padding: .1rem 0.3rem;
+    &:last-child {
+      border-bottom-right-radius: 5px;
+      border-top-right-radius: 5px;
+    }
+  }
+}
 .flex {
   display: flex;
   width: 100%;
@@ -40,8 +66,7 @@
   h3 {
     font-size: 1rem;
     font-weight: bold;
-    padding: .5rem 1.5rem;
-    text-align: center;
+    padding: 1rem 1.5rem;
   }
   .referencias {
     width: fit-content;
@@ -96,7 +121,7 @@
   .gantt-body {
     padding: 20px 20px 50px;
     margin: 2rem;
-    text-align: -webkit-center;
+    //text-align: -webkit-center;
     overflow-x: auto;
     //height: 30rem;
     .gantt-ejex {
@@ -221,6 +246,7 @@
       height: 10px;
       background: none;
       border: none;
+      text-align: center;
       &:hover {
         background: none;
       }
@@ -239,7 +265,7 @@
       width: 50px;
       border-bottom: solid 2px;
       position: relative;
-      border-left: solid 2px;
+      border-right: solid 2px;
       border-top: solid 2px;
       height: 10px;
       background-color: #4CAF50;
@@ -254,11 +280,11 @@
         background-color: darken(#4CAF50, 10%);
       }
       &.first {
+        border-left: solid 2px;
         border-bottom-left-radius: 5px;
         border-top-left-radius: 5px;
       }
       &.last {
-        border-right: solid 2px;
         border-bottom-right-radius: 5px;
         border-top-right-radius: 5px;
       }
@@ -279,6 +305,7 @@
       box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 4px 0px;
     }
     .proceso-sale {
+      display: none;
       position: absolute;
       right: -24px;
       bottom: 8px;
@@ -291,6 +318,7 @@
       height: 55px;
     }
     .proceso-bloquea {
+      display: none;
       position: absolute;
       left: 22px;
       bottom: 8px;
@@ -307,19 +335,23 @@
       }
     }
     .flecha {
+      display: none;
       position: absolute;
       left: 65px;
       top: -69px;
       font-weight: bold;
       font-size: 20px;
+      height: 55px;
     }
     .flecha-bloquea {
+      display: none;
       position: absolute;
       right: 17px;
       top: -69px;
       font-weight: bold;
       font-size: 20px;
       color: rgb(102, 102, 102);
+      height: 55px;
       &.interrumpe {
         color: lighten(rgb(102,102,102), 30%)
       }
@@ -328,6 +360,7 @@
 }
 .memoria-bloque {
   background: white;
+  display: none;
   .titulo {
     background-color: #b3b3b3;
     border-top-left-radius: 10px;
@@ -343,8 +376,10 @@
     height: 200px;
     box-shadow: #00000024 0px 1px 10px 0px;
     border-radius: 7px;
+    width: 7rem;
+    margin: auto;
     .particion-block {
-      width: 9rem;
+      width: 7rem;
       box-shadow: #00000024 0px 2px 4px 0px;
       &:first-child {
         border-top-left-radius: 7px;
@@ -419,5 +454,26 @@
         }
       }
     }
+  }
+}
+.gantt-line, .numero-procesador, .numero-bloqueo {
+  display: none;
+}
+.popover-body .memoria-bloque {
+  display: block;
+}
+.cola-block {
+  height: 2rem;
+}
+#cola-finalizados-display {
+  .proceso-name {
+    font-style: normal;
+    background: white;
+    padding: 5px 5px;
+    margin: 0 .3rem;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: bold;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 4px 0px;
   }
 }
