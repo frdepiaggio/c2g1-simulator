@@ -1,8 +1,8 @@
 {% import "simulador/componentes-output/_funciones.html.twig" as funciones %}
 <div class="gantt">
   <h2>Diagrama de Gantt</h2>
-  <div class="w-100">
-    <div class="referencias px-4 d-flex">
+  <div class="w-100 d-flex justify-content-between">
+    <div class="referencias w-50 px-4 d-flex">
       <div class="mr-3">
         <div class="d-flex align-items-center mb-1">
           <div class="proceso-referencia">x</div>
@@ -41,31 +41,51 @@
           <span>Dispositivo ocioso</span>
         </div>
       </div>
-
     </div>
-  </div>
-  <h3>CPU</h3>
-  <div class="gantt-body procesador" altura="">
-    <div style="display: inline-flex;">
-      <div style="position: relative;">
-        <div class="gantt-ejex" style="left: 36px;">
-          <a>
-            0
-          </a>
+    <div class="referencias w-25 px-4 d-flex">
+      <div>
+        <div class="cola-block d-flex align-items-center">
+          <div class="titulo">Cola de nuevos:</div>
+          <div id="cola-nuevos-display"></div>
+        </div>
+        <div class="cola-block d-flex align-items-center">
+          <div class="titulo">Cola de listos:</div>
+          <div id="cola-listos-display"></div>
+        </div>
+        <div class="cola-block d-flex align-items-center">
+          <div class="titulo">Cola de bloqueados:</div>
+          <div id="cola-bloqueados-display"></div>
+        </div>
+        <div class="cola-block d-flex align-items-center">
+          <div class="titulo">Finalizaron:</div>
+          <div id="cola-finalizados-display"></div>
         </div>
       </div>
-      <div
-        class="gantt-line estado-inicial" objetivo="propover-0" data-toggle="popover"
-        flecha="popover-flecha-0"
-      >
-        <a href="">
-          <i class="far fa-play-circle"></i>
-        </a>
-        {{ funciones.renderRafagaInicialData(rafagaInicial, simulador.memoria) }}
-      </div>
-      {% for t, rafaga in rafagas %}
+    </div>
+  </div>
+
+  <h3>CPU</h3>
+  <div class="gantt-body procesador" altura="">
+      <div style="display: inline-flex;">
+        <div class="numero-procesador" style="position: relative;">
+          <div class="gantt-ejex" style="left: 36px;">
+            <a>
+              0
+            </a>
+          </div>
+        </div>
         <div
-          class="gantt-line
+          class="gantt-line estado-inicial animated fadeIn faster" objetivo="propover-0" data-toggle="popover_procesador"
+          flecha="popover-flecha-0"
+        >
+          <a id="estado-inicial-link" href="">
+            <i class="far fa-play-circle"></i>
+          </a>
+          {{ funciones.renderRafagaInicialData(rafagaInicial, simulador.memoria) }}
+        </div>
+        {% for t, rafaga in rafagas %}
+          <div
+            class="gantt-line animated fadeIn faster
             {% if t == 0 %}
                 first
             {% elseif t == rafagas|length-1 %}
@@ -75,62 +95,63 @@
                  ocioso
             {% endif %}
           "
-          objetivo="propover-{{ t + 1 }}" data-toggle="popover_procesador"
-          data-container="body" data-html="true"
-          data-placement="bottom" flecha="popover-flecha-{{ t + 1 }}"
-        >
-          {% if rafaga['finalizo'] %}
-            <div class="proceso-name">{{ rafaga['finalizo']['id'] }}</div>
-            <div class="proceso-sale"></div>
-            <div class="flecha"><i class="fas fa-chevron-right"></i></div>
-          {% endif %}
-          {% if rafaga['bloqueo'] %}
-            <div class="proceso-name">{{ rafaga['bloqueo']['id'] }}</div>
-            <div class="proceso-bloquea"></div>
-            <div class="flecha-bloquea"><i class="fas fa-chevron-left"></i></div>
-          {% endif %}
-          {% if rafaga['interrumpe'] is defined %}
-            {% if rafagas[t+1] is defined and
-              rafaga["interrumpe"]['id'] != rafagas[t+1]['ejecuto']['id'] %}
-              <div class="proceso-name">{{ rafaga['interrumpe']['id'] }}</div>
-              <div class="proceso-bloquea interrumpe"></div>
-              <div class="flecha-bloquea interrumpe"><i class="fas fa-chevron-left"></i></div>
+            objetivo="propover-{{ t + 1 }}" data-toggle="popover_procesador"
+            data-container="body" data-html="true"
+            data-placement="bottom" flecha="popover-flecha-{{ t + 1 }}"
+          >
+            {% if rafaga['finalizo'] %}
+              <div class="proceso-name">{{ rafaga['finalizo']['id'] }}</div>
+              <div class="proceso-sale animated fadeInUp faster"></div>
+              <div class="flecha animated fadeInUp faster"><i class="fas fa-chevron-right"></i></div>
             {% endif %}
-          {% endif %}
-          {{ funciones.renderRafagaData(t, rafagas, simulador.memoria) }}
-        </div>
-        <div style="position: relative;">
-          <div class="gantt-ejex">
+            {% if rafaga['bloqueo'] %}
+              <div class="proceso-name">{{ rafaga['bloqueo']['id'] }}</div>
+              <div class="proceso-bloquea animated fadeInUp faster"></div>
+              <div class="flecha-bloquea animated fadeInUp faster"><i class="fas fa-chevron-left"></i></div>
+            {% endif %}
+            {% if rafaga['interrumpe'] is defined %}
+              {% if rafagas[t+1] is defined and
+                rafaga["interrumpe"]['id'] != rafagas[t+1]['ejecuto']['id'] %}
+                <div class="proceso-name">{{ rafaga['interrumpe']['id'] }}</div>
+                <div class="proceso-bloquea interrumpe"></div>
+                <div class="flecha-bloquea interrumpe"><i class="fas fa-chevron-left"></i></div>
+              {% endif %}
+            {% endif %}
+            {{ funciones.renderRafagaData(t, rafagas, simulador.memoria) }}
+          </div>
+          <div class="numero-procesador" style="position: relative;">
+            <div class="gantt-ejex">
+              <a>
+                {{ t + 1 }}
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  <h3>E/S</h3>
+  <div class="gantt-body bloqueo" altura="">
+      <div style="display: inline-flex;">
+        <div class="numero-bloqueo" style="position: relative;">
+          <div class="gantt-ejex" style="left: 36px;">
             <a>
-              {{ t + 1 }}
+              0
             </a>
           </div>
         </div>
-      {% endfor %}
-    </div>
-  </div>
-  <h3>E/S</h3>
-  <div class="gantt-body bloqueo" altura="">
-    <div style="display: inline-flex;">
-      <div style="position: relative;">
-        <div class="gantt-ejex" style="left: 36px;">
-          <a>
-            0
-          </a>
-        </div>
-      </div>
-      <div
-        class="gantt-line estado-inicial" objetivo="propover-bloqueo-0" data-toggle="popover"
-        flecha="popover-bloqueo-flecha-0"
-      >
-        <a href="">
-          <i class="far fa-play-circle"></i>
-        </a>
-        {{ funciones.renderRafagaESInicialData(rafagaInicial, simulador.memoria) }}
-      </div>
-      {% for t, rafaga in rafagas %}
         <div
-          class="gantt-line bloqueo
+          class="gantt-line estado-inicial animated fadeIn faster" objetivo="propover-bloqueo-0" data-toggle="popover_bloqueo"
+          flecha="popover-bloqueo-flecha-0"
+        >
+          <a href="">
+            <i class="far fa-play-circle"></i>
+          </a>
+          {{ funciones.renderRafagaESInicialData(rafagaInicial, simulador.memoria) }}
+        </div>
+        {% for t, rafaga in rafagas %}
+          <div
+            class="gantt-line bloqueo animated fadeIn faster
             {% if t == 0 %}
                 first
             {% elseif t == rafagas|length-1 %}
@@ -140,25 +161,26 @@
                  ocioso
             {% endif %}
           "
-          objetivo="propover-bloqueo-{{ t + 1 }}" data-toggle="popover_bloqueo"
-          data-container="body" data-html="true"
-          data-placement="bottom" flecha="popover-bloqueo-flecha-{{ t + 1 }}"
-        >
-          {% if rafaga['finalizo_es'] %}
-            <div class="proceso-name">{{ rafaga['finalizo_es']['id'] }}</div>
-            <div class="proceso-sale"></div>
-            <div class="flecha"><i class="fas fa-chevron-right"></i></div>
-          {% endif %}
-          {{ funciones.renderRafagaESData(t, rafagas, simulador.memoria) }}
-        </div>
-        <div style="position: relative;">
-          <div class="gantt-ejex">
-            <a>
-              {{ t + 1 }}
-            </a>
+            objetivo="propover-bloqueo-{{ t + 1 }}" data-toggle="popover_bloqueo"
+            data-container="body" data-html="true"
+            data-placement="bottom" flecha="popover-bloqueo-flecha-{{ t + 1 }}"
+          >
+            {% if rafaga['finalizo_es'] %}
+              <div class="proceso-name">{{ rafaga['finalizo_es']['id'] }}</div>
+              <div class="proceso-sale"></div>
+              <div class="flecha"><i class="fas fa-chevron-right"></i></div>
+            {% endif %}
+            {{ funciones.renderRafagaESData(t, rafagas, simulador.memoria) }}
           </div>
-        </div>
-      {% endfor %}
+          <div class="numero-bloqueo" style="position: relative;">
+            <div class="gantt-ejex">
+              <a>
+                {{ t + 1 }}
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
     </div>
-  </div>
+
 </div>

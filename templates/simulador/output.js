@@ -12,6 +12,10 @@
 // const $ = require('jquery');
 jQuery(document).ready(function ($) {
     let countPopover = 0;
+    const colaListosDisplay = $('#cola-listos-display');
+    const colaNuevosDisplay = $('#cola-nuevos-display');
+    const colaBloqueadosDisplay = $('#cola-bloqueados-display');
+    const finalizadosDisplay = $('#cola-finalizados-display');
 
     $("[data-toggle=popover_procesador]").on('click', function (e) {
         const ganttBody = $('.gantt-body.procesador');
@@ -95,6 +99,99 @@ jQuery(document).ready(function ($) {
         e.preventDefault();
 
     });
+
+    function revelarGanttProcesadorLine() {
+        $(".gantt-body.procesador .gantt-line").each(function(index) {
+            const that = this;
+            const colaListos = $(that).find('.cola.listos .cola-listos-mostrar').html();
+            const colaNuevos = $(that).find('.cola.nuevos .cola-nuevos-mostrar').html();
+            const finalizado = $(that).find('.finaliza-proceso .proceso-name');
+            const lineaBloquea = $(that).find('.proceso-bloquea');
+            const flechaBloquea = $(that).find('.flecha-bloquea');
+            const lineaSale = $(that).find('.proceso-sale');
+            const flechaSale = $(that).find('.flecha');
+            const t = setTimeout(function() {
+                $(that).show();
+                lineaBloquea.show();
+                flechaBloquea.show();
+                lineaSale.show();
+                flechaSale.show();
+                if (colaListos) {
+                    colaListosDisplay.html(colaListos);
+                } else {
+                    colaListosDisplay.html('');
+                }
+
+                if (colaNuevos) {
+                    colaNuevosDisplay.html(colaNuevos);
+                } else {
+                    colaNuevosDisplay.html('');
+                }
+                finalizadosDisplay.append(finalizado);
+
+            }, 1000 * index);
+        });
+    }
+    function revelarGanttBloqueoLine() {
+        $(".gantt-body.bloqueo .gantt-line").each(function(index) {
+            const that = this;
+            const colaBloqueados = $(that).find('.cola.bloqueados .cola-bloqueados-mostrar').html();
+            const lineaBloquea = $(that).find('.proceso-bloquea');
+            const flechaBloquea = $(that).find('.flecha-bloquea');
+            const lineaSale = $(that).find('.proceso-sale');
+            const flechaSale = $(that).find('.flecha');
+            const t = setTimeout(function() {
+                $(that).show();
+                lineaBloquea.show();
+                flechaBloquea.show();
+                lineaSale.show();
+                flechaSale.show();
+
+                if (colaBloqueados) {
+                    colaBloqueadosDisplay.html(colaBloqueados);
+                } else {
+                    colaBloqueadosDisplay.html('');
+                }
+            }, 1000 * index);
+        });
+    }
+    function revelarMemoriaBloque() {
+        $(".mapa-memoria .memoria-bloque").each(function(index) {
+            let that = this;
+            let t = setTimeout(function() {
+                $(that).show();
+            }, 1000 * index);
+        });
+    }
+    function revelarNumeroProcesador() {
+        $(".numero-procesador").each(function(index) {
+            let that = this;
+            let t = setTimeout(function() {
+                $(that).show();
+            }, 1000 * index);
+        });
+    }
+    function revelarNumeroBloqueo() {
+        $(".numero-bloqueo").each(function(index) {
+            let that = this;
+            let t = setTimeout(function() {
+                $(that).show();
+            }, 1000 * index);
+        });
+    }
+
+    revelarGanttProcesadorLine();
+    revelarNumeroProcesador();
+    revelarGanttBloqueoLine();
+    revelarNumeroBloqueo();
+    revelarMemoriaBloque();
+    // $('.gantt-line').each(function(i){
+        // console.log(i);
+        // $(this).delay((i+100)*1000).show();
+        // setTimeout(function(){
+        //     $('.gantt-line').show();
+        // },1000);
+    // });
     // $("[data-toggle=popover]").popover({
     //     html: true,
     //     content: function () {

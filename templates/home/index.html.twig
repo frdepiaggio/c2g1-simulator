@@ -8,19 +8,21 @@
 
 {% block body %}
     <div class="section">
-        <h1>Bienvenido al simulador de planificación de procesos</h1>
-        <div class="welcome">
-            <p>
-                Este sistema simula el funcionamiento de un planificador de procesos de un sistema operativo,
-                permite seleccionas diferentes opciones para realizar la simulación y poder
-                "construir" los diferentes elementos a simular.
-            </p>
-            <p>
-                Para iniciar una simulación haga click en el siguiente botón:
-            </p>
-            <a class="btn btn-success" href="{{ path('new') }}">Comenzar simulación</a>
-            <a class="btn btn-success" href="{{ path('simulador_index') }}">Listado de simulaciones</a>
-        </div>
+        <div class="col-12">
+            <h1 id="bienvenida">BIENVENIDO AL SIMULADOR DE PLANIFICACIÓN DE PROCESOS</h1>
+            <div class="welcome">
+                <p id="descripcion" class="col-12">
+                    Este sistema simula el funcionamiento de un planificador de procesos de un sistema operativo,
+                    permite seleccionar diferentes opciones para realizar la simulación y poder
+                    "construir" los diferentes elementos a simular.
+                </p>
+                <p id="orden">
+                    Para cargar o iniciar una simulación haga click:
+                </p>
+                <a class="btn btn-info" id="apretar" href="{{ path('simulador_index') }}">Cargar simulación</a>
+                <a class="btn btn-info" id="apretar" href="{{ path('new') }}">Comenzar simulación</a>
+
+            </div>
     </div>
 {% endblock %}
 
