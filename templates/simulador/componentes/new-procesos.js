@@ -100,6 +100,7 @@ jQuery(document).ready(function ($) {
         })
         .on('click', '#btn-new-proceso', function (e) {
             const $this = $(this);
+            const loadingIcon = $('.loading-proceso');
             const simuladorId = $('#simulador-id-span').html();
             const ta = parseInt(taInput.val());
             const ti1 = parseInt(irrupcion1Input.val());
@@ -189,6 +190,19 @@ jQuery(document).ready(function ($) {
                         taInput.focus();
                         procesosErrorGeneral.html('');
                     }
+                },
+                beforeSend: function(){
+                    loadingIcon.show();
+                    $this.prop("disabled", true);
+                    $('button').prop("disabled", true);
+                    $('input').prop("disabled", true);
+                },
+                complete: function(){
+                    loadingIcon.hide();
+                    $this.prop("disabled", false);
+                    $('button').prop("disabled", false);
+                    $('input').prop("disabled", false);
+                    taInput.focus();
                 }
             });
 
@@ -196,6 +210,7 @@ jQuery(document).ready(function ($) {
         })
         .on('click', '#btn-simulador-save', function (e) {
             const $this = $(this);
+            const loadingIcon = $('.loading-simulador');
             const simuladorId = $('#simulador-id-span').html();
             const algoritmoPlanificacion = algoritmoPlanificacionSelect.val();
             const quantumValue = quantumInput.val();
@@ -258,6 +273,18 @@ jQuery(document).ready(function ($) {
                             procesosCheck.show(); //Se muestra un check en el bloque de datos de procesos
                             procesosDataTitle.css('background-color', '#20c997'); //Fondo bloque datos memoria en verde
                         }
+                    },
+                    beforeSend: function(){
+                        loadingIcon.show();
+                        $this.prop("disabled", true);
+                        $('button').prop("disabled", true);
+                        $('input').prop("disabled", true);
+                    },
+                    complete: function(){
+                        loadingIcon.hide();
+                        $this.prop("disabled", false);
+                        $('button').prop("disabled", false);
+                        $('input').prop("disabled", false);
                     }
                 });
             } else {

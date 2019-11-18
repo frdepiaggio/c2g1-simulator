@@ -227,6 +227,7 @@ jQuery(document).ready(function ($) {
         //Cuando se hace click en el botón para Guardar
         .on('click', '#btn-partitions', function(e){
             const $this = $(this);
+            const loadingIcon = $('.loading-memoria');
             const memorySize = parseInt($('#memoria-size').val());
             const soSize = parseInt($('#so-size').val());
             const algIntercambio = $('#algoritmo-intercambio').val();
@@ -296,7 +297,20 @@ jQuery(document).ready(function ($) {
                         allProcesosButton.prop('disabled', false);//Se habilitan los botones para carga de procesos
                         $('#nav-work-tab').tab('show'); //Se muestra la pestaña para la carga de procesos
                     }
+                },
+                beforeSend: function(){
+                    loadingIcon.show();
+                    $this.prop("disabled", true);
+                    $('button').prop("disabled", true);
+                    $('input').prop("disabled", true);
+                },
+                complete: function(){
+                    loadingIcon.hide();
+                    $this.prop("disabled", false);
+                    $('button').prop("disabled", false);
+                    $('input').prop("disabled", false);
                 }
+
             });
         });
 });
