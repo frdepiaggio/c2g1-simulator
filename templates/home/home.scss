@@ -52,11 +52,10 @@ nav div, nav a{
     color: #ffffff;
     text-align: center;
     padding: 1rem;
-    background: rgba(19, 132, 150, 0.7);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     font-weight: bold;
-    background-image: linear-gradient(to left, #3F51B5 0%, #59a8b5 100%);
+    background-image: linear-gradient(to top, rgba(63, 81, 181, 0.7) 0%, rgba(89, 168, 181, 0.7) 100%);
   }
 
   #descripcion{

@@ -1,7 +1,9 @@
 @import "../../templates/home/home.scss";
 @import "../../templates/simulador/output.scss";
 @import "../../templates/simulador/new.scss";
-
+body {
+  font-family: 'Roboto', sans-serif;
+}
 button {
   font-weight: bold !important;
 }
@@ -17,11 +19,23 @@ input, button, select, a.btn {
     border-color: #6371c3 !important;
   }
 }
-.navbar-brand i {
-  background: #222;
-  padding: .3rem;
-  border-radius: 5px;
+.navbar {
+  .navbar-brand {
+    font-family: 'Share Tech Mono', monospace;
+    i {
+      background: #222;
+      padding: .3rem;
+      border-radius: 5px;
+    }
+  }
+  .navbar-nav {
+    .nav-link {
+      color: white;
+      font-weight: bold;
+    }
+  }
 }
+
 .btn-secondary {
   background-color: #3f51b5;
   border-color: #3f51b5;
@@ -64,7 +78,7 @@ input, button, select, a.btn {
   background-color: white;
   h2 {
     padding: .5rem;
-    background: rgba(63, 81, 181, 0.6);
+    background-image: linear-gradient(to top, rgba(63, 81, 181, 0.7) 0%, rgba(89, 168, 181, 0.7) 100%);
     border-top-left-radius: 10px;
     color: white;
     border-top-right-radius: 10px;
