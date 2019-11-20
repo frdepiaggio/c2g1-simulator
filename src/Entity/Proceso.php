@@ -48,6 +48,7 @@ class Proceso
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Simulador", inversedBy="procesos")
+     * @ORM\JoinColumn(name="simulador", referencedColumnName="id", onDelete="CASCADE")
      */
     private $simulador;
 

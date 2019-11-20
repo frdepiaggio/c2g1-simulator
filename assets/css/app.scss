@@ -10,7 +10,7 @@ select {
     font-style: italic;
   }
 }
-input, button, select {
+input, button, select, a.btn {
   border-radius: 10px!important;
   &:focus {
     box-shadow: 0 0 0 0.2rem rgba(99, 113, 195, 0.6) !important;
@@ -75,9 +75,20 @@ input, button, select {
     background-color: #2980ba;
     border-color: #2980ba;
     padding: .1rem .4rem;
+    margin-right: 1rem;
     &:hover {
       background-color: darken(#2980ba, 10%);
       border-color: darken(#2980ba, 10%);
+    }
+    &.disabled {
+      color: #fff;
+      background-color: #6c757d;
+      border-color: #6c757d;
+      cursor: default;
+      &:hover {
+        background-color: #6c757d;
+        border-color: #6c757d;
+      }
     }
   }
   .cuerpo-tabla {
@@ -97,6 +108,9 @@ input, button, select {
     }
     td.main {
       padding: .5rem 0;
+      form {
+        padding: 0;
+      }
     }
     .header th {
       background: #dee2e6;
@@ -117,6 +131,10 @@ input, button, select {
         color: black;
       }
     }
+    .no-algoritmo {
+      font-style: italic;
+      color: var(--gray);
+    }
     .actions-container {
       display: flex;
       form {
@@ -131,6 +149,10 @@ input, button, select {
     background-image: linear-gradient(to bottom, #ffffff 0%, #dee2e6 100%);
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+    form {
+      padding: 0;
+      margin-right: 1rem;
+    }
     .tabla {
       h2 {
         font-size: .8rem;
@@ -144,10 +166,10 @@ input, button, select {
         background: white;
       }
     }
-    .delete {
-      background: #F44336;
-      font-size: .8rem;
-      color: white;
-    }
+  }
+  .btn.delete {
+    background: #F44336;
+    color: white;
+    padding: .1rem .4rem;
   }
 }

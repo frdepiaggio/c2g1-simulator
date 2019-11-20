@@ -1,73 +1,144 @@
 .navbar {
-    background-color: #3F51B5!important;
+  background-image: linear-gradient(to left, #3F51B5 0%, #59a8b5 100%);
+  box-shadow: rgba(0, 0, 0, 0.39) 0px 1px 3px;
 }
 nav div, nav a{
-    border:none!important;
+  border:none!important;
 }
 .navbar {
-    .dropdown-item:hover {
-        background-color: rgba(99, 113, 195, 0.4);
-    }
+  .dropdown-item:hover {
+    background-color: rgba(99, 113, 195, 0.4);
+  }
 }
 .navbar-brand i {
-    background: #222;
-    padding: .3rem;
-    border-radius: 5px;
+  background: #222;
+  padding: .3rem;
+  border-radius: 5px;
 }
 .btn-info {
-    background-color: #3f51b5;
-    border-color: #3f51b5;
-    font-size: 20px;
-    margin-left: 1%;
-    margin-right: 1%;
-}
-.btn-info:hover {
+  background-color: #3f51b5;
+  border-color: #3f51b5;
+  font-size: 20px;
+  margin-left: 1%;
+  margin-right: 1%;
+  :hover {
     background-color: #2980ba;
     border-color: #2980ba;
     font-size: 20px;
     margin-left: 1%;
     margin-right: 1%;
+  }
+  &.anteriores {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    &:hover {
+      background-color: darken(#6c757d,10%);
+      border-color: darken(#6c757d,10%);
+    }
+  }
 }
 .contenedor {
-    width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;
-
+  width: 100%;
+  padding: 0 2rem;
+  margin: 1rem auto;
 }
-#cuerpo{
-    font-family: Rockwell;
-}
-
-#bienvenida{
-    padding-top: 5%;
-    color: #2980ba;
+.welcome-home {
+  box-shadow: #00000045 0px 1px 10px 0px;
+  border-radius: 10px;
+  margin-top: 1rem;
+  background-image: linear-gradient(to bottom, #ffffff 50%, #00000038 200%);
+  #bienvenida{
+    font-size: 1.5rem;
+    color: #ffffff;
     text-align: center;
-    padding-bottom: 5%;
+    padding: 1rem;
+    background: rgba(19, 132, 150, 0.7);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-weight: bold;
+    background-image: linear-gradient(to left, #3F51B5 0%, #59a8b5 100%);
+  }
 
-}
-#descripcion{
+  #descripcion{
+    padding: 1rem 2rem;
     text-align: justify;
-    font-size: 25px;
-    padding-bottom: 5%;
-    font-style: italic;
+    font-size: 1rem;
+  }
 }
+
 #orden{
-    text-align: center;
-    font-size: 20px;
-    padding-bottom: 3%;
+  text-align: center;
+  font-size: 20px;
+  padding-bottom: 3%;
 }
 .navbar {
-    background-color: #3F51B5!important;
+  background-color: #3F51B5!important;
 }
 nav div, nav a{
-    border:none!important;
+  border:none!important;
 }
 .navbar .dropdown-item:hover {
-    background-color: #2980ba /*rgba(99, 113, 195, 0.4)*/;
-    color: #ffffff;
+  background-color: #2980ba /*rgba(99, 113, 195, 0.4)*/;
+  color: #ffffff;
 }
 .dropdown-menu {
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 2px;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 2px;
+}
+.detalles-home {
+  list-style: none;
+  font-size: .9rem;
+  .t-1 {
+    font-size: 1rem;
+    background-color: #2980ba;
+  }
+  .t-2 {
+    font-size: .9rem;
+    background-color: #3f51b599;
+  }
+  ul {
+    list-style: none;
+    margin: .5rem 0rem;
+    padding: .5rem 2rem;
+    li {
+      margin:.5rem 0;
+    }
+  }
+  .ul-2 {
+    list-style: none;
+  }
+
+  .ul-2 li::before {
+    content: "\2022";
+    color: #3f51b5;
+    font-weight: bold;
+    font-size: 1rem;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+  }
+  .ul-3 {
+    list-style: none;
+  }
+
+  .ul-3 li::before {
+    content: "\2022";
+    color: #6c757d;
+    font-weight: bold;
+    font-size: 1rem;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+  }
+}
+.elementos {
+  color: #138496;
+  &:hover {
+    text-decoration: none;
+    color: darken(#138496, 10%);
+  }
+  &:focus {
+    border: none!important;
+    box-shadow: none!important;
+    text-decoration: none;
+  }
 }
