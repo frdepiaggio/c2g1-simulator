@@ -161,6 +161,19 @@ class SimuladorController extends AbstractController
     }
 
     /**
+     * @Route("/borrar/{id}", name="simulador_delete", methods={"DELETE"})
+     */
+    public function delete(Request $request, Simulador $simulador): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$simulador->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($simulador);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('simulador_index');
+    }
+    /**
      * @Route("/prueba/{id}", name="simulador.prueba", methods={"GET","POST"})
      * @param Memoria $memoria
      * @return void

@@ -1,0 +1,5 @@
+<form class="align-self-center" method="post" action="{{ path('simulador_delete', {'id': simulador.id}) }}" onsubmit="return confirm('¿Seguro querés eliminar esta simulación?');">
+    <input type="hidden" name="_method" value="DELETE">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ simulador.id) }}">
+    <button class="btn delete">Eliminar <i class="fas fa-trash"></i></button>
+</form>

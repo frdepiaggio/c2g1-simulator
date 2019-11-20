@@ -8,20 +8,175 @@
 
 {% block body %}
     <div class="section">
-        <div class="col-12">
-            <h1 id="bienvenida">BIENVENIDO AL SIMULADOR DE PLANIFICACIÓN DE PROCESOS</h1>
+        <div class="welcome-home">
+            <h1 id="bienvenida">Planificador de procesos</h1>
             <div class="welcome">
-                <p id="descripcion" class="col-12">
-                    Este sistema simula el funcionamiento de un planificador de procesos de un sistema operativo,
-                    permite seleccionar diferentes opciones para realizar la simulación y poder
-                    "construir" los diferentes elementos a simular.
-                </p>
-                <p id="orden">
-                    Para cargar o iniciar una simulación haga click:
-                </p>
-                <a class="btn btn-info" id="apretar" href="{{ path('simulador_index') }}">Cargar simulación</a>
-                <a class="btn btn-info" id="apretar" href="{{ path('new') }}">Comenzar simulación</a>
-
+                <div id="descripcion">
+                    <p>
+                        Este sistema fue desarrollado por estudiantes de
+                        <strong>
+                            3er año de la Universidad Tecnológica Nacional, Facultad Regional Resistencia
+                        </strong>
+                        (UTN FRRe) en el marco de un trabajo integrador realizado para
+                        la cátedra de <strong>Sistemas Operativos</strong>.
+                    </p>
+                    <p>
+                        Su propósito es el <strong>simular un planificador de procesos</strong> de un sistema operativo
+                        con motivo del estudio y comparación entre los diferentes mecanismos que existen.
+                    </p>
+                    <button
+                      class="btn btn-link p-0 elementos" type="button"
+                      data-toggle="collapse" data-target="#collapseElementos"
+                      aria-expanded="false" aria-controls="collapseElementos"
+                      isOpen="false"
+                    >
+                        <i class="icon far fa-plus-square"></i> Elementos del simulador
+                    </button>
+                    <div class="collapse p-2" id="collapseElementos">
+                        <ul class="detalles-home pr-5">
+                            <li class="li-1">
+                                <div>
+                                    <span class="badge badge-secondary t-1">Memoria Principal</span>
+                                    Para toda simulación es necesario cargar datos de la memoria
+                                    en la que se asignarán los procesos.
+                                </div>
+                                <ul class="ul-2">
+                                    <li>
+                                        <span class="badge badge-secondary t-2">Tamaño de la memoria</span>
+                                        Se especifica el tamaño total de la memoria.
+                                    </li>
+                                    <li>
+                                        <span class="badge badge-secondary t-2">Tamaño usado por el S.O.</span>
+                                        Se especifica que tamaño va a ser ocupado por el
+                                        Sistema Operativo.
+                                    </li>
+                                    <li>
+                                        <span class="badge badge-secondary t-2">Particiones</span>
+                                        la resta entre el tamaño total de memoria y el que ocupa el S.O.
+                                        nos dá la cantidad de memoria disponible para el usuario, que se divide
+                                        en particiones.
+                                        <ul class="ul-3">
+                                            <li>
+                                                <span class="badge badge-secondary t-3">Particiones fijas</span>
+                                                se cargan una por una con un tamaño específico que no
+                                                variará en el tiempo.
+                                            </li>
+                                            <li>
+                                                <span class="badge badge-secondary t-3">Particiones variables</span>
+                                                al determinar este tipo de particiones, éstas pueden
+                                                variar su tamaño de acuerdo a lo que requiera el proceso a asignar.
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <span class="badge badge-secondary t-2">Algoritmo de intercambio</span>
+                                        se necesita especificar para poder gestionar
+                                        el uso de éstas particiones.
+                                        <ul class="ul-3">
+                                            <li>
+                                                <span class="badge badge-secondary t-3">First-Fit</span>
+                                                Se asigna el proceso en la primer partición con el
+                                                tamaño suficiente para albergarlo.
+                                            </li>
+                                            <li>
+                                                <span class="badge badge-secondary t-3">Best-Fit</span>
+                                                Se asigna el proceso en la partición en la mejor se ajuste.
+                                            </li>
+                                            <li>
+                                                <span class="badge badge-secondary t-3">Wors-Fit</span>
+                                                Se asigna el proceso en la partición en la peor se ajuste.
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="li-1">
+                                <div>
+                                    <span class="badge badge-secondary t-1">Carga de Trabajo</span>
+                                    Para cargar los procesos, debemos determinar una serie de elementos.
+                                </div>
+                                <ul class="ul-2">
+                                    <li>
+                                        <span class="badge badge-secondary t-2">Algoritmo de planificación</span>
+                                        gestionan la forma en la que los procesos hacen uso
+                                        de los recursos del sistema.
+                                        <ul class="ul-3">
+                                            <li>
+                                                <span class="badge badge-secondary t-3">First Come First Serve (FCFS)</span>
+                                                este algoritmo ejecuta los procesos
+                                                por orden de arribo, como su nombre lo indica.
+                                            </li>
+                                            <li>
+                                                <span class="badge badge-secondary t-3">Round-Robin (RR)</span>
+                                                asigna a cada proceso una porción de tiempo
+                                                equitativa y ordenada para hacer uso de la CPU.
+                                            </li>
+                                            <li>
+                                                <span class="badge badge-secondary t-3">Shortest Job First (SJF)</span>
+                                                se basa en los ciclos de vida de los procesos,
+                                                de esta manera, se ejecutan primero los procesos con un ciclo de vida
+                                                más corto.
+                                            </li>
+                                            <li>
+                                                <span class="badge badge-secondary t-3">Short Remaining Time First (SRTF)</span>
+                                                similar al SJF, con la diferencia que
+                                                trata el tiempo remanente de vida de los procesos, determinando que proceso
+                                                se ejecutará cada vez que la cola de listos se actualiza.
+                                            </li>
+                                            <li>
+                                                <span class="badge badge-secondary t-3">Colas multinivel (sin retroalimentación)</span>
+                                                los procesos se cargan en colas
+                                                con distintas prioridades, tratando primero a los procesos en las colas con
+                                                mayor prioridad, pudiendo tener, cada cola, un algoritmo de
+                                                planificación diferente.
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <span class="badge badge-secondary t-2">Procesos</span>
+                                        se cargan los datos necesarios para simular un ciclo de vida completo de
+                                        un proceso.
+                                        <ul class="ul-3">
+                                            <li>
+                                                <span class="badge badge-secondary t-3">Tiempo de arribo</span>
+                                                en que instante de tiempo arribará el proceso.
+                                            </li>
+                                            <li>
+                                                <span class="badge badge-secondary t-3">Ciclo de vida</span>
+                                                Se cargan tres valores, siendo el primero y el último
+                                                porciones de tiempo en las cuales, el proceso realiza irrupciones
+                                                en la CPU. El segundo valor representa irrupciones de entradas/salidas que
+                                                realiza el proceso.
+                                            </li>
+                                            <li>
+                                                <span class="badge badge-secondary t-3">Tamaño</span>
+                                                Se requiere cargar el tamaño que el proceso requiere para cargarse
+                                                en memoria.
+                                            </li>
+                                            <li>
+                                                <span class="badge badge-secondary t-3">Prioridad</span>
+                                                en algunos casos, se requiere asignar una prioridad al proceso.
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <p class="text-center mb-0 mt-4">
+                        <strong>Para ejecutar una simulación existente o iniciar una nueva haga click:</strong>
+                    </p>
+                </div>
+                <div class="text-center pb-4">
+                    <a class="btn btn-info anteriores" id="apretar" href="{{ path('simulador_index') }}">
+                        <i class="fas fa-list"></i>
+                        Listado de simulaciones
+                    </a>
+                    <a class="btn btn-info" id="apretar" href="{{ path('new') }}">
+                        <i class="fas fa-plus"></i>
+                        Nueva simulación
+                    </a>
+                </div>
             </div>
     </div>
 {% endblock %}
