@@ -61,6 +61,7 @@ input, button, select {
   box-shadow: #00000024 0px 1px 10px 0px;
   border-radius: 10px;
   font-size: 0.8rem;
+  background-color: white;
   h2 {
     padding: .5rem;
     background: rgba(63, 81, 181, 0.6);
@@ -70,17 +71,33 @@ input, button, select {
     font-size: 1.3rem;
     font-weight: bold;
   }
+  .run {
+    background-color: #2980ba;
+    border-color: #2980ba;
+    padding: .1rem .4rem;
+    &:hover {
+      background-color: darken(#2980ba, 10%);
+      border-color: darken(#2980ba, 10%);
+    }
+  }
   .cuerpo-tabla {
     margin-left: 20px;
     margin-right: 20px;
   }
   table {
+    width: 90%;
     margin: 20px auto;
     border-collapse: collapse;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: #00000024 0px 1px 10px 0px;
     border: none;
+    tr.main {
+      border-top: solid 1px #dee2e6;
+    }
+    td.main {
+      padding: .5rem 0;
+    }
     .header th {
       background: #dee2e6;
       min-width: 3rem;
@@ -89,6 +106,48 @@ input, button, select {
     }
     .second th{
       background: darken(#dee2e6, 10%);
+    }
+    .badge {
+      font-size: 100%;
+      &.intercambio {
+        background-color: #1aa58b;
+      }
+      &.planificacion {
+        background-color: #2196f352;
+        color: black;
+      }
+    }
+    .actions-container {
+      display: flex;
+      form {
+        padding: 0;
+        button {
+          color: var(--red);
+        }
+      }
+    }
+  }
+  .detalles-container {
+    background-image: linear-gradient(to bottom, #ffffff 0%, #dee2e6 100%);
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    .tabla {
+      h2 {
+        font-size: .8rem;
+        background: none;
+        color: black;
+        padding-bottom: 0;
+        margin-bottom: 0;
+      }
+      table {
+        margin-top: .5rem;
+        background: white;
+      }
+    }
+    .delete {
+      background: #F44336;
+      font-size: .8rem;
+      color: white;
     }
   }
 }
