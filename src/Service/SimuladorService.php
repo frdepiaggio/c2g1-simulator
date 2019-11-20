@@ -106,8 +106,11 @@ class SimuladorService
                         ->rr($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $simulador->getQuantum(), $memoria->getTipo())
                     ;
                     break;
-                case 'prioridades':
-                    dd('no hay prioridades aun');
+                case 'sjf':
+                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
+                        $this->planificacionService
+                            ->sjf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo())
+                    ;
                     break;
                 case 'multinivel':
                     dd('no hay multinivel aun');
