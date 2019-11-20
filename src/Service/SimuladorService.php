@@ -112,6 +112,12 @@ class SimuladorService
                             ->sjf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo())
                     ;
                     break;
+                case 'srtf':
+                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
+                        $this->planificacionService
+                            ->srtf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo())
+                    ;
+                    break;
                 case 'multinivel':
                     dd('no hay multinivel aun');
                     break;

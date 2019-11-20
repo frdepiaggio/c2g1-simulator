@@ -177,4 +177,45 @@ class PlanificacionService
 
         return [array_values($cola_listos), array_values($cola_bloqueados), $particiones, $rafagaActual];
     }
+
+    function srtf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $tipoMemoria) {
+        usort($cola_listos, function ($a, $b) {
+            return ($a['ciclo'][0]['valor'] < $b['ciclo'][0]['valor']) ? -1 : 1;
+        });
+        if (!empty($cola_listos)) {
+            $procesoEnTratamiento = $cola_listos[0];
+            $ciclo = $procesoEnTratamiento['ciclo'];
+            $rafagaActual['ejecuto'] = $procesoEnTratamiento; //Cargar proceso ejecutado
+
+            if ($ciclo[0]['tipo'] == 'irrupcion') {
+                $tiempo_remanente = $ciclo[0]['valor'] - 1;
+
+                if ($tiempo_remanente == 0 && isset($ciclo[1])) { //Si se termina la irrupcion y viene un bloqueo
+
+                    unset($ciclo[0]); //Sacar la irrupción que llego a cero del ciclo
+                    unset($cola_listos[0]); //Sacar el proceso de la cola de listos
+                    $procesoEnTratamiento['ciclo'] = array_values($ciclo); //Actualizar el proceso sin la irrupción que termino
+                    array_push($cola_bloqueados, $procesoEnTratamiento);
+                    $rafagaActual['bloqueo'] = $procesoEnTratamiento; //Cargar proceso ejecutado
+
+                } else if ($tiempo_remanente == 0 && !isset($ciclo[1])) { // Si termina la irrupción y termina el proceso
+
+                    unset($ciclo[0]); //Sacar la irrupción que llego a cero del ciclo
+                    unset($cola_listos[0]); //Sacar el proceso de la cola de listos
+                    $procesoEnTratamiento['ciclo'] = array_values($ciclo); //Actualizar el ciclo del proceso
+                    $rafagaActual['finalizo'] = $procesoEnTratamiento; //Cargar proceso finalizado
+
+                } else {
+                    //El proceso se ejecuta normalmente y sigue en CPU
+                    $ciclo[0]['valor'] = $tiempo_remanente; //Se resta la irrupcion
+                    $cola_listos[0]['ciclo'] = $ciclo; //Se actualiza el ciclo en la cola de listos
+                    usort($cola_listos, function ($a, $b) {
+                        return ($a['ciclo'][0]['valor'] < $b['ciclo'][0]['valor']) ? -1 : 1;
+                    });
+                }
+            }
+        }
+
+        return [array_values($cola_listos), array_values($cola_bloqueados), $particiones, $rafagaActual];
+    }
 }
