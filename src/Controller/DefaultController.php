@@ -43,31 +43,35 @@ class DefaultController extends AbstractController
         $procesos = $simulador->getProcesos();
         $memoria = $simulador->getMemoria();
 
-//        if ($simulador->getRafagas() && $simulador->getRafagaInicial()) {
-//            $rafagas = $simulador->getRafagas();
-//            $rafagaInicial = $simulador->getRafagaInicial();
-//        } else {
-            list($rafagaInicial, $rafagas) = $simuladorService->simular($simulador);
-//            $em = $this->getDoctrine()->getManager();
-//            $simulador->setRafagas($rafagas);
-//            $simulador->setRafagaInicial($rafagaInicial);
-//
-//            $em->flush();
-//        }
+        if ($simulador->getRafagas() && $simulador->getRafagaInicial()) {
+            $rafagas = $simulador->getRafagas();
+            $rafagaInicial = $simulador->getRafagaInicial();
+        } else {
+            if ($simulador->getAlgoritmoPlanificacion() == 'multinivel') {
+                list($rafagaInicial, $rafagas) = $simuladorService->simularMultinivel($simulador);
+            } else {
+                list($rafagaInicial, $rafagas) = $simuladorService->simular($simulador);
+            }
 
-        $rafagaFinal = [
-            'ejecuto' => null,
-            'ejecuto_es' => null,
-            'finalizo' => null,
-            'finalizo_es' => null,
-            'bloqueo' => null,
-            'cola_nuevos' => null,
-            'cola_listos' => null,
-            'cola_bloqueados' => null,
-            'particiones' => $simuladorService->getParticionesArray($memoria)
-        ];
+            $rafagaFinal = [
+                'ejecuto' => null,
+                'ejecuto_es' => null,
+                'finalizo' => null,
+                'finalizo_es' => null,
+                'bloqueo' => null,
+                'cola_nuevos' => null,
+                'cola_listos' => null,
+                'cola_bloqueados' => null,
+                'particiones' => $simuladorService->getParticionesArray($memoria)
+            ];
+            array_push($rafagas, $rafagaFinal);
 
-        array_push($rafagas, $rafagaFinal);
+            $em = $this->getDoctrine()->getManager();
+            $simulador->setRafagas($rafagas);
+            $simulador->setRafagaInicial($rafagaInicial);
+
+            $em->flush();
+        }
         return $this->render('simulador/output.html.twig', [
             'controller_name' => 'DefaultController',
             'rafagaInicial' => $rafagaInicial,

@@ -83,7 +83,7 @@ class NewSimuladorService
             $response['mensaje'] = 'error';
             array_push($response['error'], 'size_max');
         }
-        if ($array['algoritmo_planificacion'] == 'multinivel' && $array['prioridad'] == 'NaN') {
+        if ($array['algoritmo_planificacion'] == 'multinivel' && $array['prioridad'] == 'default') {
             $response['code'] = 400;
             $response['mensaje'] = 'error';
             array_push($response['error'], 'prioridad');
