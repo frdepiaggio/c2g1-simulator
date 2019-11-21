@@ -8,7 +8,9 @@
 #tipo-error, #new-part-error,
 #ta-error, #irrupcion1-error,
 #irrupcion2-error, #entradas-salidas-error,
-#tamanio-error, #prioridad-error, #procesos-error{
+#tamanio-error, #prioridad-error, #procesos-error,
+#cola-alta-error, #cola-media-error, #cola-baja-error,
+#cola-alta-quantum-error, #cola-media-quantum-error, #cola-baja-quantum-error{
   color: #dc3545;
   font-size: .8rem;
 }
@@ -244,4 +246,10 @@ form, .list, .particion-list {
 }
 .loading-memoria, .loading-proceso, .loading-simulador {
   display: none;
+}
+.colas-multinivel {
+  display: none;
+  .cola-alta-quantum-container, .cola-media-quantum-container, .cola-baja-quantum-container {
+    display: none;
+  }
 }

@@ -83,7 +83,7 @@ class NewSimuladorService
             $response['mensaje'] = 'error';
             array_push($response['error'], 'size_max');
         }
-        if ($array['algoritmo_planificacion'] == 'prioridades' && $array['prioridad'] == 'NaN') {
+        if ($array['algoritmo_planificacion'] == 'multinivel' && $array['prioridad'] == 'NaN') {
             $response['code'] = 400;
             $response['mensaje'] = 'error';
             array_push($response['error'], 'prioridad');
@@ -107,6 +107,38 @@ class NewSimuladorService
             $response['code'] = 400;
             $response['mensaje'] = 'error';
             array_push($response['error'], 'quantum');
+        }
+        if ($array['algoritmo_planificacion'] == 'multinivel') {
+            if ($array['cola_alta'] == 'rr' && $array['cola_alta_quantum'] == 'default') {
+                $response['code'] = 400;
+                $response['mensaje'] = 'error';
+                array_push($response['error'], 'cola_alta_quantum');
+            }
+            if ($array['cola_media'] == 'rr' && $array['cola_media_quantum'] == 'default') {
+                $response['code'] = 400;
+                $response['mensaje'] = 'error';
+                array_push($response['error'], 'cola_media_quantum');
+            }
+            if ($array['cola_baja'] == 'rr' && $array['cola_baja_quantum'] == 'default') {
+                $response['code'] = 400;
+                $response['mensaje'] = 'error';
+                array_push($response['error'], 'cola_baja_quantum');
+            }
+            if ($array['cola_alta'] == 'default') {
+                $response['code'] = 400;
+                $response['mensaje'] = 'error';
+                array_push($response['error'], 'cola_alta');
+            }
+            if ($array['cola_media'] == 'default') {
+                $response['code'] = 400;
+                $response['mensaje'] = 'error';
+                array_push($response['error'], 'cola_media');
+            }
+            if ($array['cola_baja'] == 'default') {
+                $response['code'] = 400;
+                $response['mensaje'] = 'error';
+                array_push($response['error'], 'cola_baja');
+            }
         }
         return $response;
     }
