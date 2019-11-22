@@ -64,7 +64,7 @@ class DefaultController extends AbstractController
                 'particiones' => $simuladorService->getParticionesArray($memoria)
             ];
             array_push($rafagas, $rafagaFinal);
-
+//
 //            $em = $this->getDoctrine()->getManager();
 //            $simulador->setRafagas($rafagas);
 //            $simulador->setRafagaInicial($rafagaInicial);
