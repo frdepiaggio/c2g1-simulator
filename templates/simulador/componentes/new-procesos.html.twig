@@ -34,6 +34,86 @@
         </select>
       </div>
     </div>
+    <div class="colas-multinivel pl-5">
+      <div class="d-flex">
+        <div class="form-group">
+          <label for="cola-alta-input">
+            Cola con prioridad alta
+          </label>
+          <div id="cola-alta-error"></div>
+          <select id="cola-alta-input" class="form-control">
+            <option class="default-option" value="default">Elija un algoritmo de planificación</option>
+            <option value="fcfs">FCFS</option>
+            <option value="rr">Round-Robin</option>
+            <option value="sjf">SJF</option>
+            <option value="srtf">SRTF</option>
+          </select>
+        </div>
+        <div class="form-group ml-3 cola-alta-quantum-container">
+          <label for="cola-alta-quantum-input">
+            Quantum
+          </label>
+          <div id="cola-alta-quantum-error"></div>
+          <select id="cola-alta-quantum-input" class="form-control">
+            <option class="default-option" value="default">Elija un quantum</option>
+            <option value="2">2</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-flex">
+        <div class="form-group">
+          <label for="cola-media-input">
+            Cola con prioridad media
+          </label>
+          <div id="cola-media-error"></div>
+          <select id="cola-media-input" class="form-control">
+            <option class="default-option" value="default">Elija un algoritmo de planificación</option>
+            <option value="fcfs">FCFS</option>
+            <option value="rr">Round-Robin</option>
+            <option value="sjf">SJF</option>
+            <option value="srtf">SRTF</option>
+          </select>
+        </div>
+        <div class="form-group ml-3 cola-media-quantum-container">
+          <label for="cola-media-quantum-input">
+            Quantum
+          </label>
+          <div id="cola-media-quantum-error"></div>
+          <select id="cola-media-quantum-input" class="form-control">
+            <option class="default-option" value="default">Elija un quantum</option>
+            <option value="1">1</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-flex">
+        <div class="form-group">
+          <label for="cola-baja-input">
+            Cola con prioridad baja
+          </label>
+          <div id="cola-baja-error"></div>
+          <select id="cola-baja-input" class="form-control">
+            <option class="default-option" value="default">Elija un algoritmo de planificación</option>
+            <option value="fcfs">FCFS</option>
+            <option value="rr">Round-Robin</option>
+            <option value="sjf">SJF</option>
+            <option value="srtf">SRTF</option>
+          </select>
+        </div>
+        <div class="form-group ml-3 cola-baja-quantum-container">
+          <label for="cola-baja-quantum-input">
+            Quantum
+          </label>
+          <div id="cola-baja-quantum-error"></div>
+          <select id="cola-baja-quantum-input" class="form-control">
+            <option class="default-option" value="default">Elija un quantum</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+      </div>
+    </div>
     <div id="procesos-error"></div>
     <div class="agregar-proceso">
       <h2>Agregar proceso</h2>
@@ -89,10 +169,10 @@
           </label>
           <div id="prioridad-error"></div>
           <select id="proceso-prioridad" class="form-control">
-            <option class="default-option" value="default">Elija un algoritmo de planificación</option>
-            <option value="1">Baja</option>
-            <option value="2">Media</option>
-            <option value="3">Alta</option>
+            <option class="default-option" value="0">Seleccione una prioridad para el proceso</option>
+            {% for i in range(1, 32) %}
+              <option value="{{i}}">{{ i }}</option>
+            {% endfor %}
           </select>
         </div>
         <div class="proceso-action text-left">

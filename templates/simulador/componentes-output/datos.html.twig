@@ -83,6 +83,19 @@
                     </strong>
                 </span>
             </div>
+            <div>
+                <span><i class="fas fa-exchange-alt"></i> Tipo de Particiones:
+                    <strong>
+                        <span>
+                            {% if simulador.memoria.tipo == 'fijas' %}
+                                Fijas
+                            {% else %}
+                                Variables
+                            {% endif %}
+                        </span>
+                    </strong>
+                </span>
+            </div>
             {% if simulador.quantum > 0 %}
                 <div>
                 <span><i class="fas fa-tint"></i> Quantum:
@@ -92,6 +105,68 @@
                 </span>
                 </div>
             {% endif %}
+        </div>
+    </div>
+    <div class="tabla">
+        <h2>Estadísticas</h2>
+        <div class="cuerpo-tabla pb-4">
+            <table style="text-align: center;">
+                <tr class="header">
+                    <th>ID</th>
+                    <th>Tiempo de retorno</th>
+                    <th>Tiempo de espera</th>
+                    <th>Uso de CPU</th>
+                </tr>
+                <tbody>
+                {% for key,proceso in estadisticas %}
+                    {% set porcentajeCPU = (proceso['uso_cpu']*100)/rafagas|length %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td>{{ proceso['tr'] }}</td>
+                        <td>{{ proceso['te'] }}</td>
+                        <td>{{ porcentajeCPU|number_format(2, ',', '.') }}%</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% set usoCPUTotal = 0 %}
+            {% set tiempoRetornoTotal = 0 %}
+            {% set tiempoEsperaTotal = 0 %}
+            {% for proceso in estadisticas %}
+                {% set usoCPUTotal = usoCPUTotal + proceso['uso_cpu'] %}
+                {% set tiempoRetornoTotal = tiempoRetornoTotal + proceso['tr'] %}
+                {% set tiempoEsperaTotal = tiempoEsperaTotal + proceso['te'] %}
+            {% endfor %}
+            {% set porcentajeCPUTotal = (usoCPUTotal*100)/rafagas|length %}
+            {% set porcentajeTiempoRetornoTotal = tiempoRetornoTotal/estadisticas|length %}
+            {% set porcentajeTiempoEsperaTotal = tiempoEsperaTotal/estadisticas|length %}
+            <div class="text-left">
+                <span><i class="fas fa-exchange-alt"></i> Uso total CPU:
+                    <strong>
+                        <span>
+                            {{ porcentajeCPUTotal|number_format(2, ',', '.') }}%
+                        </span>
+                    </strong>
+                </span>
+            </div>
+            <div class="text-left">
+                <span><i class="fas fa-exchange-alt"></i> Tiempo de retorno pormedio:
+                    <strong>
+                        <span>
+                            {{ porcentajeTiempoRetornoTotal|number_format(2, ',', '.') }}
+                        </span>
+                    </strong>
+                </span>
+            </div>
+            <div class="text-left">
+                <span><i class="fas fa-exchange-alt"></i> Tiempo de espera pormedio:
+                    <strong>
+                        <span>
+                            {{ porcentajeTiempoEsperaTotal|number_format(2, ',', '.') }}
+                        </span>
+                    </strong>
+                </span>
+            </div>
         </div>
     </div>
 </div>

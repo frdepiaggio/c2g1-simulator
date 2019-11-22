@@ -54,9 +54,15 @@ class Simulador
      */
     private $rafagas = [];
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Cola", mappedBy="simulador")
+     */
+    private $colas;
+
     public function __construct()
     {
         $this->procesos = new ArrayCollection();
+        $this->colas = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -163,6 +169,37 @@ class Simulador
     public function setRafagas(?array $rafagas): self
     {
         $this->rafagas = $rafagas;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Cola[]
+     */
+    public function getColas(): Collection
+    {
+        return $this->colas;
+    }
+
+    public function addCola(Cola $cola): self
+    {
+        if (!$this->colas->contains($cola)) {
+            $this->colas[] = $cola;
+            $cola->setSimulador($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCola(Cola $cola): self
+    {
+        if ($this->colas->contains($cola)) {
+            $this->colas->removeElement($cola);
+            // set the owning side to null (unless already changed)
+            if ($cola->getSimulador() === $this) {
+                $cola->setSimulador(null);
+            }
+        }
 
         return $this;
     }

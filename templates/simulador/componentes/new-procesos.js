@@ -52,9 +52,49 @@ jQuery(document).ready(function ($) {
     const procesosDataTitle = $('#datos-procesos-titulo');
     const simuladorCheck = $('#simulador-check');
     const simuladorDataTitle = $('#datos-simulador-titulo');
+    const colasContainer = $('.colas-multinivel');
+    const quantumColaAlta = $('.cola-alta-quantum-container');
+    const quantumColaAltaError = $('#cola-alta-quantum-error');
+    const quantumColaMediaError = $('#cola-media-quantum-error');
+    const quantumColaBajaError = $('#cola-baja-quantum-error');
+    const quantumColaMedia = $('.cola-media-quantum-container');
+    const quantumColaBaja = $('.cola-baja-quantum-container');
+    const colaAltaInput = $('#cola-alta-input');
+    const colaAltaError = $('#cola-alta-error');
+    const colaAltaQuantumInput = $('#cola-alta-quantum-input');
+    const colaMediaInput = $('#cola-media-input');
+    const colaMediaError = $('#cola-media-error');
+    const colaMediaQuantumInput = $('#cola-media-quantum-input');
+    const colaBajaInput = $('#cola-baja-input');
+    const colaBajaError = $('#cola-baja-error');
+    const colaBajaQuantumInput = $('#cola-baja-quantum-input');
     let hasProcesos = false;
 
     section
+        .on('change', '#cola-alta-input',function () {
+            const $this = $(this);
+            if ($this.val() === 'rr') {
+                quantumColaAlta.show();
+            } else {
+                quantumColaAlta.hide()
+            }
+        })
+        .on('change', '#cola-media-input',function () {
+            const $this = $(this);
+            if ($this.val() === 'rr') {
+                quantumColaMedia.show();
+            } else {
+                quantumColaMedia.hide()
+            }
+        })
+        .on('change', '#cola-baja-input',function () {
+            const $this = $(this);
+            if ($this.val() === 'rr') {
+                quantumColaBaja.show();
+            } else {
+                quantumColaBaja.hide()
+            }
+        })
         .on('change', '#algoritmo-planificacion', function () {
             const $this = $(this);
 
@@ -63,9 +103,11 @@ jQuery(document).ready(function ($) {
             } else {
                 quantumContainer.hide();
             }
-            if($this.val() === 'prioridades') {
+            if($this.val() === 'multinivel') {
+                colasContainer.show();
                 procesoPrioridadClass.show();
             } else {
+                colasContainer.hide();
                 procesoPrioridadClass.hide();
             }
         })
@@ -215,42 +257,76 @@ jQuery(document).ready(function ($) {
             const algoritmoPlanificacion = algoritmoPlanificacionSelect.val();
             const quantumValue = quantumInput.val();
             const url = $this.attr('url');
-            const tituloFinal = '<h2 class="final">Finalizar Simulador</h2>'
+            const tituloFinal = '<h2 class="final">Finalizar Simulador</h2>';
             const mensajeFinal = '<div class="finalizar"><p>El simulador ha sido cargado correctamente con los datos presentes en las ' +
                 'secciones de la derecha y está listo para ejecutarse.</p><p>Para continuar haga click en el siguiente' +
                 ' botón:</p></div>';
             const buttonFinal = '<div class="text-center"><a href="/simular/'+ simuladorId +'" class="btn btn-primary fin">' +
                 '<i class="fas fa-power-off"></i> Iniciar simulación' +
                 '</a></div>';
+            const colaAltaValue = $('#cola-alta-input').val();
+            const colaAltaQuantumValue = $('#cola-alta-quantum-input').val();
+            const colaMediaValue = $('#cola-media-input').val();
+            const colaMediaQuantumValue = $('#cola-media-quantum-input').val();
+            const colaBajaValue = $('#cola-baja-input').val();
+            const colaBajaQuantumValue = $('#cola-baja-quantum-input').val();
             const data = {
                 'simulador': {
                     'id': simuladorId,
                     'algoritmo_planificacion': algoritmoPlanificacion,
-                    'quantum': quantumValue
+                    'quantum': quantumValue,
+                    'cola_alta': colaAltaValue,
+                    'cola_alta_quantum': colaAltaQuantumValue,
+                    'cola_media': colaMediaValue,
+                    'cola_media_quantum': colaMediaQuantumValue,
+                    'cola_baja': colaBajaValue,
+                    'cola_baja_quantum': colaBajaQuantumValue,
                 }
             };
+            console.log(data);
             if (hasProcesos) {
                 $.ajax({
                     url: url,
                     type: 'POST',
                     data: data,
                     success: function(res){
+                        console.log(res);
                         if (res.code === 400) { //Si hubo algun error de validación por parte del usuario
                             const errorInput = res.error;
                             if (errorInput.includes('algoritmo_planificacion')) {
-                                algoritmoPlanificacionError.html('Este campo no puede estar vacío ni ser negativo');
+                                algoritmoPlanificacionError.html('Este campo no puede estar vacío');
                                 algoritmoPlanificacionSelect.css('border', 'solid 2px #dc3545');
                             }
                             if (errorInput.includes('quantum')) {
                                 quantumError.html('Este campo no puede estar vacío ni ser menor o igual a cero');
                                 quantumInput.css('border', 'solid 2px #dc3545');
                             }
+                            if (errorInput.includes('cola_alta_quantum')) {
+                                quantumColaAltaError.html('Este campo no puede estar vacío');
+                                colaAltaQuantumInput.css('border', 'solid 2px #dc3545');
+                            }
+                            if (errorInput.includes('cola_media_quantum')) {
+                                quantumColaMediaError.html('Este campo no puede estar vacío');
+                                colaMediaQuantumInput.css('border', 'solid 2px #dc3545');
+                            }
+                            if (errorInput.includes('cola_baja_quantum')) {
+                                quantumColaBajaError.html('Este campo no puede estar vacío');
+                                colaBajaQuantumInput.css('border', 'solid 2px #dc3545');
+                            }
+                            if (errorInput.includes('cola_alta')) {
+                                colaAltaError.html('Este campo no puede estar vacío');
+                                colaAltaInput.css('border', 'solid 2px #dc3545');
+                            }
+                            if (errorInput.includes('cola_media')) {
+                                colaMediaError.html('Este campo no puede estar vacío');
+                                colaMediaInput.css('border', 'solid 2px #dc3545');
+                            }
+                            if (errorInput.includes('cola_baja')) {
+                                colaBajaError.html('Este campo no puede estar vacío');
+                                colaBajaInput.css('border', 'solid 2px #dc3545');
+                            }
                         }
-                        else if(res.code === 500) { //Si hubo algún error en el server
-                            procesosError.show();
-                            procesosError.html('Hubieron errores inesperados al guardar, ' +
-                                'por favor recargue la página e intentelo nuevamente');
-                        } else { // Si salió bien la response
+                        else if(res.code === 200) { // Si salió bien la response
                             if (algoritmoPlanificacion === 'fcfs') {
                                 algoritmoPlanificacionShow.html('FCFS');
                                 quantumShow.html('No corresponde');
@@ -272,6 +348,12 @@ jQuery(document).ready(function ($) {
                             simuladorDataTitle.css('background-color', '#20c997'); //Fondo bloque datos memoria en verde
                             procesosCheck.show(); //Se muestra un check en el bloque de datos de procesos
                             procesosDataTitle.css('background-color', '#20c997'); //Fondo bloque datos memoria en verde
+
+
+                        } else { //Si hubo algún error en el server
+                            procesosError.show();
+                            procesosError.html('Hubieron errores inesperados al guardar, ' +
+                                'por favor recargue la página e intentelo nuevamente');
                         }
                     },
                     beforeSend: function(){

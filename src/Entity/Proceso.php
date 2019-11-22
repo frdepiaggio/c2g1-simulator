@@ -52,6 +52,11 @@ class Proceso
      */
     private $simulador;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $prioridad;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -137,6 +142,18 @@ class Proceso
     public function setSimulador(?Simulador $simulador): self
     {
         $this->simulador = $simulador;
+
+        return $this;
+    }
+
+    public function getPrioridad(): ?int
+    {
+        return $this->prioridad;
+    }
+
+    public function setPrioridad(?int $prioridad): self
+    {
+        $this->prioridad = $prioridad;
 
         return $this;
     }

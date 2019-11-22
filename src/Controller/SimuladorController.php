@@ -6,6 +6,7 @@ use App\Entity\Memoria;
 use App\Entity\Particion;
 use App\Entity\Proceso;
 use App\Entity\Simulador;
+use App\Entity\Cola;
 use App\Service\SimuladorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -114,6 +115,7 @@ class SimuladorController extends AbstractController
                 $proceso->setTi2(intval($procesoJson['ti2']));
                 $proceso->setBloqueo(intval($procesoJson['es']));
                 $proceso->setStatus('creado');
+                $proceso->setPrioridad(intval($procesoJson['prioridad']));
                 $proceso->setSimulador($simulador);
                 $em->persist($proceso);
                 $em->flush();
@@ -139,7 +141,6 @@ class SimuladorController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $simuladorJson = $request->get('simulador');
         $response = $newSimuladorService->validarFormSimulador($simuladorJson);
-
         $qb = $em->getRepository('App:Simulador');
         $simulador = $qb->findOneBy(array('id'=>$simuladorJson['id']));
         if ($response['code'] == 200) {
@@ -148,6 +149,33 @@ class SimuladorController extends AbstractController
                 $quantum = intval($simuladorJson['quantum']);
                 $simulador->setAlgoritmoPlanificacion($algoritmoPlanificacion);
                 $simulador->setQuantum($quantum);
+
+                if ($algoritmoPlanificacion == 'multinivel') {
+                    $colaAlta = new Cola();
+                    $colaAlta->setPrioridad(3);
+                    $colaAlta->setSimulador($simulador);
+                    $colaAlta->setAlgoritmoPlanificacion($simuladorJson['cola_alta']);
+                    if ($simuladorJson['cola_alta'] == 'rr') {
+                        $colaAlta->setQuantum(intval($simuladorJson['cola_alta_quantum']));
+                    }
+                    $em->persist($colaAlta);
+                    $colaMedia = new Cola();
+                    $colaMedia->setPrioridad(2);
+                    $colaMedia->setSimulador($simulador);
+                    $colaMedia->setAlgoritmoPlanificacion($simuladorJson['cola_media']);
+                    if ($simuladorJson['cola_media'] == 'rr') {
+                        $colaMedia->setQuantum(intval($simuladorJson['cola_media_quantum']));
+                    }
+                    $em->persist($colaMedia);
+                    $colaBaja = new Cola();
+                    $colaBaja->setPrioridad(1);
+                    $colaBaja->setSimulador($simulador);
+                    $colaBaja->setAlgoritmoPlanificacion($simuladorJson['cola_baja']);
+                    if ($simuladorJson['cola_baja'] == 'rr') {
+                        $colaBaja->setQuantum(intval($simuladorJson['cola_baja_quantum']));
+                    }
+                    $em->persist($colaBaja);
+                }
                 $em->flush();
 
                 $response['mensaje'] = 'Se cargo el simulador '.$simulador->getId();
