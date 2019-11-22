@@ -40,19 +40,18 @@ class DefaultController extends AbstractController
      */
     public function simular(Simulador $simulador, SimuladorService $simuladorService)
     {
-        $procesos = $simulador->getProcesos();
         $memoria = $simulador->getMemoria();
 
-        if ($simulador->getRafagas() && $simulador->getRafagaInicial()) {
-            $rafagas = $simulador->getRafagas();
-            $rafagaInicial = $simulador->getRafagaInicial();
-        } else {
+//        if ($simulador->getRafagas() && $simulador->getRafagaInicial()) {
+//            $rafagas = $simulador->getRafagas();
+//            $rafagaInicial = $simulador->getRafagaInicial();
+//        } else {
             if ($simulador->getAlgoritmoPlanificacion() == 'multinivel') {
-                list($rafagaInicial, $rafagas) = $simuladorService->simularMultinivel($simulador);
+                list($rafagaInicial, $rafagas, $estadisticas) = $simuladorService->simularMultinivel($simulador);
             } else {
-                list($rafagaInicial, $rafagas) = $simuladorService->simular($simulador);
+                list($rafagaInicial, $rafagas, $estadisticas) = $simuladorService->simular($simulador);
             }
-
+//
             $rafagaFinal = [
                 'ejecuto' => null,
                 'ejecuto_es' => null,
@@ -66,17 +65,18 @@ class DefaultController extends AbstractController
             ];
             array_push($rafagas, $rafagaFinal);
 
-            $em = $this->getDoctrine()->getManager();
-            $simulador->setRafagas($rafagas);
-            $simulador->setRafagaInicial($rafagaInicial);
-
-            $em->flush();
-        }
+//            $em = $this->getDoctrine()->getManager();
+//            $simulador->setRafagas($rafagas);
+//            $simulador->setRafagaInicial($rafagaInicial);
+//
+//            $em->flush();
+//        }
         return $this->render('simulador/output.html.twig', [
             'controller_name' => 'DefaultController',
             'rafagaInicial' => $rafagaInicial,
             'rafagas' => $rafagas,
-            'simulador' => $simulador
+            'simulador' => $simulador,
+            'estadisticas' => $estadisticas
         ]);
     }
 }

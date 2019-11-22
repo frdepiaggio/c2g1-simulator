@@ -29,7 +29,7 @@ class SimuladorService
         $algoritmoIntercambio = $simulador->getAlgoritmoIntercambio();
         $procesos = $simulador->getProcesos();
         $algoritmoPlanificacion = $simulador->getAlgoritmoPlanificacion();
-
+        $tablaEstadisticasProcesos = $this->getTablaProcesosSerializados($procesos);
         $rafagaInicial = [];
         $rafagas = []; //Array principal donde se van a almacenar todas las ráfagas
         $cola_nuevos = []; //Esta cola resguarda todos los procesos que piden cpu
@@ -93,28 +93,37 @@ class SimuladorService
             //Se ejecuta el algoritmo de planificación correspondiente
             switch ($algoritmoPlanificacion) {
                 case 'fcfs':
-                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
+                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $tablaEstadisticasProcesos) =
                         $this->planificacionService
-                            ->fcfs($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo());
+                            ->fcfs($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo(), $tablaEstadisticasProcesos);
                     break;
                 case 'rr':
-                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
+                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $tablaEstadisticasProcesos) =
                         $this->planificacionService
-                            ->rr($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $simulador->getQuantum(), $memoria->getTipo());
+                            ->rr($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $simulador->getQuantum(), $memoria->getTipo(), $tablaEstadisticasProcesos);
                     break;
                 case 'sjf':
-                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
+                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $tablaEstadisticasProcesos) =
                         $this->planificacionService
-                            ->sjf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo());
+                            ->sjf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo(), $tablaEstadisticasProcesos);
                     break;
                 case 'srtf':
-                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
+                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $tablaEstadisticasProcesos) =
                         $this->planificacionService
-                            ->srtf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo());
+                            ->srtf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo(), $tablaEstadisticasProcesos);
                     break;
                 case 'multinivel':
                     dd('no hay multinivel aun');
                     break;
+            }
+
+            if ($rafagaActual['finalizo']) {
+                foreach ($tablaEstadisticasProcesos as $key => $procesoEstadistica) {
+                    if ($procesoEstadistica['id'] == $rafagaActual['finalizo']['id']) {
+                        $tablaEstadisticasProcesos[$key]['tr'] = $t+1;
+                        $tablaEstadisticasProcesos[$key]['finalizo'] = true;
+                    }
+                }
             }
 
             //Seteo el estado de las colas para la ráfaga actual
@@ -130,7 +139,8 @@ class SimuladorService
             $condicionFin = $this->finalizoSimulador($cola_listos, $cola_bloqueados, $cola_nuevos, $procesos, $t);
             ++$t;
         }
-        return [$rafagaInicial, $rafagas];
+
+        return [$rafagaInicial, $rafagas, $tablaEstadisticasProcesos];
     }
 
     function liberarProcesosFinalizadosBloqueados($rafaga, $particiones)
@@ -150,6 +160,20 @@ class SimuladorService
         return $particiones;
     }
 
+    function getTablaProcesosSerializados($procesos) {
+        $tablaProcesos = [];
+        foreach ($procesos as $key=> $proceso) {
+            $procesoSerializado = [
+                'id' => $key,
+                'te' => 0,
+                'tr' => 0,
+                'uso_cpu' => 0,
+                'finalizo' => false
+            ];
+            array_push($tablaProcesos, $procesoSerializado);
+        }
+        return $tablaProcesos;
+    }
     /*
      * Esta función devuelve particiones serializadas en array,
      * pasando como parámetro un objeto Memoria.
@@ -194,7 +218,10 @@ class SimuladorService
                 0 => ['tipo' => 'irrupcion', 'valor' => $proceso->getTi1()],
                 1 => ['tipo' => 'bloqueo', 'valor' => $proceso->getBloqueo()],
                 2 => ['tipo' => 'irrupcion', 'valor' => $proceso->getTi2()]
-            ]
+            ],
+            'uso_cpu' => 0,
+            'te' => 0,
+            'tr' => null
         ];
         if ($proceso->getPrioridad() > 0 && $proceso->getPrioridad() <= 5 ) {
             $procesoSerializado['cola'] = $colas['cola_alta'];
@@ -260,6 +287,7 @@ class SimuladorService
         $algoritmoIntercambio = $simulador->getAlgoritmoIntercambio();
         $procesos = $simulador->getProcesos();
         $algoritmoPlanificacion = $simulador->getAlgoritmoPlanificacion();
+        $tablaEstadisticasProcesos = $this->getTablaProcesosSerializados($procesos);
 
         $rafagaInicial = [];
         $rafagas = []; //Array principal donde se van a almacenar todas las ráfagas
@@ -361,25 +389,35 @@ class SimuladorService
 
             switch ($cola_listos[0]['cola']['algoritmo_planificacion']) {
                 case 'fcfs':
-                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
+                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $tablaEstadisticasProcesos) =
                         $this->planificacionService
-                            ->fcfs($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo());
+                            ->fcfs($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo(), $tablaEstadisticasProcesos);
                     break;
                 case 'rr':
-                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
+                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $tablaEstadisticasProcesos) =
                         $this->planificacionService
-                            ->rr($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $cola_listos[0]['quantum'], $memoria->getTipo());
+                            ->rr($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $cola_listos[0]['quantum'], $memoria->getTipo(), $tablaEstadisticasProcesos);
                     break;
                 case 'sjf':
-                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
+                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $tablaEstadisticasProcesos) =
                         $this->planificacionService
-                            ->sjf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo());
+                            ->sjf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo(), $tablaEstadisticasProcesos);
                     break;
                 case 'srtf':
-                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
+                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $tablaEstadisticasProcesos) =
                         $this->planificacionService
-                            ->srtf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo());
+                            ->srtf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo(), $tablaEstadisticasProcesos);
                     break;
+            }
+
+            if ($rafagaActual['finalizo']) {
+                foreach ($tablaEstadisticasProcesos as $key => $procesoEstadistica) {
+                    if ($procesoEstadistica['id'] == $rafagaActual['finalizo']['id']) {
+                        $tablaEstadisticasProcesos[$key]['tr'] = $t+1;
+                        $tablaEstadisticasProcesos[$key]['finalizo'] = true;
+//                        $tablaEstadisticasProcesos[$key]['te'] =  $tablaEstadisticasProcesos[$key]['te'] -1;
+                    }
+                }
             }
 
             //Seteo el estado de las colas para la ráfaga actual
@@ -387,6 +425,8 @@ class SimuladorService
             $rafagaActual['cola_listos'] = $cola_listos;
             $rafagaActual['cola_bloqueados'] = $cola_bloqueados;
             $rafagaActual['particiones'] = $particiones;
+
+
 
             //Agrego la ráfaga actual al array del total de ráfagas
             array_push($rafagas, $rafagaActual);
@@ -406,6 +446,6 @@ class SimuladorService
             $condicionFin = $this->finalizoSimulador($cola_listos, $cola_bloqueados, $cola_nuevos, $procesos, $t);
             ++$t;
         }
-        return [$rafagaInicial, $rafagas];
+        return [$rafagaInicial, $rafagas, $tablaEstadisticasProcesos];
     }
 }
