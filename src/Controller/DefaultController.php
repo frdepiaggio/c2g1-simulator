@@ -43,10 +43,10 @@ class DefaultController extends AbstractController
         $procesos = $simulador->getProcesos();
         $memoria = $simulador->getMemoria();
 
-        if ($simulador->getRafagas() && $simulador->getRafagaInicial()) {
-            $rafagas = $simulador->getRafagas();
-            $rafagaInicial = $simulador->getRafagaInicial();
-        } else {
+//        if ($simulador->getRafagas() && $simulador->getRafagaInicial()) {
+//            $rafagas = $simulador->getRafagas();
+//            $rafagaInicial = $simulador->getRafagaInicial();
+//        } else {
             if ($simulador->getAlgoritmoPlanificacion() == 'multinivel') {
                 list($rafagaInicial, $rafagas) = $simuladorService->simularMultinivel($simulador);
             } else {
@@ -65,13 +65,13 @@ class DefaultController extends AbstractController
                 'particiones' => $simuladorService->getParticionesArray($memoria)
             ];
             array_push($rafagas, $rafagaFinal);
-
-            $em = $this->getDoctrine()->getManager();
-            $simulador->setRafagas($rafagas);
-            $simulador->setRafagaInicial($rafagaInicial);
-
-            $em->flush();
-        }
+//
+//            $em = $this->getDoctrine()->getManager();
+//            $simulador->setRafagas($rafagas);
+//            $simulador->setRafagaInicial($rafagaInicial);
+//
+//            $em->flush();
+//        }
         return $this->render('simulador/output.html.twig', [
             'controller_name' => 'DefaultController',
             'rafagaInicial' => $rafagaInicial,

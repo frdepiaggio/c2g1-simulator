@@ -194,7 +194,8 @@ class SimuladorService
                 0 => ['tipo' => 'irrupcion', 'valor' => $proceso->getTi1()],
                 1 => ['tipo' => 'bloqueo', 'valor' => $proceso->getBloqueo()],
                 2 => ['tipo' => 'irrupcion', 'valor' => $proceso->getTi2()]
-            ]
+            ],
+            'ejecutandose' => 0
         ];
         if ($proceso->getPrioridad() > 0 && $proceso->getPrioridad() <= 5 ) {
             $procesoSerializado['cola'] = $colas['cola_alta'];
@@ -326,6 +327,16 @@ class SimuladorService
                         $memoria->getTipo()
                     );
 
+//            if ($t == 0) {
+//                dd($cola_listos);
+//            }
+            usort($cola_listos, function ($a, $b) {
+                if ($a['cola']['prioridad'] == $b['cola']['prioridad']) {
+                    if ($a['ejecutandose'] < $b['ejecutandose']) return 1;
+                }
+                return ($a['cola']['prioridad'] > $b['cola']['prioridad']) ? -1 : 1;
+            });
+
             //Seteamos la rafaga inicial
             if ($t == 0) {
                 $rafagaInicial = [
@@ -355,33 +366,30 @@ class SimuladorService
             list($cola_bloqueados, $cola_nuevos, $rafagaActual) =
                 $this->planificacionService->tratarBloqueados($cola_bloqueados, $cola_nuevos, $rafagaActual);
 
-            usort($cola_listos, function ($a, $b) {
-                return ($a['cola']['prioridad'] < $b['cola']['prioridad']) ? -1 : 1;
-            });
-
-            switch ($cola_listos[0]['cola']['algoritmo_planificacion']) {
-                case 'fcfs':
-                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
-                        $this->planificacionService
-                            ->fcfs($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo());
-                    break;
-                case 'rr':
-                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
-                        $this->planificacionService
-                            ->rr($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $cola_listos[0]['quantum'], $memoria->getTipo());
-                    break;
-                case 'sjf':
-                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
-                        $this->planificacionService
-                            ->sjf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo());
-                    break;
-                case 'srtf':
-                    list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
-                        $this->planificacionService
-                            ->srtf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo());
-                    break;
+            if (isset($cola_listos[0])) {
+                switch ($cola_listos[0]['cola']['algoritmo_planificacion']) {
+                    case 'fcfs':
+                        list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
+                            $this->planificacionService
+                                ->fcfs($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo());
+                        break;
+                    case 'rr':
+                        list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
+                            $this->planificacionService
+                                ->rr($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $cola_listos[0]['quantum'], $memoria->getTipo());
+                        break;
+                    case 'sjf':
+                        list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
+                            $this->planificacionService
+                                ->sjf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo());
+                        break;
+                    case 'srtf':
+                        list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual) =
+                            $this->planificacionService
+                                ->srtf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo());
+                        break;
+                }
             }
-
             //Seteo el estado de las colas para la ráfaga actual
             $rafagaActual['cola_nuevos'] = $cola_nuevos;
             $rafagaActual['cola_listos'] = $cola_listos;
