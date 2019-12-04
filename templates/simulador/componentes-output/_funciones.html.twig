@@ -195,8 +195,16 @@
                       {{ particion['proceso_asignado']['id'] }}
                     </div>
                     <div class="mensaje" show="false">
-                      tamaño del proceso:
-                      {{ particion['proceso_asignado']['size'] }}KB
+                      <div>
+                        tamaño del proceso:
+                        {{ particion['proceso_asignado']['size'] }}KB
+                      </div>
+                      {% if particion['fragmentacion_interna'] != null %}
+                        <div>
+                          fragmentación interna:
+                          {{ particion['fragmentacion_interna'] }}KB
+                        </div>
+                      {% endif %}
                     </div>
                   </div>
                 {% else %}

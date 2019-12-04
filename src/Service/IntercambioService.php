@@ -8,25 +8,27 @@ class IntercambioService
      * Esta función se encarga de llamar a las funciones correspondientes dependiendo
      * del tipo de memoria y algoritmo de intercambio de la simulación.
      * */
-    function asignacionMemoria($cola_listos, $cola_nuevos, $particiones, $algoritmo, $tipo)
+    function asignacionMemoria($cola_listos, $cola_nuevos, $particiones, $algoritmo, $tipo, $rafaga)
     {
         if ($tipo == 'variables') {
             $particiones = $this->unirParticiones($particiones);
         }
 
         if ($algoritmo == 'ff') {
-            list($cola_listos, $cola_nuevos, $particiones) =
-                $this->firstFit($cola_listos, $cola_nuevos, $particiones, $tipo)
+            list($cola_listos, $cola_nuevos, $particiones, $rafaga) =
+                $this->firstFit($cola_listos, $cola_nuevos, $particiones, $tipo, $rafaga)
             ;
         } elseif ($algoritmo == 'bf') {
             list($cola_listos, $cola_nuevos, $particiones) =
                 $this->bestFit($cola_listos, $cola_nuevos, $particiones)
             ;
         } else {
-            dd('no hay worst-fit');
+            list($cola_listos, $cola_nuevos, $particiones, $rafaga) =
+                $this->worstFit($cola_listos, $cola_nuevos, $particiones, $rafaga)
+            ;
         }
 
-        return [$cola_listos, $cola_nuevos, $particiones];
+        return [$cola_listos, $cola_nuevos, $particiones, $rafaga];
     }
 
     /*
@@ -38,6 +40,7 @@ class IntercambioService
         foreach ($particiones as $key => $particion) {
             if ($particion['proceso_asignado']['id'] == $proceso['id'] ) {
                 $particiones[$key]['proceso_asignado'] = null;
+                $particiones[$key]['fragmentacion_interna'] = null;
             }
         }
 
@@ -82,7 +85,7 @@ class IntercambioService
      * particion y un proceso, asignar dicho proceso a la particion requerida y actualizando
      * el esquema de particiones variables.
      * */
-    function actualizarParticionesVariables($particiones, $particionTargetKey, $proceso)
+    function actualizarParticionesVariables($particiones, $particionTargetKey, $proceso, $rafaga)
     {
         /*
          * Si el tamaño del proceso es exactamente igual al de la particion objetivo
@@ -116,9 +119,17 @@ class IntercambioService
             foreach ($particiones as $key => $particion) {
                 $particiones[$key]['id'] = $key;
             }
+        } else {
+            $totalEmptySize = 0;
+            foreach ($particiones as $particion) {
+                $totalEmptySize = $totalEmptySize + $particion['size'];
+            }
+            if ($proceso['size'] <= $totalEmptySize) {
+                $rafaga['fragmentacion_externa'] = $totalEmptySize;
+            }
         }
 
-        return $particiones;
+        return [$particiones, $rafaga];
     }
 
     /*
@@ -130,6 +141,9 @@ class IntercambioService
     {
         //Se asigna el proceso a la partición
         $particiones[$particionTargetKey]['proceso_asignado'] = $proceso;
+        $particiones[$particionTargetKey]['fragmentacion_interna'] =
+            $particiones[$particionTargetKey]['size'] - $proceso['size']
+        ;
 
         return $particiones;
     }
@@ -137,7 +151,7 @@ class IntercambioService
     /*
      * Esta función permite gestionar el algorimo de intercambio "First-Fit"
      * */
-    function firstFit($cola_listos, $cola_nuevos, $particiones, $tipo) {
+    function firstFit($cola_listos, $cola_nuevos, $particiones, $tipo, $rafaga) {
         //Recorro las particiones
         foreach ($particiones as $particionKey => $particion) {
             //Recorro los procesos
@@ -150,8 +164,8 @@ class IntercambioService
                         $particionesNuevas =
                             $this->actualizarParticionesFijas($particiones, $particionKey, $proceso);
                     } else {
-                        $particionesNuevas =
-                            $this->actualizarParticionesVariables($particiones, $particionKey, $proceso);
+                        list($particionesNuevas, $rafaga) =
+                            $this->actualizarParticionesVariables($particiones, $particionKey, $proceso, $rafaga);
                     }
                     //Asigno el proceso a la partición
                     $particiones = $particionesNuevas;
@@ -161,12 +175,12 @@ class IntercambioService
                     unset($cola_nuevos[$procesoKey]);
                     //Si el tipo de memoria es de "particiones variables" se vuelve a llamar a la función
                     if ($tipo == 'variables') {
-                        return $this->firstFit($cola_listos, $cola_nuevos, $particionesNuevas, $tipo);
+                        return $this->firstFit($cola_listos, $cola_nuevos, $particionesNuevas, $tipo, $rafaga);
                     }
                 }
             }
         }
-        return [$cola_listos, $cola_nuevos, $particiones];
+        return [$cola_listos, $cola_nuevos, $particiones, $rafaga];
     }
 
     function buscarElementoKey($id, $array) {
@@ -228,6 +242,60 @@ class IntercambioService
             }
         }
         return [$cola_listos, $cola_nuevos, $particiones];
+    }
+
+    /*
+     * Esta función permite gestionar el algorimo de intercambio "First-Fit"
+     * */
+    function worstFit($cola_listos, $cola_nuevos, $particiones, $rafaga) {
+        //Creo arrays auxiliares de particiones y cola de nuevos
+        $particionesAuxiliar = $particiones;
+        $colaNuevosAuxiliar = $cola_nuevos;
+
+        //Ordeno las particiones de menor a mayor y los procesos de mayor a menor
+        usort($particionesAuxiliar, function ($a, $b) {
+            return ($a['size'] > $b['size']) ? -1 : 1;
+        });
+        usort($colaNuevosAuxiliar, function ($a, $b) {
+            return ($a['size'] < $b['size']) ? -1 : 1;
+        });
+
+        //Recorro las particiones auxiliares
+        foreach ($particionesAuxiliar as $particionAuxKey => $particion) {
+            //Recorro los procesos auxiliares
+            foreach ($colaNuevosAuxiliar as $procesoAuxKey => $proceso) {
+                //Si el proceso auxiliar cabe en la particion auxiliar y si tiene de status nuevo
+                if ($particionesAuxiliar[$particionAuxKey]['proceso_asignado'] == null and
+                    $proceso['size'] <= $particion['size'])
+                {
+                    //Busco las posiciones del proceso y la particion en los arrays originales
+                    $particionKeyReal =
+                        $this->buscarElementoKey($particionesAuxiliar[$particionAuxKey]['id'], $particiones);
+                    $procesoKeyReal =
+                        $this->buscarElementoKey($colaNuevosAuxiliar[$procesoAuxKey]['id'], $cola_nuevos);
+
+                    //Pregunto si encontró ambos
+                    if (!is_null($procesoKeyReal) && !is_null($particionKeyReal)) {
+                        //Hago la asignación de la misma manera que en First-Fit
+                        $procesoReal = $cola_nuevos[$procesoKeyReal];
+                        list($particionesNuevas, $rafaga) =
+                            $this->actualizarParticionesVariables($particiones, $particionKeyReal, $procesoReal, $rafaga);
+                        //Asigno el proceso a la partición
+                        $particiones = $particionesNuevas;
+                        $particionesAuxiliar[$particionAuxKey]['proceso_asignado'] = 'algo';
+                        //Pongo el proceso en la cola de listos
+                        array_push($cola_listos, $cola_nuevos[$procesoKeyReal]);
+                        //Saco el proceso de la cola de nuevos
+                        unset($cola_nuevos[$procesoKeyReal]);
+                        unset($colaNuevosAuxiliar[$procesoAuxKey]);
+                        $cola_nuevos = array_values($cola_nuevos);
+                        //Si el tipo de memoria es de "particiones variables" se vuelve a llamar a la función
+                        return $this->worstFit($cola_listos, $cola_nuevos, $particionesNuevas, $rafaga);
+                    }
+                }
+            }
+        }
+        return [$cola_listos, $cola_nuevos, $particiones, $rafaga];
     }
 
     function random_color_part() {
