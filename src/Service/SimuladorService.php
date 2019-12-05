@@ -25,6 +25,7 @@ class SimuladorService
      * */
     function simular(Simulador $simulador)
     {
+        /****** Inicializo todas las variables necesarias ******/
         $memoria = $simulador->getMemoria();
         $algoritmoIntercambio = $simulador->getAlgoritmoIntercambio();
         $procesos = $simulador->getProcesos();
@@ -32,46 +33,30 @@ class SimuladorService
         $tablaEstadisticasProcesos = $this->getTablaProcesosSerializados($procesos);
         $rafagaInicial = [];
         $rafagas = []; //Array principal donde se van a almacenar todas las ráfagas
+
+        /////////////////////VARIABLES PRINCIPALES//////////////////////
         $cola_nuevos = []; //Esta cola resguarda todos los procesos que piden cpu
         $cola_listos = []; //Esta cola guarda los procesos que entran en memoria
-        $cola_bloqueados = [];
-
-        //Cargar particiones de la memoria dentro de un array de particiones
-        $particiones = $this->getParticionesArray($memoria);
+        $cola_bloqueados = []; //Esta cola guarda procesos que se bloquean y esperan hacer irrupciones de E/S
+        $particiones = $this->getParticionesArray($memoria); //Cargar particiones de la memoria dentro de un array de particiones
+        ////////////////////////////////////////////////////////////////
 
         $condicionFin = false; //Condición de fin
-
         //Inicializo las ráfagas
         $t = 0;
 
+        /***** Comienza el bucle principal de la simulación *****/
         while (!$condicionFin) {
+            //Obtengo la ultima ráfaga
             $ultimaRafaga = end($rafagas);
             //Se liberan de memoria los procesos que se bloquearon o finalizaron en la ultima rafaga
             $particiones = $this->liberarProcesosFinalizadosBloqueados($ultimaRafaga, $particiones);
             //Cargo la cola de nuevos con los procesos que arriban en la unidad de tiempo actual
             $cola_nuevos = $this->guardarProcesosColaNuevos($cola_nuevos, $procesos, $t, $simulador->getQuantum());
 
-            //Se guardan los nuevos procesos a memoria
-            list($cola_listos, $cola_nuevos, $particiones) =
-                $this->intercambioService
-                    ->asignacionMemoria(
-                        $cola_listos,
-                        $cola_nuevos,
-                        $particiones,
-                        $algoritmoIntercambio,
-                        $memoria->getTipo()
-                    );
-
-            //Seteamos la rafaga inicial
-            if ($t == 0) {
-                $rafagaInicial = [
-                    'cola_nuevos' => $cola_nuevos,
-                    'cola_listos' => $cola_listos,
-                    'particiones' => $particiones,
-                ];
-            }
-
-            //Pongo en null toda la rafaga actual para preparar la ejecución del proceso
+            /*
+             * Inicializo la rafaga correspondiente al instante de tiempo actual
+             * */
             $rafagaActual = [
                 'ejecuto' => null,
                 'ejecuto_es' => null,
@@ -82,15 +67,47 @@ class SimuladorService
                 'cola_listos' => null,
                 'cola_bloqueados' => null,
                 'particiones' => null,
+                'fragmentacion_externa' => null
             ];
 
+            //Se guardan los nuevos procesos a memoria
+            list($cola_listos, $cola_nuevos, $particiones, $rafagaActual) =
+                $this->intercambioService
+                    ->asignacionMemoria(
+                        $cola_listos,
+                        $cola_nuevos,
+                        $particiones,
+                        $algoritmoIntercambio,
+                        $memoria->getTipo(),
+                        $rafagaActual
+                    );
+
             /*
-             * Actualizo las colas de bloqueados y nuevos
-             * recorriendo los procesos que se bloquearon por una entrada/salida
+             * Se guarda el estado de la rafaga en el instante 0
+             * para poder mostrar el estado inicial de la simulación
+             * */
+            if ($t == 0) {
+                $rafagaInicial = [
+                    'cola_nuevos' => $cola_nuevos,
+                    'cola_listos' => $cola_listos,
+                    'particiones' => $particiones,
+                ];
+            }
+
+
+            /*
+             * Trato los procesos que necesitan ejecutar una irrupcion de
+             * E/S actualizando las variables principales
              */
             list($cola_bloqueados, $cola_nuevos, $rafagaActual) =
                 $this->planificacionService->tratarBloqueados($cola_bloqueados, $cola_nuevos, $rafagaActual);
-            //Se ejecuta el algoritmo de planificación correspondiente
+
+            /*
+             * Se ejecuta el algoritmo de planificacion correspondiente
+             * actualizando las variables principales y seteando los procesos
+             * que se ejecutaron, finalizaron, interrumpieron o bloquearon en
+             * la rafaga correspondiente al instante de tiempo actual
+             * */
             switch ($algoritmoPlanificacion) {
                 case 'fcfs':
                     list($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $tablaEstadisticasProcesos) =
@@ -112,11 +129,12 @@ class SimuladorService
                         $this->planificacionService
                             ->srtf($cola_listos, $cola_bloqueados, $particiones, $rafagaActual, $memoria->getTipo(), $tablaEstadisticasProcesos);
                     break;
-                case 'multinivel':
-                    dd('no hay multinivel aun');
-                    break;
             }
 
+            /*
+             * Esta comprobación se realiza para calcular el tiempo de
+             * retorno de un proceso cuado finaliza
+             * */
             if ($rafagaActual['finalizo']) {
                 foreach ($tablaEstadisticasProcesos as $key => $procesoEstadistica) {
                     if ($procesoEstadistica['id'] == $rafagaActual['finalizo']['id']) {
@@ -201,7 +219,8 @@ class SimuladorService
             'id' => $id,
             'size' => $particion->getSize(),
             'color' => $particion->getColor(),
-            'proceso_asignado' => null
+            'proceso_asignado' => null,
+            'fragmentacion_interna' => null
         ];
     }
 
@@ -344,6 +363,20 @@ class SimuladorService
             //Cargo la cola de nuevos con los procesos que arriban en la unidad de tiempo actual
             $cola_nuevos = $this->guardarProcesosColaNuevos($cola_nuevos, $procesos, $t, null, $colas_multinivel);
 
+            //Pongo en null toda la rafaga actual para preparar la ejecución del proceso
+            $rafagaActual = [
+                'ejecuto' => null,
+                'ejecuto_es' => null,
+                'finalizo' => null,
+                'finalizo_es' => null,
+                'bloqueo' => null,
+                'cola_nuevos' => null,
+                'cola_listos' => null,
+                'cola_bloqueados' => null,
+                'particiones' => null,
+                'fragmentacion_externa' => null
+            ];
+
             //Se guardan los nuevos procesos a memoria
             list($cola_listos, $cola_nuevos, $particiones) =
                 $this->intercambioService
@@ -352,7 +385,8 @@ class SimuladorService
                         $cola_nuevos,
                         $particiones,
                         $algoritmoIntercambio,
-                        $memoria->getTipo()
+                        $memoria->getTipo(),
+                        $rafagaActual
                     );
 
 //            if ($t == 0) {
@@ -373,19 +407,6 @@ class SimuladorService
                     'particiones' => $particiones,
                 ];
             }
-
-            //Pongo en null toda la rafaga actual para preparar la ejecución del proceso
-            $rafagaActual = [
-                'ejecuto' => null,
-                'ejecuto_es' => null,
-                'finalizo' => null,
-                'finalizo_es' => null,
-                'bloqueo' => null,
-                'cola_nuevos' => null,
-                'cola_listos' => null,
-                'cola_bloqueados' => null,
-                'particiones' => null,
-            ];
 
             /*
              * Actualizo las colas de bloqueados y nuevos

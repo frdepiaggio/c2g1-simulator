@@ -1,3 +1,4 @@
+{% import "simulador/componentes-output/_funciones.html.twig" as funciones %}
 <div class="flex output-contenedor">
     <div class="tabla">
         <h2>Procesos cargados</h2>
@@ -8,6 +9,7 @@
                     <th rowspan="2">TA</th>
                     <th colspan="3">Ciclo</th>
                     <th rowspan="2">Tamaño</th>
+                    <th rowspan="2">Prioridad</th>
                 </tr>
                 <tr class="header second">
                     <th>Irrupción</th>
@@ -23,6 +25,9 @@
                         <td>{{ proceso.bloqueo }}</td>
                         <td>{{ proceso.ti2 }}</td>
                         <td>{{ proceso.size }}</td>
+                        {% if proceso.prioridad > 0 %}
+                            <td>{{ proceso.prioridad }}</td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -32,20 +37,7 @@
     <div class="tabla">
         <h2>Particiones cargadas</h2>
         <div class="cuerpo-tabla">
-            <table style="text-align: center;">
-                <tr class="header">
-                    <th>ID Partición</th>
-                    <th>Tamaño</th>
-                </tr>
-                <tbody>
-                {% for key,particion in simulador.memoria.particiones %}
-                    <tr>
-                        <td>{{ key }}</td>
-                        <td>{{ particion.size }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            {{ funciones.renderMemoria(0, rafagas[rafagas|length -1]['particiones'], simulador.memoria, "Particiones") }}
         </div>
     </div>
     <div class="tabla">
@@ -163,6 +155,20 @@
                     <strong>
                         <span>
                             {{ porcentajeTiempoEsperaTotal|number_format(2, ',', '.') }}
+                        </span>
+                    </strong>
+                </span>
+            </div>
+            <div class="text-left">
+                <span><i class="fas fa-exchange-alt"></i> Desperdicio de memoria
+                    {% if simulador.memoria.tipo == "fijas" %}
+                        (fragmentación interna):
+                    {% else %}
+                        (fragmentación externa):
+                    {% endif %}
+                    <strong>
+                        <span>
+                            {{ fragmentacion }}KB
                         </span>
                     </strong>
                 </span>

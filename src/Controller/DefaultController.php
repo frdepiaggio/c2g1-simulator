@@ -61,7 +61,8 @@ class DefaultController extends AbstractController
                 'cola_nuevos' => null,
                 'cola_listos' => null,
                 'cola_bloqueados' => null,
-                'particiones' => $simuladorService->getParticionesArray($memoria)
+                'particiones' => $simuladorService->getParticionesArray($memoria),
+                'fragmentacion_externa' => null
             ];
             array_push($rafagas, $rafagaFinal);
 //
@@ -71,12 +72,28 @@ class DefaultController extends AbstractController
 //
 //            $em->flush();
 //        }
+        $fragmentacion = 0;
+        if ($memoria->getTipo() == 'fijas') {
+            foreach ($rafagas as $rafaga) {
+                foreach ($rafaga['particiones'] as $particion) {
+                    if (!is_null($particion['fragmentacion_interna'])) {
+                        $fragmentacion = $fragmentacion + $particion['fragmentacion_interna'];
+                    }
+                }
+            }
+        } else {
+            foreach ($rafagas as $rafaga) {
+                $fragmentacion = $fragmentacion + $rafaga['fragmentacion_externa'];
+            }
+
+        }
+
         return $this->render('simulador/output.html.twig', [
-            'controller_name' => 'DefaultController',
             'rafagaInicial' => $rafagaInicial,
             'rafagas' => $rafagas,
             'simulador' => $simulador,
-            'estadisticas' => $estadisticas
+            'estadisticas' => $estadisticas,
+            'fragmentacion' => $fragmentacion
         ]);
     }
 }

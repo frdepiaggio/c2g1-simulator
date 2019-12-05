@@ -450,6 +450,10 @@
     }
   }
 }
+.cuerpo-tabla .memoria-bloque {
+  display: block;
+  margin: 1rem;
+}
 .gantt-line, .numero-procesador, .numero-bloqueo {
   display: none;
 }
