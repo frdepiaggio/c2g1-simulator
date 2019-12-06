@@ -57,11 +57,12 @@
   </div>
 {% endmacro %}
 
-{% macro renderRafagaData(t, rafagas, memoria) %}
+{% macro renderRafagaData(t, rafagas, memoria, algoritmo) %}
   {% import _self as this %}
   {% set rafaga = rafagas[t] %}
   <div id="popover-flecha-{{ t + 1 }}" class="popover-flecha animated fadeIn faster"></div>
   <div class="data-popover animated fadeIn faster" id="propover-{{ t + 1 }}" style="display: none;">
+    {{ dump(rafaga) }}
     <h3>Ráfaga de CPU <span>t = {{ t+1 }}</span></h3>
     <div class="popover-body p-3">
       {% if rafaga['ejecuto'] %}
@@ -120,25 +121,86 @@
         <div class="cola listos">
           <div class="titulo">Cola de procesos listos</div>
           <div class="cola-listos-mostrar">
-            <div class="d-flex cola-body">
-              {% for t, procesoNuevo in rafaga['cola_listos']|reverse %}
-                <div
-                  {% if t is divisible by(2) %}
-                    class="par"
-                  {% else %}
-                    class="impar"
+            {% if algoritmo == 'multinivel' %}
+              <div class="pl-2">
+                cola de prioridad alta:
+              </div>
+              <div class="d-flex cola-body">
+                {% for t, procesoNuevo in rafaga['cola_listos']|reverse %}
+                  {% if procesoNuevo['cola']['prioridad'] == 3 %}
+                    <div
+                      {% if t is divisible by(2) %}
+                        class="par"
+                      {% else %}
+                        class="impar"
+                      {% endif %}
+                    >
+                      {{ procesoNuevo['id'] }}
+                      <sub><strong>{{ procesoNuevo['ciclo'][0]['valor'] }}</strong></sub>
+                    </div>
                   {% endif %}
-                >
-                  {{ procesoNuevo['id'] }}
-                  <sub><strong>{{ procesoNuevo['ciclo'][0]['valor'] }}</strong></sub>
-                </div>
-                {% if t == rafaga['cola_listos']|length -1 %}
-                  <div class="indicador">
-                    <i class="fas fa-long-arrow-alt-left"></i>
+                {% endfor %}
+              </div>
+              <div class="pl-2">
+                cola de prioridad media:
+              </div>
+              <div class="d-flex cola-body">
+                {% for t, procesoNuevo in rafaga['cola_listos']|reverse %}
+                  {% if procesoNuevo['cola']['prioridad'] == 2 %}
+                    <div
+                      {% if t is divisible by(2) %}
+                        class="par"
+                      {% else %}
+                        class="impar"
+                      {% endif %}
+                    >
+                      {{ procesoNuevo['id'] }}
+                      <sub><strong>{{ procesoNuevo['ciclo'][0]['valor'] }}</strong></sub>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              <div class="pl-2">
+                cola de prioridad baja:
+              </div>
+              <div class="d-flex cola-body">
+                {% for t, procesoNuevo in rafaga['cola_listos']|reverse %}
+                  {% if procesoNuevo['cola']['prioridad'] == 1 %}
+                    <div
+                      {% if t is divisible by(2) %}
+                        class="par"
+                      {% else %}
+                        class="impar"
+                      {% endif %}
+                    >
+                      {{ procesoNuevo['id'] }}
+                      <sub><strong>{{ procesoNuevo['ciclo'][0]['valor'] }}</strong></sub>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="d-flex cola-body">
+                {% for t, procesoNuevo in rafaga['cola_listos']|reverse %}
+                  <div
+                    {% if t is divisible by(2) %}
+                      class="par"
+                    {% else %}
+                      class="impar"
+                    {% endif %}
+                  >
+                    {{ procesoNuevo['id'] }}
+                    <sub><strong>{{ procesoNuevo['ciclo'][0]['valor'] }}</strong></sub>
                   </div>
-                {% endif %}
-              {% endfor %}
-            </div>
+                  {% if t == rafaga['cola_listos']|length -1 %}
+                    <div class="indicador">
+                      <i class="fas fa-long-arrow-alt-left"></i>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            {% endif %}
+
           </div>
         </div>
       {% endif %}

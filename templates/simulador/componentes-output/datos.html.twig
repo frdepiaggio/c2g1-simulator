@@ -63,11 +63,13 @@
                     <strong>
                         <span>
                             {% if simulador.algoritmoPlanificacion == 'fcfs' %}
-                                FCFS
+                                First Come First Serve (FCFS)
                             {% elseif simulador.algoritmoPlanificacion == 'rr' %}
-                                Round-Robin
-                            {% elseif simulador.algoritmoPlanificacion == 'prioridades' %}
-                                Prioridades
+                                Round-Robin (RR)
+                            {% elseif simulador.algoritmoPlanificacion == 'sjf' %}
+                                Shorten Job First (SJF)
+                            {% elseif simulador.algoritmoPlanificacion == 'srtf' %}
+                                Short Remaining Time First (SRTF)
                             {% else %}
                                 Colas Multinivel
                             {% endif %}
@@ -75,6 +77,36 @@
                     </strong>
                 </span>
             </div>
+            {% if simulador.algoritmoPlanificacion == 'multinivel' %}
+                <div class="multinivel-info">
+                    {% for cola in simulador.colas %}
+                        <div>
+                            <span><i class="far fa-clock"></i>
+                                {% if cola.prioridad == 3 %}
+                                    Cola de prioridad alta:
+                                {% elseif cola.prioridad == 2 %}
+                                    Cola de prioridad media:
+                                {% else %}
+                                    Cola de prioridad baja:
+                                {% endif %}
+                            <strong>
+                                <span>
+                                    {% if cola.algoritmoPlanificacion == 'fcfs' %}
+                                        First Come First Serve (FCFS)
+                                    {% elseif cola.algoritmoPlanificacion == 'rr' %}
+                                        Round-Robin (RR)
+                                    {% elseif cola.algoritmoPlanificacion == 'sjf' %}
+                                        Shorten Job First (SJF)
+                                    {% elseif cola.algoritmoPlanificacion == 'srtf' %}
+                                        Short Remaining Time First (SRTF)
+                                    {% endif %}
+                                </span>
+                            </strong>
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
             <div>
                 <span><i class="fas fa-exchange-alt"></i> Tipo de Particiones:
                     <strong>

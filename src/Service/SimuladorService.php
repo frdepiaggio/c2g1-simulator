@@ -389,9 +389,6 @@ class SimuladorService
                         $rafagaActual
                     );
 
-//            if ($t == 0) {
-//                dd($cola_listos);
-//            }
             usort($cola_listos, function ($a, $b) {
                 if ($a['cola']['prioridad'] == $b['cola']['prioridad']) {
                     if ($a['ejecutandose'] < $b['ejecutandose']) return 1;
